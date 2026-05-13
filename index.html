@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LUNARA</title>
+  <title>Lunara's Universe</title>
 
   <!-- Premium Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -14,13 +14,19 @@
 <body>
 
   <!-- HEADER -->
-  <header class="site-header">
+  <header class="site-header" id="site-header">
     <div class="header-inner">
 
       <!-- LEFT: LOGO -->
-      <div class="logo-left">
+      <a href="#" class="logo-left" aria-label="Lunara home">
         <img src="images/lunara-website-logo.png" class="logo" alt="Lunara logo"/>
-      </div>
+      </a>
+
+      <!-- CENTER: BRAND -->
+      <a href="#" class="brand-center" aria-label="Lunara's Universe home">
+        <img src="images/lunara-website-logo.png" class="brand-bg-logo" alt="">
+        <span>Lunara's Universe</span>
+      </a>
 
       <!-- RIGHT: NAV -->
       <div class="header-right">
@@ -29,7 +35,7 @@
           <a href="#premium-trust">Why</a>
         </nav>
 
-        <button class="cart-btn" onclick="openCart()">
+        <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
           🛒 <span id="cart-count">0</span>
         </button>
       </div>
@@ -54,7 +60,6 @@
         <a href="#premium-trust" class="btn-secondary">Why Lunara</a>
       </div>
 
-      <!-- NEW: subtle urgency -->
       <p class="hero-proof">
         🔥 Limited launch collection — once it's gone, it's gone
       </p>
@@ -127,7 +132,7 @@
 
     <div class="cart-header">
       <h3>Your Cart</h3>
-      <button onclick="closeCart()">✕</button>
+      <button onclick="closeCart()" aria-label="Close cart">✕</button>
     </div>
 
     <div id="cart-items"></div>
@@ -135,7 +140,6 @@
     <div class="cart-footer">
       <h4>Total: <span id="cart-total">R0.00</span></h4>
 
-      <!-- CUSTOMER INFO -->
       <input id="customer-first-name" placeholder="First name">
       <input id="customer-last-name" placeholder="Last name">
       <input id="customer-email" placeholder="Email (for order updates)">
@@ -147,7 +151,6 @@
       <input id="customer-zip" placeholder="Postal code">
       <input id="customer-country" value="ZA">
 
-      <!-- CHECKOUT BUTTON -->
       <button class="checkout-btn" onclick="checkout()">
         Secure Checkout →
       </button>
@@ -171,6 +174,7 @@
         <a href="#shop">All Products</a>
         <a href="#shop">Hoodies</a>
         <a href="#shop">T-Shirts</a>
+        <a href="#shop">Pants</a>
       </div>
 
       <div>
@@ -190,5 +194,6 @@
 
   </footer>
 
+  <script src="script.js"></script>
 </body>
 </html>
