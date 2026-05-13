@@ -22,11 +22,8 @@ let storeProducts = [];
 
 // ==========================
 // 🏪 LOCAL FALLBACK PRODUCTS
-// These products will still show in your store
-// even if Printify does not return them
 // ==========================
 const localProducts = [
-  // HOODIES
   {
     id: "butterfly-hoodie",
     name: "Butterfly Hoodie",
@@ -90,8 +87,6 @@ const localProducts = [
     printify: true,
     prodigi: true
   },
-
-  // PANTS
   {
     id: "cosmic-butterfly-pants",
     name: "Cosmic Butterfly Pants",
@@ -170,7 +165,6 @@ function getTypeFolder(product) {
 function getImagePath(product, color = "black") {
   const slug = product.slug || getSlug(product.name);
   const typeFolder = getTypeFolder(product);
-
   return `/images/${typeFolder}/${slug}/${color}.png`;
 }
 
@@ -429,10 +423,12 @@ function removeFromCart(index) {
 // ==========================
 function openCart() {
   document.getElementById("cart-panel")?.classList.add("open");
+  document.body.classList.add("cart-open");
 }
 
 function closeCart() {
   document.getElementById("cart-panel")?.classList.remove("open");
+  document.body.classList.remove("cart-open");
 }
 
 // ==========================
@@ -537,9 +533,45 @@ async function loadProducts() {
 }
 
 // ==========================
+// 🌙 SMART HEADER SCROLL
+// Scroll down: hide
+// Scroll up: show
+// Near top: always show
+// ==========================
+function initSmartHeader() {
+  const header = document.getElementById("site-header");
+  if (!header) return;
+
+  let lastScrollY = window.scrollY;
+
+  window.addEventListener("scroll", () => {
+    const currentScrollY = window.scrollY;
+    const scrollingDown = currentScrollY > lastScrollY;
+    const nearTop = currentScrollY < 140;
+
+    if (currentScrollY > 25) {
+      header.classList.add("shrink");
+    } else {
+      header.classList.remove("shrink");
+    }
+
+    if (nearTop) {
+      header.classList.remove("header-hidden");
+    } else if (scrollingDown) {
+      header.classList.add("header-hidden");
+    } else {
+      header.classList.remove("header-hidden");
+    }
+
+    lastScrollY = Math.max(currentScrollY, 0);
+  });
+}
+
+// ==========================
 // 🚀 INIT
 // ==========================
 async function init() {
+  initSmartHeader();
   await detectCountry();
   await loadProducts();
   updateCart();
