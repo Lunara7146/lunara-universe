@@ -25,8 +25,17 @@
 
       <div class="header-right">
         <nav class="main-nav">
-          <a href="#shop">Shop</a>
-          <a href="#premium-trust">Why</a>
+          <a href="#shop">All Products</a>
+          <a href="#shop">Nova Collection Hoodies</a>
+          <a href="#shop">T-Shirts</a>
+          <a href="#shop">Hoodies</a>
+          <a href="#shop">Sweatshirts</a>
+          <a href="#shop">Sweatpants</a>
+          <a href="#premium-trust">Why Lunara</a>
+          <a href="#shipping">Shipping</a>
+          <a href="#returns-guide">Returns Guide</a>
+          <a href="#terms">Terms</a>
+          <a href="#customs">Customs</a>
         </nav>
 
         <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
@@ -47,28 +56,28 @@
       </p>
 
       <div class="hero-buttons">
-        <a href="#shop" class="btn-primary">Shop Collection</a>
-        <a href="#premium-trust" class="btn-secondary">Why Lunara</a>
+        <a href="#shop" class="btn-primary">All Products</a>
+        <a href="#shop" class="btn-secondary">Nova Collection Hoodies</a>
       </div>
 
       <p class="hero-proof">
-        🔥 Limited launch collection — once it's gone, it's gone
+        ✨ New arrivals added regularly – discover your next favorite piece
       </p>
     </div>
   </section>
 
   <section class="trust-bar">
     <div class="trust-bar-inner">
-      <span>✨ Limited launch collection</span>
+      <span>✨ Exclusive cosmic designs</span>
       <span>🔒 Secure checkout</span>
-      <span>🚚 Tracked shipping</span>
-      <span>💫 Premium quality</span>
+      <span>🚚 Fast tracked shipping</span>
+      <span>💫 Premium quality guarantee</span>
     </div>
   </section>
 
   <section class="featured-banner">
-    <h2>Limited Cosmic Drop</h2>
-    <p>Once it's gone, it's gone.</p>
+    <h2>Cosmic Streetwear Collection</h2>
+    <p>Fresh designs inspired by the universe.</p>
   </section>
 
   <section id="shop" class="products"></section>
@@ -99,34 +108,48 @@
     </div>
   </section>
 
-  <div id="overlay" class="overlay" onclick="closeCart()"></div>
+  <section id="shipping" class="shipping-info">
+    <h2>📦 Shipping Times</h2>
+    <p>Orders are processed within 2–3 business days. Delivery from France or the nearest provider 
+    typically takes <strong>14–21 business days</strong>. International shipping times vary depending on destination.</p>
+  </section>
 
-  <aside id="cart-panel" class="cart-panel">
-    <div class="cart-header">
-      <h3>Your Cart</h3>
-      <button onclick="closeCart()" aria-label="Close cart">✕</button>
+  <section id="returns-guide" class="returns-guide">
+    <h2>🔄 Returns Guide</h2>
+    <p>Follow these steps to request a return for manufacturer defects:</p>
+    <div class="returns-steps">
+      <div class="step">
+        <h3>📸 Step 1: Take Photos</h3>
+        <p>Capture clear images of the defect and the packaging as it arrived. Include any keyword codes or links printed on the packaging.</p>
+      </div>
+      <div class="step">
+        <h3>📝 Step 2: Submit Evidence</h3>
+        <p>Email your photos, order details, and any packaging codes/links to  
+        <strong>lunarasuniverse@gmail.com</strong> within <strong>7 days of delivery</strong>.  
+        Requests submitted after 7 days will not be accepted.</p>
+      </div>
+      <div class="step">
+        <h3>📦 Step 3: Return Item</h3>
+        <p>Once approved, ship the product back in its original condition and packaging. Items damaged after delivery will not qualify.</p>
+      </div>
+      <div class="step">
+        <h3>💳 Step 4: Receive Credits</h3>
+        <p>After verification, Lunara Credits will be added to your account for future purchases. No cash refunds are provided.</p>
+      </div>
     </div>
+  </section>
 
-    <div id="cart-items"></div>
+  <section id="terms" class="terms-info">
+    <h2>📑 Terms & Conditions</h2>
+    <p>Strict return policy: only manufacturer defects qualify for Lunara Credits. Customers must provide photo and packaging evidence. No refunds for preference-based returns.</p>
+    <!-- Full detailed terms text from earlier draft can be inserted here -->
+  </section>
 
-    <div class="cart-footer">
-      <h4>Total: <span id="cart-total">R0.00</span></h4>
-
-      <input id="customer-first-name" placeholder="First name">
-      <input id="customer-last-name" placeholder="Last name">
-      <input id="customer-email" placeholder="Email (for order updates)">
-      <input id="customer-phone" placeholder="Phone (for delivery)">
-      <input id="customer-address1" placeholder="Street address">
-      <input id="customer-city" placeholder="City">
-      <input id="customer-region" placeholder="Province">
-      <input id="customer-zip" placeholder="Postal code">
-      <input id="customer-country" value="ZA">
-
-      <button class="checkout-btn" onclick="checkout()">
-        Secure Checkout →
-      </button>
-    </div>
-  </aside>
+  <section id="customs" class="customs-info">
+    <h2>🌍 Customs Notice</h2>
+    <p><strong>Customs excluded:</strong> All international orders shipped to South Africa are subject to customs duties and import taxes. 
+    Customers are responsible for paying these fees upon delivery. Lunara’s Universe is not liable for delays caused by customs clearance.</p>
+  </section>
 
   <footer class="premium-footer">
     <div class="footer-grid">
@@ -138,15 +161,23 @@
       <div>
         <h4>Shop</h4>
         <a href="#shop">All Products</a>
-        <a href="#shop">Hoodies</a>
+        <a href="#shop">Nova Collection Hoodies</a>
         <a href="#shop">T-Shirts</a>
-        <a href="#shop">Pants</a>
+        <a href="#shop">Hoodies</a>
+        <a href="#shop">Sweatshirts</a>
+        <a href="#shop">Sweatpants</a>
       </div>
 
       <div>
         <h4>Support</h4>
-        <p>Email: support@lunara.store</p>
+        <p>Email: lunarasuniverse@gmail.com</p>
         <p>Response time: 24–48h</p>
+      </div>
+
+      <div>
+        <h4>Connect</h4>
+        <p>Instagram: <a href="https://instagram.com/lunara_universe" target="_blank">@lunara_universe</a></p>
+        <p>TikTok: <a href="https://tiktok.com/@lunara_universe" target="_blank">@lunara_universe</a></p>
       </div>
 
       <div>
