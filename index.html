@@ -7,6 +7,90 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    /* Glow effect */
+    .glow-highlight { animation: glowFade 1.5s ease; }
+    @keyframes glowFade {
+      0% { box-shadow: 0 0 20px 5px #ff66ff; }
+      100% { box-shadow: none; }
+    }
+
+    /* Dropdown animation */
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-content {
+      position: absolute; top: 100%; left: 0;
+      background: var(--panel-2, #222);
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      overflow: hidden;
+      max-height: 0; opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      z-index: 1000;
+    }
+    .dropdown-content a {
+      display: block; padding: 10px 14px;
+      color: var(--text, #fff); text-decoration: none;
+    }
+    .dropdown-content a:hover { background: var(--panel-1, #444); }
+    .dropdown:hover .dropdown-content { max-height: 500px; opacity: 1; }
+
+    /* Footer horizontal dropdowns */
+    .footer-horizontal {
+      display: flex; justify-content: center; gap: 20px; margin-top: 20px;
+    }
+    .footer-dropdown { position: relative; }
+    .footer-dropdown-content {
+      position: absolute; bottom: 40px;
+      background: var(--panel-2, #222);
+      border-radius: 8px; padding: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      max-height: 0; opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      color: var(--text, #fff); width: 260px;
+    }
+    .footer-dropdown:hover .footer-dropdown-content { max-height: 300px; opacity: 1; }
+
+    /* Favorites section */
+    #favorites {
+      padding: 40px; background: var(--panel-1, #111);
+      color: var(--text, #fff); text-align: center;
+    }
+    .favorite-items {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 20px; margin-top: 20px;
+    }
+    .favorite-card {
+      background: var(--panel-2, #222);
+      border-radius: 10px; padding: 20px; width: 200px;
+      box-shadow: 0 0 10px rgba(255, 102, 255, 0.5);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+    .favorite-card:hover { transform: scale(1.05); }
+    .remove-favorite {
+      position: absolute; top: 8px; right: 8px;
+      background: crimson; color: #fff;
+      border: none; border-radius: 5px;
+      padding: 4px 8px; cursor: pointer;
+    }
+
+    /* Example product cards */
+    .product-card {
+      background: var(--panel-2, #222);
+      color: var(--text, #fff);
+      padding: 20px; margin: 20px;
+      border-radius: 10px;
+    }
+    .save-favorite {
+      margin-top: 10px; padding: 8px 12px;
+      border: none; border-radius: 5px;
+      background: #ff66ff; color: #fff;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
@@ -14,178 +98,116 @@
   <header class="site-header" id="site-header">
     <div class="header-inner">
 
+      <!-- Left: Logo -->
       <a href="#" class="logo-left" aria-label="Lunara home">
         <img src="images/lunara-website-logo.png" class="logo" alt="Lunara logo"/>
       </a>
 
+      <!-- Center: Brand -->
       <a href="#" class="brand-center" aria-label="Lunara's Universe home">
         <img src="images/lunara-website-logo.png" class="brand-bg-logo" alt="">
         <span>Lunara's Universe</span>
       </a>
 
+      <!-- Right: Dropdowns -->
       <div class="header-right">
         <nav class="main-nav">
-          <a href="#shop">All Products</a>
-          <a href="#shop">Nova Collection Hoodies</a>
-          <a href="#shop">T-Shirts</a>
-          <a href="#shop">Hoodies</a>
-          <a href="#shop">Sweatshirts</a>
-          <a href="#shop">Sweatpants</a>
-          <a href="#premium-trust">Why Lunara</a>
-          <a href="#shipping">Shipping</a>
-          <a href="#returns-guide">Returns Guide</a>
-          <a href="#terms">Terms</a>
-          <a href="#customs">Customs</a>
+          <div class="dropdown">
+            <a href="#shop">All Products ▾</a>
+            <div class="dropdown-content">
+              <a href="#nova">Nova Collection Hoodies</a>
+              <a href="#tshirts">T-Shirts</a>
+              <a href="#hoodies">Hoodies</a>
+              <a href="#sweatshirts">Sweatshirts</a>
+              <a href="#sweatpants">Sweatpants</a>
+            </div>
+          </div>
+          <a href="#favorites" class="favorites-link">🦋 Favorites</a>
         </nav>
-
-        <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
-          🛒 <span id="cart-count">0</span>
-        </button>
       </div>
 
     </div>
   </header>
 
-  <section class="hero-premium">
-    <div class="hero-content">
-      <p class="hero-eyebrow">NEW DROP</p>
-      <h1>Streetwear for those who move differently</h1>
-      <p class="hero-sub">
-        Designed for expression. Built for presence.
-        Limited pieces. No restocks.
-      </p>
-
-      <div class="hero-buttons">
-        <a href="#shop" class="btn-primary">All Products</a>
-        <a href="#shop" class="btn-secondary">Nova Collection Hoodies</a>
-      </div>
-
-      <p class="hero-proof">
-        ✨ New arrivals added regularly – discover your next favorite piece
-      </p>
+  <!-- Example product sections -->
+  <section id="nova" class="products">
+    <h2>Nova Collection Hoodies</h2>
+    <div class="product-card">
+      <h3>Cosmic Hoodie</h3>
+      <p>Nova Collection</p>
+      <button class="save-favorite" data-name="Cosmic Hoodie" data-category="Hoodies">❤️ Save to Favorites</button>
     </div>
   </section>
 
-  <section class="trust-bar">
-    <div class="trust-bar-inner">
-      <span>✨ Exclusive cosmic designs</span>
-      <span>🔒 Secure checkout</span>
-      <span>🚚 Fast tracked shipping</span>
-      <span>💫 Premium quality guarantee</span>
+  <section id="tshirts" class="products">
+    <h2>T-Shirts</h2>
+    <div class="product-card">
+      <h3>Galaxy Tee</h3>
+      <p>Limited Edition</p>
+      <button class="save-favorite" data-name="Galaxy Tee" data-category="T-Shirts">❤️ Save to Favorites</button>
     </div>
   </section>
 
-  <section class="featured-banner">
-    <h2>Cosmic Streetwear Collection</h2>
-    <p>Fresh designs inspired by the universe.</p>
+  <section id="hoodies" class="products"><h2>Hoodies</h2></section>
+  <section id="sweatshirts" class="products"><h2>Sweatshirts</h2></section>
+  <section id="sweatpants" class="products"><h2>Sweatpants</h2></section>
+
+  <!-- Favorites Section -->
+  <section id="favorites">
+    <h2>🦋 Your Favorites</h2>
+    <p>Saved products will appear here for quick access.</p>
+    <div class="favorite-items" id="favorite-items"></div>
   </section>
 
-  <section id="shop" class="products"></section>
-
-  <section id="premium-trust" class="premium-trust">
-    <h2 class="trust-heading">Why customers choose Lunara</h2>
-
-    <div class="trust-grid">
-      <div class="trust-card">
-        <h3>🌙 Designed for self-expression</h3>
-        <p>Each piece is crafted to stand out. Made for individuals who move differently.</p>
-      </div>
-
-      <div class="trust-card">
-        <h3>🚚 Fast & tracked delivery</h3>
-        <p>Every order includes tracking so you always know where it is.</p>
-      </div>
-
-      <div class="trust-card">
-        <h3>🔒 Secure checkout</h3>
-        <p>Payments are protected and processed securely.</p>
-      </div>
-
-      <div class="trust-card">
-        <h3>💫 Quality guarantee</h3>
-        <p>If something isn’t right, we’ll make it right.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="shipping" class="shipping-info">
-    <h2>📦 Shipping Times</h2>
-    <p>Orders are processed within 2–3 business days. Delivery from France or the nearest provider 
-    typically takes <strong>14–21 business days</strong>. International shipping times vary depending on destination.</p>
-  </section>
-
-  <section id="returns-guide" class="returns-guide">
-    <h2>🔄 Returns Guide</h2>
-    <p>Follow these steps to request a return for manufacturer defects:</p>
-    <div class="returns-steps">
-      <div class="step">
-        <h3>📸 Step 1: Take Photos</h3>
-        <p>Capture clear images of the defect and the packaging as it arrived.</p>
-      </div>
-      <div class="step">
-        <h3>📝 Step 2: Submit Evidence</h3>
-        <p>Email your photos and order details to <strong>lunarasuniverse@gmail.com</strong> within 7 days of delivery.</p>
-      </div>
-      <div class="step">
-        <h3>📦 Step 3: Return Item</h3>
-        <p>Ship the product back in its original condition and packaging.</p>
-      </div>
-      <div class="step">
-        <h3>💳 Step 4: Receive Credits</h3>
-        <p>Once verified, Lunara Credits will be added to your account for future purchases. No cash refunds are provided.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="terms" class="terms-info">
-    <h2>📑 Terms & Conditions</h2>
-    <p>Strict return policy: only manufacturer defects qualify for Lunara Credits. Customers must provide photo and packaging evidence. No refunds for preference-based returns.</p>
-    <!-- Full detailed terms text from earlier draft can be inserted here -->
-  </section>
-
-  <section id="customs" class="customs-info">
-    <h2>🌍 Customs Notice</h2>
-    <p><strong>Customs excluded:</strong> All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery. Lunara’s Universe is not liable for delays caused by customs clearance.</p>
-  </section>
-
+  <!-- Footer horizontal dropdowns -->
   <footer class="premium-footer">
-    <div class="footer-grid">
-      <div>
-        <img src="images/lunara-website-logo.png" class="footer-logo" alt="Lunara logo">
-        <p>Cosmic streetwear for dreamers.</p>
+    <div class="footer-horizontal">
+      <div class="footer-dropdown">
+        <button>📑 Terms</button>
+        <div class="footer-dropdown-content">
+          <p>Strict return policy: only manufacturer defects qualify...</p>
+        </div>
       </div>
-
-      <div>
-        <h4>Shop</h4>
-        <a href="#shop">All Products</a>
-        <a href="#shop">Nova Collection Hoodies</a>
-        <a href="#shop">T-Shirts</a>
-        <a href="#shop">Hoodies</a>
-        <a href="#shop">Sweatshirts</a>
-        <a href="#shop">Sweatpants</a>
+      <div class="footer-dropdown">
+        <button>📦 Shipping</button>
+        <div class="footer-dropdown-content">
+          <p>Orders are processed within 2–3 business days...</p>
+        </div>
       </div>
-
-      <div>
-        <h4>Support</h4>
-        <p>Email: lunarasuniverse@gmail.com</p>
-        <p>Response time: 24–48h</p>
+      <div class="footer-dropdown">
+        <button>🔄 Returns</button>
+        <div class="footer-dropdown-content">
+          <p>Follow these steps to request a return...</p>
+        </div>
       </div>
-
-      <div>
-        <h4>Connect</h4>
-        <p>Instagram: <a href="https://instagram.com/lunara_universe" target="_blank">@lunara_universe</a></p>
-        <p>TikTok: <a href="https://tiktok.com/@lunara_universe" target="_blank">@lunara_universe</a></p>
+      <div class="footer-dropdown">
+        <button>🌍 Customs</button>
+        <div class="footer-dropdown-content">
+          <p>All international orders shipped to South Africa...</p>
+        </div>
       </div>
-
-      <div>
-        <h4>Trust</h4>
-        <p>Secure checkout</p>
-        <p>Tracked shipping</p>
-        <p>Quality guarantee</p>
+      <div class="footer-dropdown">
+        <button>ℹ️ About Us</button>
+        <div class="footer-dropdown-content">
+          <p>Cosmic streetwear for dreamers...</p>
+        </div>
       </div>
     </div>
   </footer>
 
-  <script src="script.js"></script>
-</body>
-</html>
+  <script>
+    // Glow effect on scroll
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('glow-highlight');
+          setTimeout(() => {
+            entry.target.classList.remove('glow-highlight');
+          }, 1500);
+        }
+      });
+    }, { threshold: 0.3 });
+    sections.forEach(section => observer.observe(section));
+
+    // Favorites logic with persistence
