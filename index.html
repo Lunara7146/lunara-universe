@@ -11,84 +11,158 @@
 
 <body>
 
-  <!-- Header -->
-  <header class="site-header">
+  <header class="site-header" id="site-header">
     <div class="header-inner">
 
-      <!-- Centered Brand -->
-      <div class="brand-wrapper">
-        <a href="#" class="brand-center" aria-label="Lunara's Universe home">
-          <img src="images/lunara-website-logo.png" class="brand-bg-logo" alt="">
-          <span class="brand-name">Lunara's Universe</span>
-        </a>
-      </div>
+      <a href="#" class="logo-left" aria-label="Lunara home">
+        <img src="images/lunara-website-logo.png" class="logo" alt="Lunara logo"/>
+      </a>
 
-      <!-- Navigation aligned right -->
-      <div class="nav-wrapper">
+      <a href="#" class="brand-center" aria-label="Lunara's Universe home">
+        <img src="images/lunara-website-logo.png" class="brand-bg-logo" alt="">
+        <span>Lunara's Universe</span>
+      </a>
+
+      <div class="header-right">
         <nav class="main-nav">
-          <div class="dropdown">
-            <button class="dropbtn">All Products ▼</button>
-            <div class="dropdown-content">
-              <a href="#nova">Nova Collection</a>
-              <a href="#tshirts">T-Shirts</a>
-              <a href="#sweatshirts">Sweatshirts</a>
-              <a href="#sweatpants">Sweatpants</a>
-              <a href="#hoodies">Hoodies</a>
-            </div>
-          </div>
-          <a href="#favorites" class="favorites">🦋 Favorites</a>
+          <a href="#shop">All Products</a>
+          <a href="#shop">Nova Collection Hoodies</a>
+          <a href="#shop">T-Shirts</a>
+          <a href="#shop">Hoodies</a>
+          <a href="#shop">Sweatshirts</a>
+          <a href="#shop">Sweatpants</a>
+          <a href="#premium-trust">Why Lunara</a>
+          <a href="#shipping">Shipping</a>
+          <a href="#returns-guide">Returns Guide</a>
+          <a href="#terms">Terms</a>
+          <a href="#customs">Customs</a>
         </nav>
+
+        <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
+          🛒 <span id="cart-count">0</span>
+        </button>
       </div>
 
     </div>
   </header>
 
-  <!-- Hero -->
   <section class="hero-premium">
     <div class="hero-content">
+      <p class="hero-eyebrow">NEW DROP</p>
       <h1>Streetwear for those who move differently</h1>
-      <p class="hero-sub">Designed for expression. Built for presence. Limited pieces. No restocks.</p>
+      <p class="hero-sub">
+        Designed for expression. Built for presence.
+        Limited pieces. No restocks.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#shop" class="btn-primary">All Products</a>
+        <a href="#shop" class="btn-secondary">Nova Collection Hoodies</a>
+      </div>
+
+      <p class="hero-proof">
+        ✨ New arrivals added regularly – discover your next favorite piece
+      </p>
     </div>
   </section>
 
-  <!-- Product Collections (visible on store) -->
-  <section id="nova" class="collection">
-    <h2>Nova Collection</h2>
-    <div class="products-grid"></div>
+  <section class="trust-bar">
+    <div class="trust-bar-inner">
+      <span>✨ Exclusive cosmic designs</span>
+      <span>🔒 Secure checkout</span>
+      <span>🚚 Fast tracked shipping</span>
+      <span>💫 Premium quality guarantee</span>
+    </div>
   </section>
 
-  <section id="tshirts" class="collection">
-    <h2>T-Shirts</h2>
-    <div class="products-grid"></div>
+  <section class="featured-banner">
+    <h2>Cosmic Streetwear Collection</h2>
+    <p>Fresh designs inspired by the universe.</p>
   </section>
 
-  <section id="sweatshirts" class="collection">
-    <h2>Sweatshirts</h2>
-    <div class="products-grid"></div>
+  <section id="shop" class="products"></section>
+
+  <section id="premium-trust" class="premium-trust">
+    <h2 class="trust-heading">Why customers choose Lunara</h2>
+
+    <div class="trust-grid">
+      <div class="trust-card">
+        <h3>🌙 Designed for self-expression</h3>
+        <p>Each piece is crafted to stand out. Made for individuals who move differently.</p>
+      </div>
+
+      <div class="trust-card">
+        <h3>🚚 Fast & tracked delivery</h3>
+        <p>Every order includes tracking so you always know where it is.</p>
+      </div>
+
+      <div class="trust-card">
+        <h3>🔒 Secure checkout</h3>
+        <p>Payments are protected and processed securely.</p>
+      </div>
+
+      <div class="trust-card">
+        <h3>💫 Quality guarantee</h3>
+        <p>If something isn’t right, we’ll make it right.</p>
+      </div>
+    </div>
   </section>
 
-  <section id="sweatpants" class="collection">
-    <h2>Sweatpants</h2>
-    <div class="products-grid"></div>
+  <section id="shipping" class="shipping-info">
+    <h2>📦 Shipping Times</h2>
+    <p>Orders are processed within 2–3 business days. Delivery from France or the nearest provider 
+    typically takes <strong>14–21 business days</strong>. International shipping times vary depending on destination.</p>
   </section>
 
-  <section id="hoodies" class="collection">
-    <h2>Hoodies</h2>
-    <div class="products-grid"></div>
+  <section id="returns-guide" class="returns-guide">
+    <h2>🔄 Returns Guide</h2>
+    <p>Follow these steps to request a return for manufacturer defects:</p>
+    <div class="returns-steps">
+      <div class="step">
+        <h3>📸 Step 1: Take Photos</h3>
+        <p>Capture clear images of the defect and the packaging as it arrived.</p>
+      </div>
+      <div class="step">
+        <h3>📝 Step 2: Submit Evidence</h3>
+        <p>Email your photos and order details to <strong>lunarasuniverse@gmail.com</strong> within 7 days of delivery.</p>
+      </div>
+      <div class="step">
+        <h3>📦 Step 3: Return Item</h3>
+        <p>Ship the product back in its original condition and packaging.</p>
+      </div>
+      <div class="step">
+        <h3>💳 Step 4: Receive Credits</h3>
+        <p>Once verified, Lunara Credits will be added to your account for future purchases. No cash refunds are provided.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- Favorites Section -->
-  <section id="favorites" class="collection">
-    <h2>Favorites 🦋</h2>
-    <div class="products-grid"></div>
+  <section id="terms" class="terms-info">
+    <h2>📑 Terms & Conditions</h2>
+    <p>Strict return policy: only manufacturer defects qualify for Lunara Credits. Customers must provide photo and packaging evidence. No refunds for preference-based returns.</p>
+    <!-- Full detailed terms text from earlier draft can be inserted here -->
   </section>
 
-  <!-- Footer with dropdowns -->
+  <section id="customs" class="customs-info">
+    <h2>🌍 Customs Notice</h2>
+    <p><strong>Customs excluded:</strong> All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery. Lunara’s Universe is not liable for delays caused by customs clearance.</p>
+  </section>
+
   <footer class="premium-footer">
     <div class="footer-grid">
       <div>
         <img src="images/lunara-website-logo.png" class="footer-logo" alt="Lunara logo">
         <p>Cosmic streetwear for dreamers.</p>
+      </div>
+
+      <div>
+        <h4>Shop</h4>
+        <a href="#shop">All Products</a>
+        <a href="#shop">Nova Collection Hoodies</a>
+        <a href="#shop">T-Shirts</a>
+        <a href="#shop">Hoodies</a>
+        <a href="#shop">Sweatshirts</a>
+        <a href="#shop">Sweatpants</a>
       </div>
 
       <div>
@@ -103,27 +177,11 @@
         <p>TikTok: <a href="https://tiktok.com/@lunara_universe" target="_blank">@lunara_universe</a></p>
       </div>
 
-      <div class="footer-dropdowns">
-        <div class="footer-dropdown">
-          <button class="footer-dropbtn">📦 Shipping</button>
-          <div class="footer-dropdown-content">
-            <p>Orders are processed within 2–3 business days. Delivery from France or the nearest provider typically takes <strong>14–21 business days</strong>.</p>
-          </div>
-        </div>
-
-        <div class="footer-dropdown">
-          <button class="footer-dropbtn">📑 Terms & Conditions</button>
-          <div class="footer-dropdown-content">
-            <p>Strict return policy: only manufacturer defects qualify for Lunara Credits. Customers must provide photo and packaging evidence. No refunds for preference-based returns.</p>
-          </div>
-        </div>
-
-        <div class="footer-dropdown">
-          <button class="footer-dropbtn">🌍 Customs</button>
-          <div class="footer-dropdown-content">
-            <p><strong>Customs excluded:</strong> All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery.</p>
-          </div>
-        </div>
+      <div>
+        <h4>Trust</h4>
+        <p>Secure checkout</p>
+        <p>Tracked shipping</p>
+        <p>Quality guarantee</p>
       </div>
     </div>
   </footer>
