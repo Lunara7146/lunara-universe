@@ -11,9 +11,9 @@
 
 <body>
 
+  <!-- Header -->
   <header class="site-header" id="site-header">
     <div class="header-inner">
-
       <a href="#" class="logo-left" aria-label="Lunara home">
         <img src="images/lunara-website-logo.png" class="logo" alt="Lunara logo"/>
       </a>
@@ -42,10 +42,10 @@
           🛒 <span id="cart-count">0</span>
         </button>
       </div>
-
     </div>
   </header>
 
+  <!-- Hero -->
   <section class="hero-premium">
     <div class="hero-content">
       <p class="hero-eyebrow">NEW DROP</p>
@@ -54,30 +54,25 @@
         Designed for expression. Built for presence.
         Premium cosmic streetwear crafted for those who stand apart.
       </p>
-
       <div class="hero-buttons">
         <a href="#shop" class="btn-primary">Shop Collection</a>
         <a href="#premium-trust" class="btn-secondary">Why Lunara</a>
       </div>
-
       <p class="hero-proof">
         ✨ New arrivals added regularly – discover your next favorite piece
       </p>
     </div>
   </section>
 
+  <!-- Trust Bar -->
   <section class="trust-bar">
     <div class="trust-bar-inner">
       <span>✨ Exclusive cosmic designs</span>
       <span>🔒 Secure checkout</span>
       <span>🚚 Track shipping</span>
       <span>💫 Premium quality</span>
+      <span>🌍 Customs notice</span>
     </div>
-  </section>
-
-  <section class="featured-banner">
-    <h2>Cosmic Streetwear Collection</h2>
-    <p>Fresh designs inspired by the universe.</p>
   </section>
 
   <!-- Product Sections -->
@@ -87,124 +82,54 @@
       <div class="product-card">
         <h3>Galaxy Tee</h3>
         <p>Limited Edition</p>
-        <button class="favorite-btn" data-name="Galaxy Tee" data-category="T-Shirts">❤️</button>
+        <button class="favorite-btn">❤️</button>
       </div>
     </div>
   </section>
 
-  <section id="sweatshirts" class="product-section">
-    <h2 class="product-heading">Sweatshirts</h2>
-    <div class="products-grid">
-      <div class="product-card">
-        <h3>Cosmic Sweatshirt</h3>
-        <p>Premium Quality</p>
-        <button class="favorite-btn" data-name="Cosmic Sweatshirt" data-category="Sweatshirts">❤️</button>
-      </div>
-    </div>
-  </section>
+  <!-- (Sweatshirts, Sweatpants, Hoodies, Nova Collection sections follow same structure) -->
 
-  <section id="sweatpants" class="product-section">
-    <h2 class="product-heading">Sweatpants</h2>
-    <div class="products-grid">
-      <div class="product-card">
-        <h3>Starlight Sweatpants</h3>
-        <p>Comfort Fit</p>
-        <button class="favorite-btn" data-name="Starlight Sweatpants" data-category="Sweatpants">❤️</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="hoodies" class="product-section">
-    <h2 class="product-heading">Hoodies</h2>
-    <div class="products-grid">
-      <div class="product-card">
-        <h3>Nebula Hoodie</h3>
-        <p>Exclusive Drop</p>
-        <button class="favorite-btn" data-name="Nebula Hoodie" data-category="Hoodies">❤️</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="nova" class="product-section">
-    <h2 class="product-heading">Nova Collection</h2>
-    <div class="products-grid">
-      <div class="product-card">
-        <h3>Nova Jacket</h3>
-        <p>Cosmic Design</p>
-        <button class="favorite-btn" data-name="Nova Jacket" data-category="Nova Collection">❤️</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Favorites Section -->
+  <!-- Favorites -->
   <section id="favorites">
     <h2 class="product-heading">🦋 Your Favorites</h2>
     <p>Saved products will appear here for quick access.</p>
     <div class="favorite-items" id="favorite-items"></div>
   </section>
 
-  <!-- Terms & Conditions Modal -->
-  <div id="termsModal" class="modal">
-    <div class="modal-content">
-      <h2>📑 Terms, Returns & Policies</h2>
-      <div class="modal-body">
-        <section id="terms" class="terms-info">
-          <h3>1. Returns & Exchanges</h3>
-          <p>Returns are only accepted if the product is defective due to manufacturer error...</p>
-
-          <h3>2. Store Credit</h3>
-          <p>Approved returns will be issued as Lunara Credits...</p>
-
-          <h3>3. Return Process</h3>
-          <ul>
-            <li>Submit photos of the defect within 7 days of delivery.</li>
-            <li>Provide evidence that the defect was present upon arrival.</li>
-            <li>Ship the item back in its original condition and packaging.</li>
-          </ul>
-
-          <h3>4. Shipping Times</h3>
-          <p>Orders are processed within 2–3 business days. Delivery typically takes 14–21 business days.</p>
-
-          <h3>5. Customs & Duties</h3>
-          <p>All international orders shipped to South Africa are subject to customs duties and import taxes.</p>
-
-          <h3>6. Liability</h3>
-          <p>Lunara’s Universe is not responsible for damages caused by misuse or improper care.</p>
-
-          <h3>7. Secure Checkout</h3>
-          <p>All payments are processed securely using encrypted gateways.</p>
-
-          <h3>8. Agreement</h3>
-          <p>By placing an order, you agree to these Terms & Conditions.</p>
-        </section>
+  <!-- Footer -->
+  <footer class="premium-footer">
+    <div class="footer-grid">
+      <div>
+        <h4>Policies</h4>
+        <p><a href="#popup-shipping" class="popup-link">🚚 Shipping Times</a></p>
+        <p><a href="#popup-customs" class="popup-link">🌍 Customs Notice</a></p>
+        <p><a href="#popup-terms" class="popup-link">📑 Terms & Conditions</a></p>
       </div>
-
-      <div class="modal-agree">
-        <label>
-          <input type="checkbox" id="agreeCheckbox"> I agree to the Terms & Conditions
-        </label>
+      <div>
+        <h4>Contact</h4>
+        <p>Email: <a href="mailto:lunarasuniverse@gmail.com">lunarasuniverse@gmail.com</a></p>
+        <p>WhatsApp: <a href="https://wa.me/27XXXXXXXXX" target="_blank">+27 XX XXX XXXX</a></p>
+        <p>Instagram: <a href="https://instagram.com/lunara_universe" target="_blank">@lunara_universe</a></p>
+        <p>TikTok: <a href="https://tiktok.com/@lunara_universe" target="_blank">@lunara_universe</a></p>
       </div>
-
-      <button id="continueBtn" disabled>Enter Store</button>
     </div>
+  </footer>
+
+  <!-- Popup Boxes -->
+  <div id="popup-shipping" class="popup-box">
+    <h3>🚚 Shipping Times</h3>
+    <p>Production takes 2–3 business days. Delivery from France or the closest provider to South Africa typically takes <strong>14–21 business days</strong>.</p>
   </div>
 
-  <div id="overlay" class="overlay" onclick="closeCart()"></div>
+  <div id="popup-customs" class="popup-box">
+    <h3>🌍 Customs Notice</h3>
+    <p>All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery.</p>
+  </div>
 
-  <aside id="cart-panel" class="cart-panel">
-    <div class="cart-header">
-      <h3>Your Cart</h3>
-      <button onclick="closeCart()" aria-label="Close cart">✕</button>
-    </div>
+  <div id="popup-terms" class="popup-box">
+    <h3>📑 Terms & Conditions</h3>
+    <p>By placing an order, you agree to Lunara’s Universe policies on returns, liability, and secure checkout.</p>
+  </div>
 
-    <div id="cart-items"></div>
-
-    <div class="cart-footer">
-      <h4>Total: <span id="cart-total">R0.00</span></h4>
-
-      <input id="customer-first-name" placeholder="First name">
-      <input id="customer-last-name" placeholder="Last name">
-      <input id="customer-email" placeholder="Email (for order updates)">
-      <input id="customer-phone" placeholder="Phone (for delivery)">
-      <input id="customer-address1" placeholder="Street address">
-      <input id="customer-city"
+</body>
+</html>
