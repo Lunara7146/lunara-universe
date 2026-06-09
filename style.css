@@ -745,14 +745,6 @@ body.cart-open .overlay {
   background: var(--panel-1);
 }
 
-.dropdown:hover .dropdown-content {
-  max-height: 500px; /* enough to show all links */
-  opacity: 1;
-}
-
-.dropdown:hover .dropbtn {
-  color: var(--accent);
-}
 
 /* Footer Dropdowns */
 .footer-dropdowns {
@@ -792,35 +784,6 @@ body.cart-open .overlay {
   opacity: 0;
   transition: max-height 0.35s ease, opacity 0.35s ease;
 }
-
-.footer-dropdown-content p {
-  color: var(--text);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.footer-dropdown:hover .footer-dropdown-content {
-  max-height: 500px;
-  opacity: 1;
-}
-
-.footer-dropdown:hover .footer-dropbtn {
-  color: var(--accent);
-}
-
-/* Dropdown Animation */
-.dropdown-content,
-.footer-dropdown-content {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.35s ease;
-}
-
-.dropdown:hover .dropdown-content,
-.footer-dropdown:hover .footer-dropdown-content {
-  max-height: 500px; /* enough space for items */
-  opacity: 1;
                             }
 /* Modal Overlay */
 .modal {
