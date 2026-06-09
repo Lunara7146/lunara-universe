@@ -17,12 +17,10 @@
       <a href="#" class="logo-left" aria-label="Lunara home">
         <img src="images/lunara-website-logo.png" class="logo" alt="Lunara logo"/>
       </a>
-
       <a href="#" class="brand-center" aria-label="Lunara's Universe home">
         <img src="images/lunara-website-logo.png" class="brand-bg-logo" alt="">
         <span>Lunara's Universe</span>
       </a>
-
       <div class="header-right">
         <nav class="main-nav">
           <div class="dropdown">
@@ -37,7 +35,6 @@
           </div>
           <a href="#favorites" aria-label="Favorites">❤️</a>
         </nav>
-
         <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
           🛒 <span id="cart-count">0</span>
         </button>
@@ -75,7 +72,7 @@
     </div>
   </section>
 
-  <!-- Product Sections -->
+  <!-- Example Product Section -->
   <section id="tshirts" class="product-section">
     <h2 class="product-heading">T-Shirts</h2>
     <div class="products-grid">
@@ -86,8 +83,6 @@
       </div>
     </div>
   </section>
-
-  <!-- (Sweatshirts, Sweatpants, Hoodies, Nova Collection sections follow same structure) -->
 
   <!-- Favorites -->
   <section id="favorites">
@@ -101,10 +96,28 @@
     <div class="footer-grid">
       <div>
         <h4>Policies</h4>
-        <p><a href="#popup-shipping" class="popup-link">🚚 Shipping Times</a></p>
-        <p><a href="#popup-customs" class="popup-link">🌍 Customs Notice</a></p>
-        <p><a href="#popup-terms" class="popup-link">📑 Terms & Conditions</a></p>
+        <div class="footer-dropdown" id="shipping">
+          <button class="footer-dropbtn">🚚 Shipping Times</button>
+          <div class="footer-dropdown-content">
+            <p>Production takes 2–3 business days. Delivery from France or the closest provider to South Africa typically takes <strong>14–21 business days</strong>.</p>
+          </div>
+        </div>
+
+        <div class="footer-dropdown" id="customs">
+          <button class="footer-dropbtn">🌍 Customs Notice</button>
+          <div class="footer-dropdown-content">
+            <p>All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery.</p>
+          </div>
+        </div>
+
+        <div class="footer-dropdown" id="terms">
+          <button class="footer-dropbtn">📑 Terms & Conditions</button>
+          <div class="footer-dropdown-content">
+            <p>By placing an order, you agree to Lunara’s Universe policies on returns, liability, and secure checkout.</p>
+          </div>
+        </div>
       </div>
+
       <div>
         <h4>Contact</h4>
         <p>Email: <a href="mailto:lunarasuniverse@gmail.com">lunarasuniverse@gmail.com</a></p>
@@ -115,21 +128,26 @@
     </div>
   </footer>
 
-  <!-- Popup Boxes -->
-  <div id="popup-shipping" class="popup-box">
-    <h3>🚚 Shipping Times</h3>
-    <p>Production takes 2–3 business days. Delivery from France or the closest provider to South Africa typically takes <strong>14–21 business days</strong>.</p>
-  </div>
+  <script>
+    // Toggle footer dropdowns on click
+    document.querySelectorAll('.footer-dropbtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dropdown = btn.parentElement;
+        dropdown.classList.toggle('open');
+        // Close others
+        document.querySelectorAll('.footer-dropdown').forEach(d => {
+          if (d !== dropdown) d.classList.remove('open');
+        });
+      });
+    });
 
-  <div id="popup-customs" class="popup-box">
-    <h3>🌍 Customs Notice</h3>
-    <p>All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery.</p>
-  </div>
-
-  <div id="popup-terms" class="popup-box">
-    <h3>📑 Terms & Conditions</h3>
-    <p>By placing an order, you agree to Lunara’s Universe policies on returns, liability, and secure checkout.</p>
-  </div>
+    // Close when clicking outside
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.footer-dropdown')) {
+        document.querySelectorAll('.footer-dropdown').forEach(d => d.classList.remove('open'));
+      }
+    });
+  </script>
 
 </body>
 </html>
