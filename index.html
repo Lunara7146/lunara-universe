@@ -143,6 +143,52 @@
     <div class="favorite-items" id="favorite-items"></div>
   </section>
 
+  <!-- Terms & Conditions Modal -->
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <h2>📑 Terms & Conditions</h2>
+      <div class="modal-body">
+        <section id="terms" class="terms-info">
+          <h3>1. Returns & Exchanges</h3>
+          <p>Returns are only accepted if the product is defective due to manufacturer error...</p>
+
+          <h3>2. Store Credit</h3>
+          <p>Approved returns will be issued as Lunara Credits...</p>
+
+          <h3>3. Return Process</h3>
+          <ul>
+            <li>Submit photos of the defect within 7 days of delivery.</li>
+            <li>Provide evidence that the defect was present upon arrival.</li>
+            <li>Ship the item back in its original condition and packaging.</li>
+          </ul>
+
+          <h3>4. Shipping Times</h3>
+          <p>Orders are processed within 2–3 business days. Delivery typically takes 14–21 business days.</p>
+
+          <h3>5. Customs & Duties</h3>
+          <p>All international orders shipped to South Africa are subject to customs duties and import taxes.</p>
+
+          <h3>6. Liability</h3>
+          <p>Lunara’s Universe is not responsible for damages caused by misuse or improper care.</p>
+
+          <h3>7. Secure Checkout</h3>
+          <p>All payments are processed securely using encrypted gateways.</p>
+
+          <h3>8. Agreement</h3>
+          <p>By placing an order, you agree to these Terms & Conditions.</p>
+        </section>
+      </div>
+
+      <div class="modal-agree">
+        <label>
+          <input type="checkbox" id="agreeCheckbox"> I agree to the Terms & Conditions
+        </label>
+      </div>
+
+      <button id="continueBtn" disabled>Enter Store</button>
+    </div>
+  </div>
+
   <div id="overlay" class="overlay" onclick="closeCart()"></div>
 
   <aside id="cart-panel" class="cart-panel">
@@ -162,48 +208,4 @@
       <input id="customer-phone" placeholder="Phone (for delivery)">
       <input id="customer-address1" placeholder="Street address">
       <input id="customer-city" placeholder="City">
-      <input id="customer-region" placeholder="Province">
-      <input id="customer-zip" placeholder="Postal code">
-      <input id="customer-country" value="ZA">
-
-      <button class="checkout-btn" onclick="checkout()">
-        Secure Checkout →
-      </button>
-    </div>
-  </aside>
-
-  <footer class="premium-footer">
-    <div class="footer-grid">
-      <div>
-        <img src="images/lunara-website-logo.png" class="footer-logo" alt="Lunara logo">
-        <p>Cosmic streetwear for dreamers.</p>
-      </div>
-
-      <div>
-        <h4>Shop</h4>
-        <a href="#tshirts">T-Shirts</a>
-        <a href="#sweatshirts">Sweatshirts</a>
-        <a href="#sweatpants">Sweatpants</a>
-        <a href="#hoodies">Hoodies</a>
-        <a href="#nova">Nova Collection</a>
-      </div>
-
-      <div>
-        <h4>Support</h4>
-        <p>Email: support@lunara.store</p>
-        <p>Response time: 24–48h</p>
-      </div>
-
-      <div>
-        <h4>Why Lunara</h4>
-        <p>✨ Exclusive cosmic designs</p>
-        <p>🔒 Secure checkout</p>
-        <p>🚚 Tracked shipping</p>
-        <p>💫 Quality guarantee</p>
-      </div>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+      <input id="
