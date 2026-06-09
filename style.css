@@ -868,3 +868,49 @@ body.cart-open .overlay {
   margin-top: 0;
   color: #ff66ff;
 }
+/* Footer background */
+.premium-footer {
+  background:#e6f2ff; /* very light blue */
+  padding:20px;
+  position:relative;
+}
+
+/* Centered faded logo */
+.footer-logo {
+  display:block;
+  margin:0 auto 10px auto;
+  height:50px;
+  opacity:0.3; /* faded */
+}
+
+/* Horizontal contact info */
+.footer-contact {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:20px;
+  text-align:center;
+}
+
+/* Info tabs horizontal */
+.info-tabs {
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin:20px 0;
+}
+.info-item { position:relative; }
+.info-content {
+  position:absolute;
+  top:40px;
+  left:0;
+  right:0;
+  max-height:0; overflow:hidden; opacity:0;
+  transition:max-height 0.4s ease, opacity 0.4s ease;
+  background:#111; color:#eee; border-radius:6px;
+  font-size:0.9rem; padding:0 10px;
+  width:300px; max-width:90vw;
+  box-shadow:0 0 12px rgba(0, 200, 255, 0.6); /* glowing border */
+}
+.info-content.open
