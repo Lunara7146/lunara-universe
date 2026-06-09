@@ -7,41 +7,6 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-  <style>
-    html { scroll-behavior: smooth; }
-
-    .dropdown { position: relative; display: inline-block; }
-    .dropbtn { background:none; border:none; font-size:1rem; cursor:pointer; color:#fff; }
-    .dropdown-content {
-      display:none; position:absolute; background:#111; min-width:160px;
-      box-shadow:0 8px 16px rgba(0,0,0,0.2); z-index:1;
-    }
-    .dropdown-content a {
-      color:#eee; padding:10px; text-decoration:none; display:block;
-    }
-    .dropdown-content a:hover { background:#333; }
-    .dropdown:hover .dropdown-content { display:block; }
-
-    .product-heading {
-      text-align:center;
-      font-family:'Playfair Display', serif;
-      font-size:2rem;
-      margin:2rem 0;
-    }
-
-    .info-content {
-      max-height:0; overflow:hidden; opacity:0;
-      transition:max-height 0.4s ease, opacity 0.4s ease;
-      margin-top:8px; padding:0 10px;
-      background:#111; color:#eee; border-radius:6px; font-size:0.9rem;
-    }
-    .info-content.open { max-height:300px; opacity:1; padding:10px; }
-    .info-btn {
-      background:none; border:none; font-size:1rem; cursor:pointer;
-      color:#fff; text-align:left; padding:6px 0;
-    }
-    .info-btn:hover { color:#ff9cf9; }
-  </style>
 </head>
 
 <body>
@@ -74,7 +39,7 @@
               <a href="#nova">Nova Collection</a>
             </div>
           </div>
-          <a href="#favorites">❤️ Favorites</a>
+          <a href="#favorites">❤️</a>
         </nav>
         <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
           🛒 <span id="cart-count">0</span>
@@ -148,25 +113,30 @@
   <!-- Info Tabs -->
   <div class="info-tabs">
     <div class="info-item">
-      <button class="info-btn">📦 Shipping Times</button>
+      <button class="info-btn">📦 Shipping</button>
       <div class="info-content">
         <p>Orders are processed within 2–3 business days. Delivery from France or the nearest provider typically takes <strong>14–21 business days</strong>. International shipping times vary depending on destination.</p>
       </div>
     </div>
     <div class="info-item">
-      <button class="info-btn">📑 Terms & Conditions</button>
+      <button class="info-btn">📑 Terms</button>
       <div class="info-content">
-        <p>Full Terms & Conditions apply. Scroll through the complete policies including returns, credits, liability, and secure checkout.</p>
+        <section id="terms" class="terms-info">
+          <h2>📑 Terms & Conditions</h2>
+          <h3>1. Returns & Exchanges</h3>
+          <p>Returns are only accepted if the product is defective due to manufacturer error...</p>
+          <!-- full terms content continues -->
+        </section>
       </div>
     </div>
     <div class="info-item">
-      <button class="info-btn">🔄 Return Policy</button>
+      <button class="info-btn">🔄 Returns</button>
       <div class="info-content">
         <p>Returns must be requested within <strong>7 days</strong> of receiving the item. Customers must include the provided QR code or link with photo evidence of the manufacturer defect. Returns are only accepted for manufacturer problems — not for personal preference.</p>
       </div>
     </div>
     <div class="info-item">
-      <button class="info-btn">🌍 Customs Notice</button>
+      <button class="info-btn">🌍 Customs</button>
       <div class="info-content">
         <p><strong>Customs excluded:</strong> All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery. Lunara’s Universe is not liable for delays caused by customs clearance.</p>
       </div>
@@ -175,6 +145,7 @@
 
   <!-- Footer -->
   <footer class="premium-footer">
+    <img src="images/lunara-website-logo.png" alt="Lunara logo" class="footer-logo">
     <div class="footer-contact">
       <p>Email: <a href="mailto:lunarasuniverse@gmail.com">lunarasuniverse@gmail.com</a></p>
       <p>WhatsApp: <a href="https://wa.me/27XXXXXXXXX" target="_blank">+27 XX XXX XXXX</a></p>
@@ -194,6 +165,16 @@
         content.classList.toggle('open');
       });
     });
+
+    // Collapse popup when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('info-btn')) {
+        document.querySelectorAll('.info-content').forEach(section => {
+          section.classList.remove('open');
+        });
+      }
+    });
   </script>
 </body>
-</html>
+        </html>
+  
