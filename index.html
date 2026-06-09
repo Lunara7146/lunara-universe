@@ -6,245 +6,47 @@
   <title>Lunara's Universe</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    /* === GENERAL STYLES === */
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #07070b;
-      color: #fff;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Playfair Display', serif;
-    }
-
-    a {
-      color: #ff66cc;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* === HEADER === */
-    .header-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-    }
-
-    .brand-wrapper {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-    }
-
-    .brand-name {
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .nav-wrapper {
-      display: flex;
-      gap: 20px;
-    }
-
-    .dropbtn {
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background: #111;
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    /* === HERO === */
-    .hero-premium {
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    .hero-sub {
-      color: #aaa;
-    }
-
-    /* === COLLECTIONS === */
-    .collection {
-      padding: 40px 20px;
-    }
-
-    .products-grid {
-      min-height: 100px;
-      border: 1px dashed #333;
-    }
-
-    /* === INFO TABS ABOVE FOOTER === */
-    .info-tabs {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      margin: 30px 20px;
-    }
-
-    .info-item {
-      flex: 1;
-      min-width: 180px;
-    }
-
-    .info-btn {
-      width: 100%;
-      background: transparent;
-      color: #fff;
-      font-size: 14px;
-      border: 1px solid #444;
-      border-radius: 8px;
-      padding: 10px 14px;
-      cursor: pointer;
-      transition: color 0.3s ease, border-color 0.3s ease;
-    }
-
-    .info-btn:hover {
-      color: #ff66cc;
-      border-color: #ff66cc;
-    }
-
-    .info-content {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease, opacity 0.35s ease;
-      background: #111;
-      border-radius: 8px;
-      padding: 0 12px;
-      margin-top: 8px;
-    }
-
-    .info-content p {
-      font-size: 13px;
-      color: #ccc;
-      margin: 12px 0;
-    }
-
-    /* === FOOTER CONTACT === */
-    .premium-footer {
-      background: #000;
-      padding: 30px 20px;
-      border-top: 1px solid #333;
-      text-align: center;
-    }
-
-    .footer-contact p {
-      margin: 6px 0;
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    /* === TERMS MODAL === */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-
-    .modal-content {
-      background: #111;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 700px;
-      width: 90%;
-      color: #fff;
-      box-shadow: 0 0 30px rgba(0,0,0,0.6);
-    }
-
-    .modal-body {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 20px;
-    }
-
-    .modal-agree {
-      margin: 15px 0;
-    }
-
-    #continueBtn {
-      background: linear-gradient(135deg,#ff66cc,#ff9900);
-      border: none;
-      padding: 12px 20px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-      color: #07070b;
-      transition: opacity 0.3s ease;
-    }
-
-    #continueBtn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-  <!-- Header -->
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="brand-wrapper">
-        <a href="#" class="brand-center" aria-label="Lunara's Universe home">
-          <span class="brand-name">Lunara's Universe</span>
-        </a>
-      </div>
-      <div class="nav-wrapper">
-        <nav class="main-nav">
-          <div class="dropdown">
-            <button class="dropbtn">All Products ▼</button>
-            <div class="dropdown-content">
-              <a href="#nova">Nova Collection</a>
-              <a href="#tshirts">T-Shirts</a>
-              <a href="#sweatshirts">Sweatshirts</a>
-              <a href="#sweatpants">Sweatpants</a>
-              <a href="#hoodies">Hoodies</a>
-            </div>
-          </div>
-          <a href="#favorites" class="favorites">🦋 Favorites</a>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero -->
+  <!-- Hero Section -->
   <section class="hero-premium">
     <div class="hero-content">
+      <p class="hero-eyebrow">NEW DROP</p>
       <h1>Streetwear for those who move differently</h1>
-      <p class="hero-sub">Designed for expression. Built for presence. Limited pieces. No restocks.</p>
+      <p class="hero-sub">
+        Designed for expression. Built for presence.
+        Premium cosmic streetwear crafted for those who stand apart.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#shop" class="btn-primary">Shop Collection</a>
+        <a href="#premium-trust" class="btn-secondary">Why Lunara</a>
+      </div>
+
+      <p class="hero-proof">
+        ✨ New arrivals added regularly – discover your next favorite piece
+      </p>
     </div>
   </section>
 
-  <!-- Product Collections -->
-  <section id="nova" class="collection"><h2>Nova Collection</h2><div class="products-grid"></div></section>
-  <section id="tshirts" class="collection"><h2>T-Shirts</h2><div class="products-grid"></div></section>
-  <section id="sweatshirts" class="collection"><h2>Sweatshirts</h2><div class="products-grid"></div></section>
-  <section id="sweatpants" class="collection"><h2>Sweatpants</h2><div class="products-grid"></div></section>
-  <section id="hoodies" class="collection"><h2>Hoodies</h2><div class="products-grid"></div></section>
-  <section id="favorites" class="collection"><h2>Favorites 🦋</h2><div class="products-grid"></div></section>
+  <!-- Trust Bar -->
+  <section class="trust-bar">
+    <div class="trust-bar-inner">
+      <span>✨ Exclusive cosmic designs</span>
+      <span>🔒 Secure checkout</span>
+      <span>🚚 Tracked shipping</span>
+      <span>💫 Premium quality</span>
+    </div>
+  </section>
+
+  <!-- Featured Banner -->
+  <section class="featured-banner">
+    <h2>Cosmic Streetwear Collection</h2>
+    <p>Fresh designs inspired by the universe.</p>
+  </section>
 
   <!-- Info Tabs Section (above footer) -->
   <div class="info-tabs">
@@ -258,7 +60,7 @@
     <div class="info-item">
       <button class="info-btn">📑 Terms & Conditions</button>
       <div class="info-content">
-        <p>Click to view full Terms & Conditions. Scroll through complete policies including returns, credits, liability, and secure checkout.</p>
+        <p>Full Terms & Conditions apply. Scroll through the complete policies including returns, credits, liability, and secure checkout.</p>
       </div>
     </div>
 
@@ -272,4 +74,39 @@
     <div class="info-item">
       <button class="info-btn">🌍 Customs Notice</button>
       <div class="info-content">
-        <p><strong>Customs excluded:</strong> All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery. Lunara’s Universe is not
+        <p><strong>Customs excluded:</strong> All international orders shipped to South Africa are subject to customs duties and import taxes. Customers are responsible for paying these fees upon delivery. Lunara’s Universe is not liable for delays caused by customs clearance.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Contact -->
+  <footer class="premium-footer">
+    <div class="footer-contact">
+      <p>Email: <a href="mailto:lunarasuniverse@gmail.com">lunarasuniverse@gmail.com</a></p>
+      <p>WhatsApp: <a href="https://wa.me/27XXXXXXXXX" target="_blank">+27 XX XXX XXXX</a></p>
+      <p>Instagram: <a href="https://instagram.com/lunara_universe" target="_blank">@lunara_universe</a></p>
+      <p>TikTok: <a href="https://tiktok.com/@lunara_universe" target="_blank">@lunara_universe</a></p>
+      <p><a href="#" id="openTermsLink">📑 View Full Terms & Conditions</a></p>
+    </div>
+  </footer>
+
+  <!-- Smooth popup toggle script -->
+  <script>
+    document.querySelectorAll('.info-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const content = button.nextElementSibling;
+
+        // Close other open popups
+        document.querySelectorAll('.info-content').forEach(section => {
+          if (section !== content) {
+            section.classList.remove('open');
+          }
+        });
+
+        // Toggle current popup
+        content.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>
