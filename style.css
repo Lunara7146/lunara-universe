@@ -629,34 +629,24 @@ body.cart-open .overlay {
   transition: color 0.3s ease;
 }
 .footer-dropdown-content {
-  display: block;
+  display: none;              /* hidden by default */
   position: absolute;
-  bottom: 40px; /* opens upward */
+  bottom: 40px;
   background: var(--panel-2);
   min-width: 280px;
   max-width: 90%;
-  max-height: 0;              /* collapsed by default */
-  overflow-y: auto;           /* scrollable when expanded */
+  max-height: 600px;          /* large enough for full text */
+  overflow-y: auto;           /* scrollable */
   box-shadow: 0px 6px 12px rgba(0,0,0,0.4);
   border-radius: 10px;
   padding: 12px;
   z-index: 1000;
-  opacity: 0;
-  transition: max-height 0.35s ease, opacity 0.35s ease;
   border: 1px solid #7ee7ff;
 }
-.footer-dropdown-content p {
-  color: var(--text);
-  font-size: 13px;
-  line-height: 1.5;
+.footer-dropdown-content.show {
+  display: block;             /* only shows when toggled */
 }
-.footer-dropdown:hover .footer-dropdown-content {
-  max-height: 400px;          /* expanded height */
-  opacity: 1;
-}
-.footer-dropdown:hover .footer-dropbtn {
-  color: var(--accent);
-}
+
 /* Larger Terms Box */
 .footer-dropdown-content.terms-box {
   max-height: 600px;   /* bigger box for full text */
