@@ -660,6 +660,15 @@ body.cart-open .overlay {
     gap: 12px;
   }
 }
+.footer-dropdown-content {
+  overflow-y: auto;       /* allows scrolling */
+  max-height: 0;          /* collapsed by default */
+}
+
+.footer-dropdown:hover .footer-dropdown-content {
+  max-height: 400px;      /* expanded height */
+  opacity: 1;
+}
 
 /* =========================
    MOBILE
