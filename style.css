@@ -701,8 +701,8 @@ body.cart-open .overlay {
   left: 50%;
   transform: translateX(-50%);
   width: 92%;                /* wider for readability */
-  max-width: 720px;          /* cap width */
-  max-height: 220px;         /* shorter so it doesn’t overlap products */
+  max-width: 720px;          /* cap width so it doesn’t stretch too far */
+  max-height: 220px;         /* shorter so it won’t overlap products */
   overflow-y: auto;          /* scroll inside if text is longer */
   background: var(--panel-2);
   border: 1px solid #7ee7ff;
