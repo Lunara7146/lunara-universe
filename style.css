@@ -616,6 +616,9 @@ body.cart-open .overlay {
   gap: 20px;
   margin-top: 20px;
 }
+.footer-dropdown {
+  position: relative;
+}
 .footer-dropbtn {
   background: transparent;
   color: var(--muted);
@@ -628,21 +631,27 @@ body.cart-open .overlay {
 .footer-dropdown-content {
   display: block;
   position: absolute;
-  bottom: 40px;
+  bottom: 40px; /* opens upward */
   background: var(--panel-2);
   min-width: 280px;
   max-width: 90%;
-  max-height: 300px; /* scrollable */
-  overflow-y: auto;
+  max-height: 0;              /* collapsed by default */
+  overflow-y: auto;           /* scrollable when expanded */
   box-shadow: 0px 6px 12px rgba(0,0,0,0.4);
   border-radius: 10px;
   padding: 12px;
   z-index: 1000;
   opacity: 0;
-  transition: opacity 0.35s ease; /* fade-in effect */
-  border: 1px solid #7ee7ff; /* subtle light blue border */
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+  border: 1px solid #7ee7ff;
+}
+.footer-dropdown-content p {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
 }
 .footer-dropdown:hover .footer-dropdown-content {
+  max-height: 400px;          /* expanded height */
   opacity: 1;
 }
 .footer-dropdown:hover .footer-dropbtn {
