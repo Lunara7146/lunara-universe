@@ -657,6 +657,11 @@ body.cart-open .overlay {
 .footer-dropdown:hover .footer-dropbtn {
   color: var(--accent);
 }
+/* Larger Terms Box */
+.footer-dropdown-content.terms-box {
+  max-height: 600px;   /* bigger box for full text */
+  overflow-y: auto;    /* scrolls if needed */
+}
 
 /* Responsive */
 @media (max-width: 768px) {
