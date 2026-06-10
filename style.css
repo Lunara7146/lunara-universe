@@ -697,13 +697,13 @@ body.cart-open .overlay {
 /* Terms Box — wider, shorter, scrollable */
 .footer-dropdown-content.terms-box {
   position: absolute;
-  bottom: 50px;          /* sits just above the footer divider */
-  left: 50%;             /* center horizontally */
+  bottom: 50px;              /* sits just above footer divider */
+  left: 50%;
   transform: translateX(-50%);
-  width: 90%;            /* wide enough for desktop */
-  max-width: 700px;      /* cap width so it doesn’t stretch too far */
-  max-height: 280px;     /* shorter so it doesn’t overlap products */
-  overflow-y: auto;      /* scroll inside if text is longer */
+  width: 92%;                /* wider for readability */
+  max-width: 720px;          /* cap width */
+  max-height: 220px;         /* shorter so it doesn’t overlap products */
+  overflow-y: auto;          /* scroll inside if text is longer */
   background: var(--panel-2);
   border: 1px solid #7ee7ff;
   border-radius: 12px;
