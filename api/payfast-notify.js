@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { Resend } from "resend";
-import { sendToProdigi } from "../lib/prodigi.js";
 import { supabase } from "../lib/supabase.js";
+import { generatePrinterEmailTemplate } from "../lib/email.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const processedOrders = new Set();
@@ -85,86 +85,94 @@ export default async function handler(req, res) {
 
     const isSA = country === "ZA";
 
-    const prodigiItems = cart.filter(
+    // 🇿🇦 1. OTC Printing local SA items (Hoodies, Sweatshirts, T-Shirts, Long sleeves)
+    const otcItems = cart.filter(
       (item) =>
         isSA &&
-        (item.type === "hoodie" || item.type === "tshirt") &&
-        item.prodigi?.prodigiSkuMap
+        (item.type === "hoodie" || 
+         item.type === "tshirt" || 
+         item.type === "sweatshirt" || 
+         item.type === "long sleeve")
     );
 
+    // 🇿🇦 2. Printful local SA items (Sweatpants only)
+    const printfulItems = cart.filter(
+      (item) => isSA && item.type === "sweatpants"
+    );
+
+    // 🌍 3. Printify global items (Anything outside of SA, including global sweatpants)
     const printifyItems = cart.filter(
       (item) =>
         !(
           isSA &&
-          (item.type === "hoodie" || item.type === "tshirt") &&
-          item.prodigi?.prodigiSkuMap
+          (item.type === "hoodie" || 
+           item.type === "tshirt" || 
+           item.type === "sweatshirt" || 
+           item.type === "long sleeve" ||
+           item.type === "sweatpants")
         )
     );
 
     const results = [];
 
     // ==========================
-    // 🇿🇦 PRODIGI
+    // 🖨️ OTC PRINTING FULFILLMENT (SA)
     // ==========================
-    if (prodigiItems.length) {
+    if (otcItems.length) {
       try {
-        const prodigiOrder = {
-          email: orderData.email,
-          shipping: {
-            firstName: customer.firstName,
-            lastName: customer.lastName,
-            address1: customer.address1,
-            city: customer.city,
-            zip: customer.zip,
-            country: customer.country
-          },
-          items: prodigiItems.map((item) => {
-            const size = String(item.size || "M").toUpperCase();
-            const color = String(item.color || "black").toLowerCase();
-
-            const normalizedSize =
-              size === "2XL" ? "XXL" :
-              size === "3XL" ? "XXXL" :
-              size;
-
-            const sku =
-              item.prodigi?.prodigiSkuMap?.[color]?.[normalizedSize];
-
-            const designUrl =
-              item.prodigi?.designUrlMap?.[color] || item.designUrl || null;
-
-            if (!sku) {
-              throw new Error(
-                `Missing Prodigi SKU for ${item.name} (${color} / ${normalizedSize})`
-              );
-            }
-
-            if (!designUrl) {
-              throw new Error(
-                `Missing design URL for ${item.name} (${color})`
-              );
-            }
-
-            return {
-              name: item.name,
-              quantity: Number(item.quantity || 1),
-              prodigiSku: sku,
-              designUrl,
-              printArea: item.prodigi?.printArea || "front"
-            };
-          })
+        const formattedCustomer = {
+          name: `${customer.firstName || ""} ${customer.lastName || ""}`.trim() || "Valued Customer",
+          phone: customer.phone || "N/A",
+          email: orderData.email || "N/A",
+          addressLine1: customer.address1 || "",
+          addressLine2: customer.address2 || "",
+          city: customer.city || "",
+          postalCode: customer.zip || "",
+          country: customer.country || "ZA"
         };
 
-        const result = await sendToProdigi(prodigiOrder);
-        results.push({ provider: "PRODIGI", result });
+        const formattedItems = otcItems.map((item) => ({
+          productType: item.type || "t_shirt",
+          design: item.name || item.design || "",
+          color: item.color || "black",
+          size: item.size || "M",
+          quantity: Number(item.quantity || 1)
+        }));
+
+        const otcEmailBody = generatePrinterEmailTemplate(formattedCustomer, formattedItems);
+
+        const emailResponse = await resend.emails.send({
+          from: "Lunara's Universe Orders <lunarasuniverse@gmail.com>", 
+          to: ["info@otcprinting.co.za"],       
+          subject: `New Local Production Order Fulfillment - ${formattedCustomer.name}`,
+          text: otcEmailBody
+        });
+
+        results.push({ provider: "OTC_PRINTING", status: "EMAIL_SENT", id: emailResponse.id });
       } catch (err) {
-        console.error("❌ Prodigi failed → fallback to Printify", err);
-        printifyItems.push(...prodigiItems);
+        console.error("❌ OTC Printing failed → falling back to Printify", err);
+        printifyItems.push(...otcItems);
       }
     }
 
     // ==========================
-    // 🌍 PRINTIFY
+    // 🛍️ PRINTFUL API FULFILLMENT (SA SWEATPANTS)
+    // ==========================
+    if (printfulItems.length) {
+      try {
+        const result = await sendToPrintful({
+          ...orderData,
+          cart: printfulItems
+        });
+        results.push({ provider: "PRINTFUL", result });
+      } catch (err) {
+        console.error("❌ Printful API production assignment failed → falling back to Printify", err);
+        printifyItems.push(...printfulItems);
+      }
+    }
+
+    // ==========================
+    // 🌍 PRINTIFY FULFILLMENT (GLOBAL)
     // ==========================
     if (printifyItems.length) {
       try {
@@ -209,11 +217,11 @@ export default async function handler(req, res) {
         html: `
           <h2>Order Confirmed</h2>
           <p>Order ID: ${orderId}</p>
-          <p>Provider: ${providerUsed}</p>
+          <p>Fulfillment Status: Securely transmitted for design production processing.</p>
         `
       });
     } catch (e) {
-      console.error("Email failed:", e);
+      console.error("Buyer receipt email transmission error:", e);
     }
 
     return res.status(200).send("Order processed");
@@ -224,7 +232,51 @@ export default async function handler(req, res) {
 }
 
 // ==========================
-// 🖨️ PRINTIFY
+// 🛍️ PRINTFUL API ENGINE
+// ==========================
+async function sendToPrintful(orderData) {
+  const cart = orderData.cart || [];
+  const customer = orderData.customer || {};
+
+  const items = cart.map((item) => ({
+    external_variant_id: item.printful?.variantId || String(item.variant_id),
+    quantity: Number(item.quantity || 1),
+    name: item.name
+  }));
+
+  const response = await fetch("https://api.printful.com/orders", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.PRINTFUL_API_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      external_id: orderData.order_id,
+      recipient: {
+        name: `${customer.firstName || ""} ${customer.lastName || ""}`.trim(),
+        address1: customer.address1,
+        city: customer.city,
+        zip: customer.zip,
+        country_code: customer.country || "ZA",
+        phone: customer.phone,
+        email: orderData.email
+      },
+      items
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    console.error("❌ Printful API error Details:", data);
+    throw new Error("Printful API transmission failed");
+  }
+
+  return data;
+}
+
+// ==========================
+// 🌍 PRINTIFY API ENGINE
 // ==========================
 async function sendToPrintify(orderData) {
   const cart = orderData.cart || [];
@@ -272,4 +324,4 @@ async function sendToPrintify(orderData) {
   }
 
   return data;
-                                  }
+  }
