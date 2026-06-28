@@ -1,4 +1,29 @@
 // ==========================
+// 🌌 WHY LUNARA MODAL
+// ==========================
+window.openWhyLunara = function() {
+  const overlay = document.getElementById("why-lunara-overlay");
+  if (overlay) {
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+};
+
+window.closeWhyLunara = function(event) {
+  if (event && event.target !== document.getElementById("why-lunara-overlay")) return;
+  const overlay = document.getElementById("why-lunara-overlay");
+  if (overlay) {
+    overlay.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+};
+
+// Also open modal when scrolling to #premium-trust anchor
+window.addEventListener("hashchange", () => {
+  if (window.location.hash === "#premium-trust") window.openWhyLunara();
+});
+
+// ==========================
 // 🌍 GEO DETECTION & REGION SELECTOR
 // ==========================
 let userCountry = "ZA";
@@ -482,7 +507,7 @@ const localProducts = [
       "5XL-black": { sku: "28799341072380209055" }
     }
   },
-  {
+{
     id: "lunara-compass-sweatshirt",
     name: "Lunara Compass Sweatshirt",
     collection: "Lunara Universe",
@@ -834,7 +859,7 @@ const localProducts = [
       "4XL-black": { sku: "25480522136243318229", oos: true }
     }
   },
-   {
+  {
     id: "lunara-mushrooms-tshirt",
     name: "Lunara Mushrooms T-Shirt",
     collection: "Lunara Universe",
@@ -865,6 +890,7 @@ const localProducts = [
       "4XL-black": { sku: "20629885225715410412", oos: true }
     }
   },
+
   // --- LONG SLEEVE T-SHIRTS ---
   // SA customers     → OTC Printing (ZAR prices from SA_PRICING)
   // International   → Printify (USD $49.50 / $54.50 from SKU data)
@@ -968,7 +994,7 @@ const localProducts = [
       "2XL-white":{ sku: "87284252587320622231" }
     }
   },
-  {
+   {
     id: "lunara-energy-bloom-longsleeve",
     name: "Energy Bloom Long Sleeve T-Shirt",
     collection: "Lunara Universe",
@@ -1043,6 +1069,7 @@ const localProducts = [
       "2XL-white":{ sku: "13556925967088277095" }
     }
   },
+
   // --- SWEATPANTS COLLECTION (white only, XS–6XL) ---
   // SA customers     → fulfilled by Printful (ZAR prices from SA_PRICING)
   // International   → fulfilled by Printify (USD prices from your Printify dashboard)
@@ -1273,7 +1300,7 @@ const localProducts = [
   }
 ];
 
-        // ==========================
+    // ==========================
 // ⚙️ HELPERS & CURRENCY
 // ==========================
 function saveCart() {
@@ -1316,7 +1343,7 @@ const SA_PRICING = {
   }
 };
 
-// Returns the correct display price for a product + size.
+    // Returns the correct display price for a product + size.
 // SA  → your ZAR price from SA_PRICING (ZAR).
 // INT → Printify's published USD price from product.pricing (set in your Printify dashboard).
 function getCalculatedRegionalPrice(product, size) {
@@ -1413,6 +1440,7 @@ function getImagePath(product, color = "black") {
   const slug = product?.slug || String(product?.name || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
   return `/images/${slug}/front-${safeColor}.png`;
 }
+
 // Keep getSlug and getTypeFolder for normalizeApiProduct
 function getSlug(name) {
   return String(name || "")
@@ -1454,22 +1482,36 @@ function normalizeApiProduct(product = {}) {
     printify: product.printify ?? true,
     prodigi: product.prodigi ?? false
   };
-}
+           }
+
 // ==========================
-// 🛍️ DISPLAY PRODUCTS
+// 🛍️ DISPLAY PRODUCTS — sorted into correct sections by type
 // ==========================
-const productsContainer = document.querySelector(".products");
+
+// Section ID map: product type → HTML section id
+const TYPE_SECTION_MAP = {
+  "tshirt":     "tshirts",
+  "longsleeve": "longsleeve",
+  "sweatshirt": "sweatshirts",
+  "hoodie":     "hoodies",
+  "sweatpants": "sweatpants"
+};
 
 function displayProducts(products) {
-  if (!productsContainer) return;
-  productsContainer.innerHTML = "";
+  // Clear all product sections
+  Object.values(TYPE_SECTION_MAP).forEach(sectionId => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      const grid = section.querySelector(".products");
+      if (grid) grid.innerHTML = "";
+    }
+  });
 
-  if (!products.length) {
-    productsContainer.innerHTML = `<p>No products found.</p>`;
-    return;
-  }
+  if (!products.length) return;
 
-  products.forEach((product, index) => {
+  let globalIndex = 0;
+  products.forEach((product) => {
+    const index = globalIndex++;
     const stock = Math.floor(Math.random() * 6) + 3;
     const reviews = Math.floor(Math.random() * 1500) + 300;
     const isFav = favorites.includes(product.id);
@@ -1512,7 +1554,6 @@ function displayProducts(products) {
           onerror="this.onerror=null;this.src='${getImagePath(product, "white")}'"
         >
       </div>
-
       <div class="product-info">
         <div class="product-top">
           <h4>${product.name}</h4>
@@ -1542,8 +1583,15 @@ function displayProducts(products) {
         </button>
       </div>
     `;
-    productsContainer.appendChild(card);
 
+    // Find the correct section for this product type
+    const sectionId = TYPE_SECTION_MAP[String(product.type || "").toLowerCase()];
+    const section = sectionId ? document.getElementById(sectionId) : null;
+    const grid = section ? section.querySelector(".products") : null;
+    if (grid) {
+      grid.appendChild(card);
+    }
+    // If no matching section, skip — API products with unknown types don't show
   });
 }
 
@@ -1606,7 +1654,7 @@ function addToCart(index, event) {
   const regionalPrice = getCalculatedRegionalPrice(product, size);
   const variantSku = product.variants?.[variantKey]?.sku || product.variants?.[`S-${color}`]?.sku || "LOCAL-PROD";
 
-  // Fulfillment routing:
+// Fulfillment routing:
   // SA  + hoodie/sweatshirt/tshirt/longsleeve → OTC Printing (email triggered at checkout)
   // SA  + sweatpants                          → Printful
   // INT + anything                            → Printify
@@ -1641,8 +1689,9 @@ function addToCart(index, event) {
       fulfilledByPrintify,
       designUrl: image
     });
-    
-}saveCart();
+  }
+
+  saveCart();
   updateCart();
   openCart();
 
@@ -1658,7 +1707,7 @@ function addToCart(index, event) {
   }
 }
 
-// ==========================
+    // ==========================
 // 🧾 CART UI MANAGEMENT
 // ==========================
 function updateCart() {
@@ -1712,7 +1761,7 @@ function closeCart() {
   document.body.classList.remove("cart-open");
 }
 
-// ==========================
+      // ==========================
 // 👤 CUSTOMER PROFILE AUTO-FILL
 // ==========================
 function autoFillUserProfile() {
@@ -1739,7 +1788,8 @@ function autoFillUserProfile() {
   if (zipField && savedProfile.zip) zipField.value = savedProfile.zip;
   if (firstField && savedProfile.firstName) firstField.value = savedProfile.firstName;
   if (lastField && savedProfile.lastName) lastField.value = savedProfile.lastName;
-      }
+}
+
 // ==========================
 // 📦 OTC PRINTING — PLACEMENT RULES
 // Each product type has defined print placement zones.
@@ -1850,7 +1900,7 @@ function getOTCPlacements(product, color) {
   return [{ zone: "Front", file: `${design} ${garment} front.png` }];
 }
 
-// Builds the structured data payload for the OTC order.
+       // Builds the structured data payload for the OTC order.
 // This gets sent to /api/otc-order which will trigger your Wix automation.
 // Each item includes: name, size, color, quantity, and placement instructions.
 function buildOTCPayload(customer, items) {
@@ -1941,7 +1991,7 @@ async function checkout() {
     }
   }
 
-  // Proceed to PayFast payment (covers the full cart total)
+ // Proceed to PayFast payment (covers the full cart total)
   const res = await fetch("/api/payfast", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -1979,21 +2029,17 @@ async function loadProducts() {
     productsContainer.innerHTML = `<p>Loading products...</p>`;
   }
 
+  // Always use localProducts — these have the correct names, images and SKUs.
+  // API products from Printify have wrong display names (Lotus Tee, Infinity Tee etc)
+  // and don't match our image folder structure.
+  // When international customers check out, their SKUs from localProducts.variants
+  // are sent directly to Printify — no API product merge needed.
   try {
-    const res = await fetch("/api/products");
-    const data = await res.json();
-
-    if (!res.ok || !data.success) throw new Error(data.error || "API failed");
-
-    const apiProducts = Array.isArray(data.data) ? data.data.map(normalizeApiProduct) : [];
-    const apiIds = new Set(apiProducts.map((p) => p.id));
-    const mergedProducts = [...apiProducts, ...localProducts.filter((p) => !apiIds.has(p.id))];
-
-    storeProducts = mergedProducts;
+    storeProducts = [...localProducts];
     displayProducts(storeProducts);
     updateCart();
   } catch (err) {
-    console.error("Fallback triggered", err);
+    console.error("Product load error:", err);
     storeProducts = [...localProducts];
     displayProducts(storeProducts);
     updateCart();
@@ -2022,7 +2068,7 @@ function initSmartHeader() {
 
     lastScrollY = Math.max(currentScrollY, 0);
   });
-      }
+}
 
 // ==========================
 // 📋 FOOTER DETAILS FORM
