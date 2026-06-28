@@ -80,49 +80,39 @@ function initRegionSelector() {
   });
 }
 
+function getFlagEmoji(region) {
+  if (region === "ZA") return "🇿🇦";
+  if (region === "GB") return "🇬🇧";
+  return "🇺🇸";
+}
+
 function updateRegionUI(region) {
-  // Hide the right-side region button — flag lives on the left next to logo only
   const regionBtn = document.getElementById("regionBtn");
   if (regionBtn) regionBtn.style.display = "none";
 
-  // Flag sits to the LEFT of the brand name, right after the logo image
+  // Build or update the flag button next to the logo
   let flagEl = document.getElementById("logo-flag");
   if (!flagEl) {
-    const logoLeft = document.querySelector(".logo-left");
-    if (logoLeft) {
-      flagEl = document.createElement("span");
+    const logoLeftGroup = document.querySelector(".logo-left-group");
+    if (logoLeftGroup) {
+      flagEl = document.createElement("button");
       flagEl.id = "logo-flag";
-      flagEl.style.cssText = [
-        "font-size:20px",
-        "cursor:pointer",
-        "margin-left:10px",
-        "line-height:1",
-        "display:inline-flex",
-        "align-items:center",
-        "vertical-align:middle"
-      ].join(";");
-      // Click opens the hidden region dropdown
-      flagEl.onclick = () => {
+      flagEl.className = "logo-flag-btn";
+      flagEl.setAttribute("aria-label", "Select region");
+      flagEl.onclick = (e) => {
+        e.stopPropagation();
         const dd = document.getElementById("regionDropdown");
         if (dd) dd.classList.toggle("hidden");
       };
-      logoLeft.insertAdjacentElement("afterend", flagEl);
+      // Insert after logo-left inside the group
+      const logoLeft = logoLeftGroup.querySelector(".logo-left");
+      if (logoLeft) logoLeft.insertAdjacentElement("afterend", flagEl);
+      else logoLeftGroup.appendChild(flagEl);
     }
   }
   if (flagEl) {
-    flagEl.textContent = region === "ZA" ? "🇿🇦" : "🇺🇸";
-    flagEl.title       = region === "ZA" ? "South Africa (ZAR) — click to change" : "USA / Global (USD) — click to change";
-  }
-
-  // Keep dropdown functional — reattach to flag element
-  const dd = document.getElementById("regionDropdown");
-  if (dd) {
-    dd.style.cssText = [
-      "position:absolute",
-      "top:calc(100% + 8px)",
-      "left:0",
-      "z-index:1200"
-    ].join(";");
+    flagEl.textContent = getFlagEmoji(region);
+    flagEl.title = region === "ZA" ? "South Africa (ZAR)" : region === "GB" ? "United Kingdom (USD)" : "USA / International (USD)";
   }
 }
 
@@ -507,7 +497,7 @@ const localProducts = [
       "5XL-black": { sku: "28799341072380209055" }
     }
   },
-{
+  {
     id: "lunara-compass-sweatshirt",
     name: "Lunara Compass Sweatshirt",
     collection: "Lunara Universe",
@@ -994,7 +984,7 @@ const localProducts = [
       "2XL-white":{ sku: "87284252587320622231" }
     }
   },
-   {
+  {
     id: "lunara-energy-bloom-longsleeve",
     name: "Energy Bloom Long Sleeve T-Shirt",
     collection: "Lunara Universe",
@@ -1069,7 +1059,6 @@ const localProducts = [
       "2XL-white":{ sku: "13556925967088277095" }
     }
   },
-
   // --- SWEATPANTS COLLECTION (white only, XS–6XL) ---
   // SA customers     → fulfilled by Printful (ZAR prices from SA_PRICING)
   // International   → fulfilled by Printify (USD prices from your Printify dashboard)
@@ -1300,7 +1289,7 @@ const localProducts = [
   }
 ];
 
-    // ==========================
+// ==========================
 // ⚙️ HELPERS & CURRENCY
 // ==========================
 function saveCart() {
@@ -1343,7 +1332,7 @@ const SA_PRICING = {
   }
 };
 
-    // Returns the correct display price for a product + size.
+// Returns the correct display price for a product + size.
 // SA  → your ZAR price from SA_PRICING (ZAR).
 // INT → Printify's published USD price from product.pricing (set in your Printify dashboard).
 function getCalculatedRegionalPrice(product, size) {
@@ -1434,11 +1423,11 @@ function getImagePath(product, color = "black") {
   // Sweatpants are white only
   const safeColor = type === "sweatpants" ? "white" : color;
   if (folder) {
-    return `/images/${folder}/front-${safeColor}.png`;
+    return `images/${folder}/front-${safeColor}.png`;
   }
   // Fallback for API products not in the map
   const slug = product?.slug || String(product?.name || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-  return `/images/${slug}/front-${safeColor}.png`;
+  return `images/${slug}/front-${safeColor}.png`;
 }
 
 // Keep getSlug and getTypeFolder for normalizeApiProduct
@@ -1482,7 +1471,7 @@ function normalizeApiProduct(product = {}) {
     printify: product.printify ?? true,
     prodigi: product.prodigi ?? false
   };
-           }
+}
 
 // ==========================
 // 🛍️ DISPLAY PRODUCTS — sorted into correct sections by type
@@ -1554,6 +1543,7 @@ function displayProducts(products) {
           onerror="this.onerror=null;this.src='${getImagePath(product, "white")}'"
         >
       </div>
+
       <div class="product-info">
         <div class="product-top">
           <h4>${product.name}</h4>
@@ -1654,7 +1644,7 @@ function addToCart(index, event) {
   const regionalPrice = getCalculatedRegionalPrice(product, size);
   const variantSku = product.variants?.[variantKey]?.sku || product.variants?.[`S-${color}`]?.sku || "LOCAL-PROD";
 
-// Fulfillment routing:
+  // Fulfillment routing:
   // SA  + hoodie/sweatshirt/tshirt/longsleeve → OTC Printing (email triggered at checkout)
   // SA  + sweatpants                          → Printful
   // INT + anything                            → Printify
@@ -1707,7 +1697,7 @@ function addToCart(index, event) {
   }
 }
 
-    // ==========================
+// ==========================
 // 🧾 CART UI MANAGEMENT
 // ==========================
 function updateCart() {
@@ -1761,7 +1751,7 @@ function closeCart() {
   document.body.classList.remove("cart-open");
 }
 
-      // ==========================
+// ==========================
 // 👤 CUSTOMER PROFILE AUTO-FILL
 // ==========================
 function autoFillUserProfile() {
@@ -1900,7 +1890,7 @@ function getOTCPlacements(product, color) {
   return [{ zone: "Front", file: `${design} ${garment} front.png` }];
 }
 
-       // Builds the structured data payload for the OTC order.
+// Builds the structured data payload for the OTC order.
 // This gets sent to /api/otc-order which will trigger your Wix automation.
 // Each item includes: name, size, color, quantity, and placement instructions.
 function buildOTCPayload(customer, items) {
@@ -1991,7 +1981,7 @@ async function checkout() {
     }
   }
 
- // Proceed to PayFast payment (covers the full cart total)
+  // Proceed to PayFast payment (covers the full cart total)
   const res = await fetch("/api/payfast", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -2025,25 +2015,11 @@ async function checkout() {
 // 📦 LOAD PRODUCTS
 // ==========================
 async function loadProducts() {
-  if (productsContainer) {
-    productsContainer.innerHTML = `<p>Loading products...</p>`;
-  }
-
-  // Always use localProducts — these have the correct names, images and SKUs.
-  // API products from Printify have wrong display names (Lotus Tee, Infinity Tee etc)
-  // and don't match our image folder structure.
-  // When international customers check out, their SKUs from localProducts.variants
-  // are sent directly to Printify — no API product merge needed.
-  try {
-    storeProducts = [...localProducts];
-    displayProducts(storeProducts);
-    updateCart();
-  } catch (err) {
-    console.error("Product load error:", err);
-    storeProducts = [...localProducts];
-    displayProducts(storeProducts);
-    updateCart();
-  }
+  // Use localProducts only — correct names, images, SKUs.
+  // International SKUs go to Printify at checkout via localProducts.variants.
+  storeProducts = [...localProducts];
+  displayProducts(storeProducts);
+  updateCart();
 }
 
 // ==========================
@@ -2233,4 +2209,13 @@ window.saveDetailsModal = function() {
   if (!products || products.children.length === 0) {
     loadProducts().then(() => updateCart());
   }
+};
+window.setRegion = function(region) {
+  localStorage.setItem("selectedRegion", region);
+  userCountry = region;
+  updateRegionUI(region);
+  if (storeProducts.length > 0) displayProducts(storeProducts);
+  updateCart();
+  const dd = document.getElementById("regionDropdown");
+  if (dd) dd.classList.add("hidden");
 };
