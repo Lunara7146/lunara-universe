@@ -1,29 +1,4 @@
 // ==========================
-// 🌌 WHY LUNARA MODAL
-// ==========================
-window.openWhyLunara = function() {
-  const overlay = document.getElementById("why-lunara-overlay");
-  if (overlay) {
-    overlay.classList.add("active");
-    document.body.style.overflow = "hidden";
-  }
-};
-
-window.closeWhyLunara = function(event) {
-  if (event && event.target !== document.getElementById("why-lunara-overlay")) return;
-  const overlay = document.getElementById("why-lunara-overlay");
-  if (overlay) {
-    overlay.classList.remove("active");
-    document.body.style.overflow = "";
-  }
-};
-
-// Also open modal when scrolling to #premium-trust anchor
-window.addEventListener("hashchange", () => {
-  if (window.location.hash === "#premium-trust") window.openWhyLunara();
-});
-
-// ==========================
 // 🌍 GEO DETECTION & REGION SELECTOR
 // ==========================
 let userCountry = "ZA";
@@ -112,7 +87,7 @@ function updateRegionUI(region) {
   }
   if (flagEl) {
     const currency = region === "ZA" ? "ZAR" : "USD";
-    flagEl.innerHTML = `${getFlagEmoji(region)} <span style="font-size:12px;font-weight:600;color:var(--accent);margin-left:3px;">${currency}</span>`;
+    flagEl.innerHTML = `<span style="font-size:20px;line-height:1;">${getFlagEmoji(region)}</span><span style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:0.04em;">${currency}</span>`;
     flagEl.title = region === "ZA" ? "South Africa (ZAR)" : region === "GB" ? "United Kingdom (USD)" : "USA / International (USD)";
   }
 }
@@ -1398,7 +1373,7 @@ const IMAGE_FOLDER_MAP = {
   "lunara-energy-bloom-sweatshirt": "sweatshirts/energy-bloom-sweatshirt",
   "lunara-jellyfish-sweatshirt":    "sweatshirts/jellyfish-sweatshirt",
   "lunara-mushroom-sweatshirt":     "sweatshirts/mushroom-sweatshirt",
-  // Hoodies (images/nova-collection/)
+  // Hoodies (images/nova-collection/) — exact folder names from repo
   "lunara-butterfly-hoodie":        "nova-collection/butterfly-hoodie",
   "lunara-compass-hoodie":          "nova-collection/compass-hoodie",
   "lunara-cosmic-eye-hoodie":       "nova-collection/cosmic-eye-hoodie",
@@ -1406,7 +1381,7 @@ const IMAGE_FOLDER_MAP = {
   "lunara-energy-bloom-hoodie":     "nova-collection/energy-bloom-hoodie",
   "lunara-jellyfish-hoodie":        "nova-collection/jellyfish-hoodie",
   "lunara-mushroom-hoodie":         "nova-collection/mushroom-hoodie",
-  "lunara-plain-hoodie":            "nova-collection/plain -hoodie",
+  "lunara-plain-hoodie":            "nova-collection/plain%20-hoodie",
   // Sweatpants (images/sweatpants/) — white only
   "lunara-butterfly-sweatpants":    "sweatpants/butterfly-sweatpants",
   "lunara-compass-sweatpants":      "sweatpants/compass-sweatpants",
@@ -1541,7 +1516,7 @@ function displayProducts(products) {
           src="${imageSrc}"
           class="product-image"
           alt="${product.name}"
-          onerror="this.onerror=null;this.src='${getImagePath(product, "white")}'"
+          onerror="this.onerror=null;this.src='images/lunara-website-logo.png'"
         >
       </div>
 
