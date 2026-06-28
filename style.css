@@ -718,7 +718,129 @@ h1, h2, h3 {
   .logo-left-group { gap: 6px; }
 }
 
-/* Why Lunara modal */
+/* Why Lunara — statement quote */
+.why-statement {
+  margin: 0 auto 52px;
+  max-width: 640px;
+}
+.why-statement blockquote {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(17px, 2.5vw, 22px);
+  line-height: 1.6;
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+  padding: 16px 24px;
+  margin: 0;
+  font-style: italic;
+  text-align: left;
+  background: rgba(185,140,255,0.06);
+  border-radius: 0 12px 12px 0;
+}
+
+/* Featured card — slightly larger */
+.why-card--featured {
+  grid-column: span 1;
+  background: linear-gradient(135deg, rgba(185,140,255,0.12), rgba(126,231,255,0.06));
+  border-color: rgba(185,140,255,0.3);
+}
+
+/* Why Lunara CTA at the bottom */
+.why-cta {
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.why-cta-note {
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 768px) {
+  .why-statement blockquote { font-size: 16px; }
+  .why-card--featured { grid-column: span 1; }
+}
+
+/* Why Lunara modal — wider than standard modal */
+.why-lunara-modal {
+  max-width: 820px;
+  max-height: 88vh;
+  overflow-y: auto;
+  text-align: left;
+}
+.why-lunara-modal .why-grid {
+  margin-top: 24px;
+}
+
+/* Logo flag button */
+.logo-flag-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: transform 0.2s;
+}
+.logo-flag-btn:hover { transform: scale(1.15); }
+
+/* Why Lunara button — same purple gradient as Shop Collection */
+.why-lunara-btn {
+  background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
+  color: #fff !important;
+}
+/* ==============================================
+   MOBILE RESPONSIVE — PHONE SCREENS
+   ============================================== */
+@media (max-width: 480px) {
+  /* Header */
+  .header-inner {
+    grid-template-columns: auto 1fr auto;
+    padding: 8px 12px;
+    min-height: 58px;
+    gap: 6px;
+  }
+  .logo { height: 36px; }
+  .brand-center span { font-size: 13px; letter-spacing: 0.04em; }
+  .brand-bg-logo { width: 40px; height: 40px; }
+  .cart-btn { padding: 7px 10px; font-size: 12px; }
+  .logo-flag-btn { font-size: 17px; }
+
+  /* Hero */
+  .hero-premium { padding: 60px 16px 50px; }
+  .hero-premium h1 { font-size: 28px; line-height: 1.15; }
+  .hero-sub { font-size: 14px; }
+  .hero-buttons { flex-direction: column; align-items: center; gap: 10px; }
+  .hero-buttons .btn-primary,
+  .hero-buttons button { width: 100%; text-align: center; }
+
+  /* Trust bar */
+  .trust-bar-inner { gap: 12px; font-size: 12px; flex-wrap: wrap; justify-content: center; }
+
+  /* Products */
+  .products { grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 12px 28px; }
+  .product-card { border-radius: 14px; }
+  .product-info { padding: 12px; }
+  .product-top h4 { font-size: 13px; }
+  .product-price { font-size: 14px; }
+  .product-tag, .product-stock, .product-reviews { font-size: 11px; }
+  .product-card select, .product-card button { font-size: 12px; padding: 9px; }
+
+  /* Cart panel */
+  .cart-panel { width: 100%; }
+
+  /* Footer */
+  .footer-contacts { gap: 10px; }
+  .footer-trust { gap: 6px; }
+  .footer-trust .footer-dropbtn { font-size: 12px; padding: 4px 7px; }
+  .footer-dropdown-content { min-width: 240px; max-width: 300px; right: auto; left: 0; }
+
+  /* Why Lunara modal */
   .why-lunara-modal { padding: 20px 14px; }
   .why-grid { grid-template-columns: 1fr; gap: 14px; }
   .why-statement blockquote { font-size: 14px; }
@@ -732,4 +854,51 @@ h1, h2, h3 {
 @media (max-width: 360px) {
   .products { grid-template-columns: 1fr; }
   .brand-center span { font-size: 11px; }
+   }
+
+/* Why Lunara — card text BLACK for readability on light bg */
+.why-card {
+  background: #ffffff !important;
+  border-color: rgba(0,0,0,0.08) !important;
 }
+.why-card h3 { color: #111 !important; }
+.why-card p  { color: #444 !important; }
+.why-card--featured {
+  background: linear-gradient(135deg, #f3e8ff, #e0f2fe) !important;
+  border-color: rgba(185,140,255,0.4) !important;
+}
+.why-eyebrow { color: var(--accent); }
+.why-lunara-section h2 { color: var(--text); }
+.why-sub { color: var(--muted); }
+.why-statement blockquote { color: var(--accent); }
+.why-cta-note { color: var(--muted); }
+
+/* Flag + currency SIDE BY SIDE */
+.logo-flag-btn {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+}
+.logo-flag-btn span {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--accent) !important;
+  line-height: 1 !important;
+}
+
+/* ==============================================
+   WHY LUNARA — REVERT TO DARK CARDS WHITE TEXT
+   ============================================== */
+.why-card {
+  background: var(--panel) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+.why-card h3 { color: var(--text) !important; }
+.why-card p  { color: var(--muted) !important; }
+.why-card--featured {
+  background: linear-gradient(135deg, rgba(185,140,255,0.12), rgba(126,231,255,0.06)) !important;
+  border-color: rgba(185,140,255,0.3) !important;
+              }
