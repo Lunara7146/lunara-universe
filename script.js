@@ -56,13 +56,48 @@ function initRegionSelector() {
 }
 
 function updateRegionUI(region) {
+  // Hide the right-side region button — flag lives on the left next to logo only
   const regionBtn = document.getElementById("regionBtn");
-  if (!regionBtn) return;
-  
-  if (region === "ZA") {
-    regionBtn.innerHTML = "🇿🇦 South Africa (ZAR)";
-  } else {
-    regionBtn.innerHTML = "🇺🇸 USA / Global (USD)";
+  if (regionBtn) regionBtn.style.display = "none";
+
+  // Flag sits to the LEFT of the brand name, right after the logo image
+  let flagEl = document.getElementById("logo-flag");
+  if (!flagEl) {
+    const logoLeft = document.querySelector(".logo-left");
+    if (logoLeft) {
+      flagEl = document.createElement("span");
+      flagEl.id = "logo-flag";
+      flagEl.style.cssText = [
+        "font-size:20px",
+        "cursor:pointer",
+        "margin-left:10px",
+        "line-height:1",
+        "display:inline-flex",
+        "align-items:center",
+        "vertical-align:middle"
+      ].join(";");
+      // Click opens the hidden region dropdown
+      flagEl.onclick = () => {
+        const dd = document.getElementById("regionDropdown");
+        if (dd) dd.classList.toggle("hidden");
+      };
+      logoLeft.insertAdjacentElement("afterend", flagEl);
+    }
+  }
+  if (flagEl) {
+    flagEl.textContent = region === "ZA" ? "🇿🇦" : "🇺🇸";
+    flagEl.title       = region === "ZA" ? "South Africa (ZAR) — click to change" : "USA / Global (USD) — click to change";
+  }
+
+  // Keep dropdown functional — reattach to flag element
+  const dd = document.getElementById("regionDropdown");
+  if (dd) {
+    dd.style.cssText = [
+      "position:absolute",
+      "top:calc(100% + 8px)",
+      "left:0",
+      "z-index:1200"
+    ].join(";");
   }
 }
 
@@ -514,7 +549,7 @@ const localProducts = [
     }
   },
   {
-id: "lunara-cosmic-eye-sweatshirt",
+    id: "lunara-cosmic-eye-sweatshirt",
     name: "Lunara Cosmic Eye Sweatshirt",
     collection: "Lunara Universe",
     type: "sweatshirt",
@@ -799,7 +834,7 @@ id: "lunara-cosmic-eye-sweatshirt",
       "4XL-black": { sku: "25480522136243318229", oos: true }
     }
   },
-    {
+   {
     id: "lunara-mushrooms-tshirt",
     name: "Lunara Mushrooms T-Shirt",
     collection: "Lunara Universe",
@@ -828,6 +863,184 @@ id: "lunara-cosmic-eye-sweatshirt",
       "3XL-black": { sku: "15928390249386417081" },
       "4XL-white": { sku: "25115173507227879370", oos: true },
       "4XL-black": { sku: "20629885225715410412", oos: true }
+    }
+  },
+  // --- LONG SLEEVE T-SHIRTS ---
+  // SA customers     → OTC Printing (ZAR prices from SA_PRICING)
+  // International   → Printify (USD $49.50 / $54.50 from SKU data)
+  {
+    id: "lunara-butterfly-longsleeve",
+    name: "Butterfly Long Sleeve T-Shirt",
+    collection: "Lunara Universe",
+    type: "longsleeve",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    colors: ["black", "white"],
+    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    variants: {
+      "XS-black": { sku: "14565843900138959191" },
+      "XS-white": { sku: "26410651627673067066" },
+      "S-black":  { sku: "81584176113948857909" },
+      "S-white":  { sku: "28373863970426204104" },
+      "M-black":  { sku: "23943270092017147025" },
+      "M-white":  { sku: "25705907267131221912" },
+      "L-black":  { sku: "30789742103485919528" },
+      "L-white":  { sku: "18241130225016781334" },
+      "XL-black": { sku: "28332567464158279382" },
+      "XL-white": { sku: "23353409748973109936" },
+      "2XL-white":{ sku: "20171440562231360501" }
+    }
+  },
+  {
+    id: "lunara-compass-longsleeve",
+    name: "Compass Long Sleeve T-Shirt",
+    collection: "Lunara Universe",
+    type: "longsleeve",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    colors: ["black", "white"],
+    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    variants: {
+      "XS-black": { sku: "3105257932000892338"  },
+      "XS-white": { sku: "29630365646563435557" },
+      "S-black":  { sku: "21771220169141056438" },
+      "S-white":  { sku: "29552704848172701034" },
+      "M-black":  { sku: "3616259852727930422"  },
+      "M-white":  { sku: "30537207119108652785" },
+      "L-black":  { sku: "4176325873650855379"  },
+      "L-white":  { sku: "9026700705353617080"  },
+      "XL-black": { sku: "22496162783723378570" },
+      "XL-white": { sku: "33280130269550608307" },
+      "2XL-white":{ sku: "29472541580089519725" }
+    }
+  },
+  {
+    id: "lunara-cosmic-eye-longsleeve",
+    name: "Cosmic Eye Long Sleeve T-Shirt",
+    collection: "Lunara Universe",
+    type: "longsleeve",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    colors: ["black", "white"],
+    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    variants: {
+      "XS-black": { sku: "30228667861757543765" },
+      "XS-white": { sku: "18872622006121012211" },
+      "S-black":  { sku: "83512501154251646386" },
+      "S-white":  { sku: "69827785653944413146" },
+      "M-black":  { sku: "17671565403802240752" },
+      "M-white":  { sku: "29328753320400494765" },
+      "L-black":  { sku: "17817609076552194185" },
+      "L-white":  { sku: "24976451175691314073" },
+      "XL-black": { sku: "28052688190586620924" },
+      "XL-white": { sku: "13337411034531563767" },
+      "2XL-white":{ sku: "13146993700717900529" }
+    }
+  },
+  {
+    id: "lunara-drip-smile-longsleeve",
+    name: "Drip Smile Long Sleeve T-Shirt",
+    collection: "Lunara Universe",
+    type: "longsleeve",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    colors: ["black", "white"],
+    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    variants: {
+      "XS-black": { sku: "24454639172267251019" },
+      "XS-white": { sku: "18384445783577218746" },
+      "S-black":  { sku: "76957830229637310489" },
+      "S-white":  { sku: "17127858506466993683" },
+      "M-black":  { sku: "19794592023943583304" },
+      "M-white":  { sku: "16913701406987381047" },
+      "L-black":  { sku: "26974053077775510651" },
+      "L-white":  { sku: "23969963391439807417" },
+      "XL-black": { sku: "23394728484858148193" },
+      "XL-white": { sku: "89404772781522808169" },
+      "2XL-white":{ sku: "87284252587320622231" }
+    }
+  },
+  {
+    id: "lunara-energy-bloom-longsleeve",
+    name: "Energy Bloom Long Sleeve T-Shirt",
+    collection: "Lunara Universe",
+    type: "longsleeve",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    colors: ["black", "white"],
+    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    variants: {
+      "XS-black": { sku: "10136865203835994259" },
+      "XS-white": { sku: "32235786470473565744" },
+      "S-black":  { sku: "24661074206292532397" },
+      "S-white":  { sku: "17602058477926100650" },
+      "M-black":  { sku: "32000678911132172320" },
+      "M-white":  { sku: "27900690267882963108" },
+      "L-black":  { sku: "24890105363156421577" },
+      "L-white":  { sku: "28694654922580425688" },
+      "XL-black": { sku: "14182076356075359136" },
+      "XL-white": { sku: "99422204397989511959" },
+      "2XL-white":{ sku: "54999599047848514719" }
+    }
+  },
+  {
+    id: "lunara-jellyfish-longsleeve",
+    name: "Jellyfish Long Sleeve T-Shirt",
+    collection: "Lunara Universe",
+    type: "longsleeve",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    colors: ["black", "white"],
+    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    variants: {
+      "XS-black": { sku: "66290131641490892448" },
+      "XS-white": { sku: "19712933345322208982" },
+      "S-black":  { sku: "44046928739335443550" },
+      "S-white":  { sku: "61259566729093043582" },
+      "M-black":  { sku: "28775851443639598686" },
+      "M-white":  { sku: "30105334568752371858" },
+      "L-black":  { sku: "44413714705082201228" },
+      "L-white":  { sku: "94064776703493232092" },
+      "XL-black": { sku: "20008603761881466757" },
+      "XL-white": { sku: "59715783342891979834" },
+      "2XL-white":{ sku: "14658634095715963429" }
+    }
+  },
+  {
+    id: "lunara-mushroom-longsleeve",
+    name: "Mushroom Long Sleeve T-Shirt",
+    collection: "Lunara Universe",
+    type: "longsleeve",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    colors: ["black", "white"],
+    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    variants: {
+      "XS-black": { sku: "14567290856872514994" },
+      "XS-white": { sku: "11851480867459002726" },
+      "S-black":  { sku: "23238739909709174870" },
+      "S-white":  { sku: "24066698913727411242" },
+      "M-black":  { sku: "22265406401555312470" },
+      "M-white":  { sku: "29494512874943019259" },
+      "L-black":  { sku: "6530441793898370244"  },
+      "L-white":  { sku: "25455250967645106613" },
+      "XL-black": { sku: "15386825704044288522" },
+      "XL-white": { sku: "3290274276655079180"  },
+      "2XL-white":{ sku: "13556925967088277095" }
     }
   },
   // --- SWEATPANTS COLLECTION (white only, XS–6XL) ---
@@ -862,7 +1075,7 @@ id: "lunara-cosmic-eye-sweatshirt",
       "6XL-white": { sku: "energy-bloom-sweatpants-6XL-white" }
     }
   },
-    {
+  {
     id: "lunara-plain-sweatpants",
     name: "Plain Sweatpants",
     collection: "Lunara Universe",
@@ -975,6 +1188,34 @@ id: "lunara-cosmic-eye-sweatshirt",
     }
   },
   {
+    id: "lunara-butterfly-sweatpants",
+    name: "Butterfly Sweatpants",
+    collection: "Lunara Universe",
+    type: "sweatpants",
+    printify: true,
+    printful: false,
+    prodigi: false,
+    yoycol: false,
+    printfulId: "6a39bf6076fbe5",
+    colors: ["white"],
+    pricing: {
+      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
+      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+    },
+    variants: {
+      "XS-white":  { sku: "butterfly-sweatpants-XS-white" },
+      "S-white":   { sku: "butterfly-sweatpants-S-white" },
+      "M-white":   { sku: "butterfly-sweatpants-M-white" },
+      "L-white":   { sku: "butterfly-sweatpants-L-white" },
+      "XL-white":  { sku: "butterfly-sweatpants-XL-white" },
+      "2XL-white": { sku: "butterfly-sweatpants-2XL-white" },
+      "3XL-white": { sku: "butterfly-sweatpants-3XL-white" },
+      "4XL-white": { sku: "butterfly-sweatpants-4XL-white" },
+      "5XL-white": { sku: "butterfly-sweatpants-5XL-white" },
+      "6XL-white": { sku: "butterfly-sweatpants-6XL-white" }
+    }
+  },
+  {
     id: "lunara-jellyfish-sweatpants",
     name: "Jellyfish Sweatpants",
     collection: "Lunara Universe",
@@ -1032,7 +1273,7 @@ id: "lunara-cosmic-eye-sweatshirt",
   }
 ];
 
-// ==========================
+        // ==========================
 // ⚙️ HELPERS & CURRENCY
 // ==========================
 function saveCart() {
@@ -1090,7 +1331,13 @@ function getCalculatedRegionalPrice(product, size) {
 
   // International: use Printify's published price
   return product.pricing?.[size] || product.price || 0;
-        }
+}
+
+function formatCurrency(amount) {
+  if (userCountry === "ZA") return "R" + Number(amount || 0).toFixed(2);
+  return "$" + Number(amount || 0).toFixed(2);
+}
+
 // ==========================
 // 🖼️ PRODUCT IMAGES
 // All customers see images from your GitHub repo.
@@ -1098,27 +1345,90 @@ function getCalculatedRegionalPrice(product, size) {
 // Upload your mockup photos from Printify directly into those folders.
 // ==========================
 
+// ── IMAGE PATH RESOLVER ──────────────────────────────────────────────────────
+// Repo structure (from GitHub):
+//   T-shirts:       images/shirts/{design}-tee/front-{color}.png
+//   Long sleeves:   images/long-sleeve-shirts/{design}-long-sleeve-shirts/front-{color}.png
+//   Sweatshirts:    images/sweatshirts/{design}-sweatshirt/front-{color}.png
+//   Hoodies:        images/nova-collection/{design}-hoodie/front-{color}.png
+//   Sweatpants:     images/sweatpants/{design}-sweatpants/front-white.png (white only)
+// Each folder has: front-black.png, front-white.png (and front-stone-blue.png for hoodies)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Maps product id → exact repo folder name
+const IMAGE_FOLDER_MAP = {
+  // T-shirts (images/shirts/)
+  "lunara-butterfly-tshirt":        "shirts/butterfly-tee",
+  "lunara-compass-tshirt":          "shirts/compass-tee",
+  "lunara-cosmic-eye-tshirt":       "shirts/cosmic-eye-tee",
+  "lunara-drip-smile-tshirt":       "shirts/drip-smile-tee",
+  "lunara-energy-bloom-tshirt":     "shirts/energy-bloom-tee",
+  "lunara-jellyfish-tshirt":        "shirts/jellyfish-tee",
+  "lunara-mushroom-tshirt":         "shirts/mushroom-tee",
+  // Long sleeve T-shirts (images/long-sleeve-shirts/)
+  "lunara-butterfly-longsleeve":    "long-sleeve-shirts/butterfly-long-sleeve-shirts",
+  "lunara-compass-longsleeve":      "long-sleeve-shirts/Compass-long-sleeve-shirts",
+  "lunara-cosmic-eye-longsleeve":   "long-sleeve-shirts/Cosmic-eye-long-sleeve-shirts",
+  "lunara-drip-smile-longsleeve":   "long-sleeve-shirts/drip-smile-long-sleeve-shirts",
+  "lunara-energy-bloom-longsleeve": "long-sleeve-shirts/energy-bloom-long-sleeve-shirts",
+  "lunara-jellyfish-longsleeve":    "long-sleeve-shirts/jellyfish-long-sleeve-shirts",
+  "lunara-mushroom-longsleeve":     "long-sleeve-shirts/mushroom-long-sleeve-shirts",
+  // Sweatshirts (images/sweatshirts/)
+  "lunara-butterfly-sweatshirt":    "sweatshirts/butterfly-sweatshirt",
+  "lunara-compass-sweatshirt":      "sweatshirts/compass-sweatshirt",
+  "lunara-cosmic-eye-sweatshirt":   "sweatshirts/cosmic-eye-sweatshirt",
+  "lunara-drip-smile-sweatshirt":   "sweatshirts/drip-smile-sweatshirt",
+  "lunara-energy-bloom-sweatshirt": "sweatshirts/energy-bloom-sweatshirt",
+  "lunara-jellyfish-sweatshirt":    "sweatshirts/jellyfish-sweatshirt",
+  "lunara-mushroom-sweatshirt":     "sweatshirts/mushroom-sweatshirt",
+  // Hoodies (images/nova-collection/)
+  "lunara-butterfly-hoodie":        "nova-collection/butterfly-hoodie",
+  "lunara-compass-hoodie":          "nova-collection/compass-hoodie",
+  "lunara-cosmic-eye-hoodie":       "nova-collection/cosmic-eye-hoodie",
+  "lunara-drip-smile-hoodie":       "nova-collection/drip-smile-hoodie",
+  "lunara-energy-bloom-hoodie":     "nova-collection/energy-bloom-hoodie",
+  "lunara-jellyfish-hoodie":        "nova-collection/jellyfish-hoodie",
+  "lunara-mushroom-hoodie":         "nova-collection/mushroom-hoodie",
+  "lunara-plain-hoodie":            "nova-collection/plain -hoodie",
+  // Sweatpants (images/sweatpants/) — white only
+  "lunara-butterfly-sweatpants":    "sweatpants/butterfly-sweatpants",
+  "lunara-compass-sweatpants":      "sweatpants/compass-sweatpants",
+  "lunara-cosmic-eye-sweatpants":   "sweatpants/cosmic-eye-sweatpants",
+  "lunara-drip-smile-sweatpants":   "sweatpants/drip-smile-sweatpants",
+  "lunara-energy-bloom-sweatpants": "sweatpants/energy-bloom-sweatpants",
+  "lunara-jellyfish-sweatpants":    "sweatpants/jellyfish-sweatpants",
+  "lunara-mushroom-sweatpants":     "sweatpants/mushroom-sweatpants",
+  "lunara-plain-sweatpants":        "sweatpants/plain-sweatpants"
+};
+
+function getImagePath(product, color = "black") {
+  const folder = IMAGE_FOLDER_MAP[product?.id];
+  const type = String(product?.type || "").toLowerCase();
+  // Sweatpants are white only
+  const safeColor = type === "sweatpants" ? "white" : color;
+  if (folder) {
+    return `/images/${folder}/front-${safeColor}.png`;
+  }
+  // Fallback for API products not in the map
+  const slug = product?.slug || String(product?.name || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  return `/images/${slug}/front-${safeColor}.png`;
+}
+// Keep getSlug and getTypeFolder for normalizeApiProduct
 function getSlug(name) {
   return String(name || "")
     .toLowerCase()
-    .replace(/t-shirt/g, "tee")
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 }
 
 function getTypeFolder(product) {
   const type = String(product?.type || "").toLowerCase();
-  if (type === "tshirt" || type === "shirt" || type === "tee") return "shirts";
-  if (type === "hoodie") return "hoodies";
+  if (type === "tshirt") return "shirts";
+  if (type === "longsleeve") return "long-sleeve-shirts";
+  if (type === "hoodie") return "nova-collection";
   if (type === "sweatshirt") return "sweatshirts";
   if (type === "sweatpants") return "sweatpants";
-  return "pants";
-}
-
-function getImagePath(product, color = "black") {
-  const slug = product.slug || getSlug(product.name);
-  const typeFolder = getTypeFolder(product);
-  return `/images/${typeFolder}/${slug}/${color}.png`;
+  return "shirts";
 }
 
 function normalizeApiProduct(product = {}) {
@@ -1128,6 +1438,7 @@ function normalizeApiProduct(product = {}) {
   let normalizedType = "tshirt";
   if (rawType.includes("hoodie") || rawName.includes("hoodie")) normalizedType = "hoodie";
   else if (rawType.includes("sweatpants") || rawName.includes("sweatpants")) normalizedType = "sweatpants";
+  else if (rawType.includes("long") && (rawName.includes("sleeve") || rawType.includes("sleeve"))) normalizedType = "longsleeve";
   else if (rawType.includes("sweatshirt") || rawName.includes("sweatshirt")) normalizedType = "sweatshirt";
   else if (rawType.includes("pant") || rawName.includes("pant")) normalizedType = "pants";
   else if (rawType.includes("shirt") || rawType.includes("tee") || rawName.includes("shirt") || rawName.includes("tee")) normalizedType = "tshirt";
@@ -1144,7 +1455,6 @@ function normalizeApiProduct(product = {}) {
     prodigi: product.prodigi ?? false
   };
 }
-
 // ==========================
 // 🛍️ DISPLAY PRODUCTS
 // ==========================
@@ -1179,7 +1489,11 @@ function displayProducts(products) {
     if (isSweatpants) {
       finalColors = ["white"];
     } else if (product.colors && product.colors.length) {
-      finalColors = product.colors;
+      // Stone blue is a Printify-only color — hide it from SA customers
+      finalColors = product.colors.filter(c => {
+        if (c === "stone-blue" && userCountry === "ZA") return false;
+        return true;
+      });
     } else {
       const dynamicColors = [...new Set(Object.keys(product.variants || {}).map(k => k.split("-").slice(1).join("-")))];
       finalColors = dynamicColors.length ? dynamicColors : ["black", "white"];
@@ -1188,7 +1502,7 @@ function displayProducts(products) {
     const card = document.createElement("div");
     card.className = "product-card";
 
-                   card.innerHTML = `
+    card.innerHTML = `
       <div class="product-image-wrap">
         <img
           id="img-${index}"
@@ -1228,7 +1542,6 @@ function displayProducts(products) {
         </button>
       </div>
     `;
-
     productsContainer.appendChild(card);
 
   });
@@ -1297,7 +1610,7 @@ function addToCart(index, event) {
   // SA  + hoodie/sweatshirt/tshirt/longsleeve → OTC Printing (email triggered at checkout)
   // SA  + sweatpants                          → Printful
   // INT + anything                            → Printify
-  const otcTypes = ["hoodie", "sweatshirt", "tshirt", "longsleeve"];
+  const otcTypes = ["hoodie", "sweatshirt", "tshirt", "longsleeve"]; // all go to OTC for SA customers
   const fulfilledByOTC = userCountry === "ZA" && otcTypes.includes(type);
   const fulfilledByPrintful = userCountry === "ZA" && type === "sweatpants";
   const fulfilledByPrintify = userCountry !== "ZA";
@@ -1328,9 +1641,8 @@ function addToCart(index, event) {
       fulfilledByPrintify,
       designUrl: image
     });
-  }
-
-  saveCart();
+    
+}saveCart();
   updateCart();
   openCart();
 
@@ -1382,8 +1694,9 @@ function updateCart() {
   const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   if (document.getElementById("cart-total")) document.getElementById("cart-total").innerText = formatCurrency(total);
   if (document.getElementById("cart-count")) document.getElementById("cart-count").innerText = cart.reduce((sum, i) => sum + i.quantity, 0);
-                                                   }
-  function removeFromCart(index) {
+}
+
+function removeFromCart(index) {
   cart.splice(index, 1);
   saveCart();
   updateCart();
@@ -1426,8 +1739,7 @@ function autoFillUserProfile() {
   if (zipField && savedProfile.zip) zipField.value = savedProfile.zip;
   if (firstField && savedProfile.firstName) firstField.value = savedProfile.firstName;
   if (lastField && savedProfile.lastName) lastField.value = savedProfile.lastName;
-}
-
+      }
 // ==========================
 // 📦 OTC PRINTING — PLACEMENT RULES
 // Each product type has defined print placement zones.
@@ -1438,40 +1750,104 @@ function autoFillUserProfile() {
 //     The structure is: productId → array of placement instructions.
 //     If a product isn't listed here, it falls back to type-level defaults.
 // ==========================
-const OTC_PLACEMENTS = {
-  // --- TYPE-LEVEL DEFAULTS (apply to all products of that type) ---
-  _defaults: {
-    tshirt: [
-      { zone: "Front chest",  detail: "Main design — centred" },
-      { zone: "Left sleeve",  detail: "Lunara Universe wordmark" }
-    ],
-    hoodie: [
-      { zone: "Front chest",  detail: "Main design — centred" },
-      { zone: "Left sleeve",  detail: "Lunara Universe wordmark" },
-      { zone: "Hood lining",  detail: "Accent print if applicable" }
-    ],
-    sweatshirt: [
-      { zone: "Front chest",  detail: "Main design — centred" },
-      { zone: "Left sleeve",  detail: "Lunara Universe wordmark" }
-    ],
-    longsleeve: [
-      { zone: "Front chest",  detail: "Main design — centred" },
-      { zone: "Full sleeves", detail: "Lunara Universe wordmark — both sleeves" }
-    ]
-  }
-  // --- PRODUCT-SPECIFIC OVERRIDES (add when you send your placement guide) ---
-  // Example:
-  // "lunara-butterfly-tshirt": [
-  //   { zone: "Front chest", detail: "Butterfly — centred, full chest" },
-  //   { zone: "Left sleeve", detail: "Lunara Universe — vertical" }
-  // ]
+// ==========================
+// 🗂️ OTC PLACEMENT FILE NAMES
+// These are the EXACT print file names OTC Printing receives per garment type.
+// Each placement has:
+//   zone       → where on the garment it gets printed
+//   file(color)→ the exact filename they need, based on the customer's chosen color
+//
+// T-SHIRTS:
+//   Front  → "{Design} {Color} t-shirt front.png"         (design-specific)
+//   Left sleeve  → "Universe All {Color} T-shirts Left Sleeve.png"
+//   Right sleeve → "Lunara All {Color} T-shirts Right Sleeve.png"
+//
+// LONG SLEEVE T-SHIRTS:
+//   Front        → "{Design} {Color} long sleeve t-shirt front.png" (design-specific)
+//   Right sleeve → "Universe All {Color} Long Sleeve T-shirts Right Sleeve.png"
+//   Back         → "Lunara All {Color} Long sleeve T-shirts Back.png"
+//
+// HOODIES:
+//   Back         → "{Design} {Color} Hoodie Back.png"      (design-specific)
+//   Front        → "Lunara All {Color} Hoodies & Sweatshirts Front.png"
+//   Left sleeve  → "Universe All {Color} Hoodies & Sweatshirts Left Sleeve.png"
+//
+// SWEATSHIRTS:
+//   Back         → "{Design} {Color} Sweatshirt Back.png"  (design-specific)
+//   Front        → "Lunara All {Color} Hoodies & Sweatshirts Front.png"
+//   Left sleeve  → "Universe All {Color} Hoodies & Sweatshirts Left Sleeve.png"
+// ==========================
+
+// Design name map: product id → the exact design name used in the file names
+const DESIGN_NAMES = {
+  "lunara-butterfly-tshirt":       "Butterfly",
+  "lunara-compass-tshirt":         "Compass",
+  "lunara-cosmic-eye-tshirt":      "Cosmic Eye",
+  "lunara-drip-smile-tshirt":      "Drip Smile",
+  "lunara-energy-bloom-tshirt":    "Energy Bloom",
+  "lunara-jellyfish-tshirt":       "Jellyfish",
+  "lunara-mushroom-tshirt":        "Mushroom",
+  "lunara-butterfly-hoodie":       "Butterfly",
+  "lunara-compass-hoodie":         "Compass",
+  "lunara-cosmic-eye-hoodie":      "Cosmic Eye",
+  "lunara-drip-smile-hoodie":      "Drip Smile",
+  "lunara-energy-bloom-hoodie":    "Energy Bloom",
+  "lunara-jellyfish-hoodie":       "Jellyfish",
+  "lunara-mushroom-hoodie":        "Mushroom",
+  "lunara-butterfly-sweatshirt":   "Butterfly",
+  "lunara-compass-sweatshirt":     "Compass",
+  "lunara-cosmic-eye-sweatshirt":  "Cosmic Eye",
+  "lunara-drip-smile-sweatshirt":  "Drip Smile",
+  "lunara-energy-bloom-sweatshirt":"Energy Bloom",
+  "lunara-jellyfish-sweatshirt":   "Jellyfish",
+  "lunara-mushroom-sweatshirt":    "Mushroom",
+  "lunara-butterfly-longsleeve":   "Butterfly",
+  "lunara-compass-longsleeve":     "Compass",
+  "lunara-cosmic-eye-longsleeve":  "Cosmic Eye",
+  "lunara-drip-smile-longsleeve":  "Drip Smile",
+  "lunara-energy-bloom-longsleeve":"Energy Bloom",
+  "lunara-jellyfish-longsleeve":   "Jellyfish",
+  "lunara-mushroom-longsleeve":    "Mushroom"
 };
 
-function getOTCPlacements(product) {
-  const type = String(product?.type || "").toLowerCase();
-  return OTC_PLACEMENTS[product?.id] || OTC_PLACEMENTS._defaults[type] || [
-    { zone: "Front chest", detail: "Main design — centred" }
-  ];
+function getOTCPlacements(product, color) {
+  const type   = String(product?.type || "").toLowerCase();
+  const design = DESIGN_NAMES[product?.id] || product?.name?.replace(/ (T-shirt|Hoodie|Sweatshirt|Long Sleeve.*)/i, "").trim() || "Design";
+  // Both design files and Lunara/Universe branding files use the same garment color
+  // Black garment → all Black files, White garment → all White files
+  const garment = color ? color.charAt(0).toUpperCase() + color.slice(1) : "Black";
+  const ink = garment; // same color throughout
+
+  if (type === "tshirt") {
+    return [
+      { zone: "Front",        file: `${design} ${garment} t-shirt front.png` },
+      { zone: "Left sleeve",  file: `Universe All ${ink} T-shirts Left Sleeve.png` },
+      { zone: "Right sleeve", file: `Lunara All ${ink} T-shirts Right Sleeve.png` }
+    ];
+  }
+  if (type === "longsleeve") {
+    return [
+      { zone: "Front",        file: `${design} ${garment} long sleeve t-shirt front.png` },
+      { zone: "Right sleeve", file: `Universe All ${ink} Long Sleeve T-shirts Right Sleeve.png` },
+      { zone: "Back",         file: `Lunara All ${ink} Long sleeve T-shirts Back.png` }
+    ];
+  }
+  if (type === "hoodie") {
+    return [
+      { zone: "Back",        file: `${design} ${garment} Hoodie Back.png` },
+      { zone: "Front",       file: `Lunara All ${ink} Hoodies & Sweatshirts Front.png` },
+      { zone: "Left sleeve", file: `Universe All ${ink} Hoodies & Sweatshirts Left Sleeve.png` }
+    ];
+  }
+  if (type === "sweatshirt") {
+    return [
+      { zone: "Back",        file: `${design} ${garment} Sweatshirt Back.png` },
+      { zone: "Front",       file: `Lunara All ${ink} Hoodies & Sweatshirts Front.png` },
+      { zone: "Left sleeve", file: `Universe All ${ink} Hoodies & Sweatshirts Left Sleeve.png` }
+    ];
+  }
+  // Fallback
+  return [{ zone: "Front", file: `${design} ${garment} front.png` }];
 }
 
 // Builds the structured data payload for the OTC order.
@@ -1494,7 +1870,7 @@ function buildOTCPayload(customer, items) {
     },
     items: items.map(item => {
       const product = storeProducts.find(p => p.id === item.id) || {};
-      const placements = getOTCPlacements(product);
+      const placements = getOTCPlacements(product, item.color);
       return {
         productName: item.name,
         size: item.size,
@@ -1504,8 +1880,9 @@ function buildOTCPayload(customer, items) {
       };
     })
   };
-    }
-     // ==========================
+}
+
+// ==========================
 // 💳 CHECKOUT
 // ==========================
 async function checkout() {
@@ -1519,8 +1896,9 @@ async function checkout() {
   const email = document.getElementById("customer-email")?.value;
   const country = document.getElementById("customer-country")?.value || userCountry;
 
+  // If key details are missing, open the details modal instead of alerting
   if (!firstName || !lastName || !email) {
-    alert("Please fill in your details.");
+    openDetailsModal();
     return;
   }
 
@@ -1561,8 +1939,9 @@ async function checkout() {
       console.error("OTC order email failed:", err);
       // Non-blocking — PayFast payment still proceeds
     }
-}
-    // Proceed to PayFast payment (covers the full cart total)
+  }
+
+  // Proceed to PayFast payment (covers the full cart total)
   const res = await fetch("/api/payfast", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -1643,7 +2022,55 @@ function initSmartHeader() {
 
     lastScrollY = Math.max(currentScrollY, 0);
   });
+      }
+
+// ==========================
+// 📋 FOOTER DETAILS FORM
+// Pre-fills from saved profile and saves back when updated
+// ==========================
+function initFooterDetailsForm() {
+  const saved = JSON.parse(localStorage.getItem("lunaraCustomerProfile") || "null");
+  if (!saved) return;
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+  set("footer-first-name", saved.firstName);
+  set("footer-last-name",  saved.lastName);
+  set("footer-email",      saved.email);
+  set("footer-phone",      saved.phone);
+  set("footer-address",    saved.address1);
+  set("footer-city",       saved.city);
+  set("footer-region",     saved.region);
+  set("footer-zip",        saved.zip);
+  set("footer-country",    saved.country);
 }
+
+window.saveFooterDetails = function() {
+  const get = id => document.getElementById(id)?.value.trim() || "";
+  const firstName = get("footer-first-name");
+  const email     = get("footer-email");
+  const errorEl   = document.getElementById("footer-details-error");
+  const successEl = document.getElementById("footer-details-success");
+  if (!firstName || !email) {
+    if (errorEl) errorEl.classList.remove("hidden");
+    return;
+  }
+  if (errorEl) errorEl.classList.add("hidden");
+  const profile = {
+    firstName, email,
+    lastName:  get("footer-last-name"),
+    phone:     get("footer-phone"),
+    address1:  get("footer-address"),
+    city:      get("footer-city"),
+    region:    get("footer-region"),
+    zip:       get("footer-zip"),
+    country:   get("footer-country")
+  };
+  localStorage.setItem("lunaraCustomerProfile", JSON.stringify(profile));
+  autoFillUserProfile();
+  if (successEl) {
+    successEl.classList.remove("hidden");
+    setTimeout(() => successEl.classList.add("hidden"), 3000);
+  }
+};
 
 // ==========================
 // 🚀 INIT
@@ -1653,8 +2080,111 @@ async function init() {
   await detectCountry();
   initRegionSelector();
   autoFillUserProfile();
-  await loadProducts();
-  updateCart();
+  initFooterDetailsForm();
+  checkWelcomeGate();
 }
 
 init();
+
+// ==========================
+// 🌟 WELCOME GATE & DETAILS MODAL
+// First-time visitors must fill in details before browsing.
+// Returning visitors can update details via "Details" in the footer.
+// Both use the same #details-modal-overlay in index.html.
+// ==========================
+
+function checkWelcomeGate() {
+  const saved = localStorage.getItem("lunaraCustomerProfile");
+  if (saved) {
+    // Returning visitor — load store straight away
+    loadProducts().then(() => updateCart());
+  } else {
+    // First visit — show the details modal as a gentle prompt (can be closed)
+    openDetailsModal();
+  }
+}
+
+// Opens the details modal.
+// Always shows the X close button — details are optional but encouraged.
+// Also called before checkout if details are incomplete.
+function openDetailsModal() {
+  const overlay = document.getElementById("details-modal-overlay");
+  if (!overlay) return;
+
+  // Pre-fill with saved profile if returning visitor
+  const saved = JSON.parse(localStorage.getItem("lunaraCustomerProfile") || "null");
+  if (saved) {
+    setModalField("modal-first-name", saved.firstName);
+    setModalField("modal-last-name",  saved.lastName);
+    setModalField("modal-email",      saved.email);
+    setModalField("modal-phone",      saved.phone);
+    setModalField("modal-address",    saved.address1);
+    setModalField("modal-city",       saved.city);
+    setModalField("modal-region",     saved.region);
+    setModalField("modal-zip",        saved.zip);
+    setModalField("modal-country",    saved.country);
+  } else if (userCountry === "ZA") {
+    setModalField("modal-country", "South Africa");
+  }
+
+  overlay.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function setModalField(id, value) {
+  const el = document.getElementById(id);
+  if (el && value) el.value = value;
+}
+
+function closeDetailsModal(event) {
+  // If called from overlay click, only close if clicking the backdrop itself
+  if (event && event.target !== document.getElementById("details-modal-overlay")) return;
+  const overlay = document.getElementById("details-modal-overlay");
+  if (!overlay) return;
+  overlay.classList.remove("active");
+  document.body.style.overflow = "";
+  // If store hasn't loaded yet (first visit, skipped details), load it now
+  const products = document.querySelector(".products");
+  if (!products || products.children.length === 0) {
+    loadProducts().then(() => updateCart());
+  }
+}
+
+window.openDetailsModal = openDetailsModal;
+window.closeDetailsModal = closeDetailsModal;
+
+window.saveDetailsModal = function() {
+  const firstName = document.getElementById("modal-first-name")?.value.trim();
+  const lastName  = document.getElementById("modal-last-name")?.value.trim();
+  const email     = document.getElementById("modal-email")?.value.trim();
+  const phone     = document.getElementById("modal-phone")?.value.trim();
+  const address1  = document.getElementById("modal-address")?.value.trim();
+  const city      = document.getElementById("modal-city")?.value.trim();
+  const region    = document.getElementById("modal-region")?.value.trim();
+  const zip       = document.getElementById("modal-zip")?.value.trim();
+  const country   = document.getElementById("modal-country")?.value.trim();
+  const errorEl   = document.getElementById("modal-error");
+
+  if (!firstName || !email) {
+    if (errorEl) errorEl.classList.remove("hidden");
+    return;
+  }
+  if (errorEl) errorEl.classList.add("hidden");
+
+  const profile = { firstName, lastName, email, phone, address1, city, region, zip, country };
+  localStorage.setItem("lunaraCustomerProfile", JSON.stringify(profile));
+
+  // Sync to checkout form fields
+  autoFillUserProfile();
+
+  // Close modal
+  const overlay = document.getElementById("details-modal-overlay");
+  if (overlay) overlay.classList.remove("active");
+  document.body.style.overflow = "";
+
+  // If this was the first-visit gate, now load the store
+  const products = document.querySelector(".products");
+  if (!products || products.children.length === 0) {
+    loadProducts().then(() => updateCart());
+  }
+};
