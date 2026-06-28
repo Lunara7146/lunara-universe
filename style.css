@@ -718,13 +718,18 @@ h1, h2, h3 {
   .logo-left-group { gap: 6px; }
 }
 
-/* Why Lunara modal — wider than standard modal */
-.why-lunara-modal {
-  max-width: 820px;
-  max-height: 88vh;
-  overflow-y: auto;
-  text-align: left;
+/* Why Lunara modal */
+  .why-lunara-modal { padding: 20px 14px; }
+  .why-grid { grid-template-columns: 1fr; gap: 14px; }
+  .why-statement blockquote { font-size: 14px; }
+
+  /* Modal */
+  .modal-box { padding: 24px 16px; }
+  .form-row { flex-direction: column; }
+  .form-row .form-input { margin-bottom: 10px; }
 }
-.why-lunara-modal .why-grid {
-  margin-top: 24px;
+
+@media (max-width: 360px) {
+  .products { grid-template-columns: 1fr; }
+  .brand-center span { font-size: 11px; }
 }
