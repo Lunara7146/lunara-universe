@@ -18,7 +18,8 @@
         <div class="region-selector-left" style="position:relative;">
           <div id="regionDropdown" class="region-dropdown hidden">
             <button onclick="setRegion('ZA')">🇿🇦 South Africa (ZAR)</button>
-            <button onclick="setRegion('US')">🇺🇸 International (USD)</button>
+            <button onclick="setRegion('US')">🇺🇸 USA / International (USD)</button>
+            <button onclick="setRegion('GB')">🇬🇧 United Kingdom (USD)</button>
           </div>
         </div>
       </div>
@@ -31,7 +32,7 @@
       <div class="header-right">
         <nav class="main-nav">
           <div class="dropdown">
-            <button class="dropbtn">All Products ⬇</button>
+            <button class="dropbtn">All ⬇</button>
             <div class="dropdown-content">
               <a href="#tshirts">T-Shirts</a>
               <a href="#longsleeve">Long Sleeve T-Shirts</a>
@@ -97,7 +98,7 @@
       <p class="hero-sub">Designed for expression. Built for presence. Premium cosmic streetwear crafted for those who stand apart.</p>
       <div class="hero-buttons">
         <a href="#shop" class="btn-primary">Shop Collection</a>
-        <button class="btn-secondary" onclick="openWhyLunara()">Why Lunara</button>
+        <button style="padding:14px 28px;border-radius:999px;border:none;cursor:pointer;font-weight:500;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:1rem;" onclick="openWhyLunara()">Why Lunara</button>
       </div>
       <p class="hero-proof">✨ New arrivals added regularly – discover your next favourite piece</p>
     </div>
@@ -237,7 +238,7 @@
 
     </div>
 
-    <div class="footer-legal">
+    <div class="footer-legal footer-legal--glow">
       <p class="footer-small">
         &copy; 2026 Lunara's Universe. All rights reserved.<br>
         Lunara's Universe is a registered business. All designs, branding, and content are the exclusive intellectual property of Lunara's Universe. Any unauthorised reproduction, copying, or use of designs without written permission will result in legal action.
@@ -288,15 +289,11 @@
             <p>Ships to South Africa and internationally. SA customers get fast local fulfilment with PayFast. International customers get tracked global shipping with Stripe — wherever you are, Lunara reaches you.</p>
           </div>
         </div>
-        <div class="why-cta">
-          <a href="#shop" class="btn-primary" onclick="closeWhyLunara()">Shop the Collection</a>
-          <p class="why-cta-note">New designs added regularly — find your piece.</p>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- DETAILS MODAL OVERLAY -->
+  <!-- DETAILS MODAL -->
   <div id="details-modal-overlay" class="modal-overlay" onclick="closeDetailsModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeDetailsModal()" aria-label="Close">✕</button>
@@ -327,4 +324,4 @@
   <script src="script.js"></script>
 
 </body>
-  </html>
+</html>
