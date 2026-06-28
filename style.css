@@ -633,5 +633,106 @@ h1, h2, h3 {
   .brand-center span { font-size: 14px; }
   .logo { height: 38px; }
   .cart-btn { padding: 7px 10px; }
-   }
-   
+}
+
+/* ==============================================
+   LOGO LEFT GROUP (logo + flag on left)
+   ============================================== */
+.logo-left-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.region-selector-left {
+  position: relative;
+}
+
+.region-selector-left .region-dropdown {
+  top: calc(100% + 8px);
+  left: 0;
+  right: auto;
+}
+
+/* ==============================================
+   WHY LUNARA SECTION
+   ============================================== */
+.why-lunara-section {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.why-lunara-inner { max-width: 1100px; margin: auto; }
+
+.why-eyebrow {
+  color: var(--accent);
+  font-size: 13px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.why-lunara-section h2 {
+  font-size: clamp(28px, 4vw, 42px);
+  margin-bottom: 16px;
+}
+
+.why-sub {
+  color: var(--muted);
+  max-width: 600px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  text-align: left;
+}
+
+.why-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.why-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+.why-icon { font-size: 28px; display: block; margin-bottom: 12px; }
+.why-card h3 { font-size: 16px; margin-bottom: 8px; }
+.why-card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin: 0; }
+
+/* Footer details dropdown — wider to fit the form */
+.footer-dropdown-content h3 { margin-bottom: 8px; }
+.footer-trust .footer-dropdown:first-child .footer-dropdown-content {
+  min-width: 320px;
+}
+
+@media (max-width: 768px) {
+  .why-grid { grid-template-columns: 1fr; }
+  .logo-left-group { gap: 6px; }
+}
+
+/* Why Lunara CTA at the bottom */
+.why-cta {
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.why-cta-note {
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 768px) {
+  .why-statement blockquote { font-size: 16px; }
+  .why-card--featured { grid-column: span 1; }
+}
