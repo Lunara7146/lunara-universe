@@ -111,7 +111,8 @@ function updateRegionUI(region) {
     }
   }
   if (flagEl) {
-    flagEl.textContent = getFlagEmoji(region);
+    const currency = region === "ZA" ? "ZAR" : "USD";
+    flagEl.innerHTML = `${getFlagEmoji(region)} <span style="font-size:12px;font-weight:600;color:var(--accent);margin-left:3px;">${currency}</span>`;
     flagEl.title = region === "ZA" ? "South Africa (ZAR)" : region === "GB" ? "United Kingdom (USD)" : "USA / International (USD)";
   }
 }
@@ -130,7 +131,7 @@ const localProducts = [
   // --- NOVA HOODIES COLLECTION ---
   {
     id: "nova-cosmic-eye-hoodie",
-    name: "Nova Cosmic Eye Hoodie",
+    name: "Cosmic Eye Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
@@ -168,7 +169,7 @@ const localProducts = [
   },
   {
     id: "nova-energy-bloom-hoodie",
-    name: "Nova Energy Bloom Hoodie",
+    name: "Energy Bloom Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
@@ -206,7 +207,7 @@ const localProducts = [
   },
   {
     id: "nova-compass-hoodie",
-    name: "Nova Compass Hoodie",
+    name: "Compass Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
@@ -244,7 +245,7 @@ const localProducts = [
   },
   {
     id: "nova-butterfly-hoodie",
-    name: "Nova Butterfly Hoodie",
+    name: "Butterfly Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
@@ -282,7 +283,7 @@ const localProducts = [
   },
   {
     id: "nova-mushroom-hoodie",
-    name: "Nova Mushroom Hoodie",
+    name: "Mushroom Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
@@ -320,7 +321,7 @@ const localProducts = [
   },
   {
     id: "nova-jellyfish-hoodie",
-    name: "Nova Jellyfish Hoodie",
+    name: "Jellyfish Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
@@ -358,7 +359,7 @@ const localProducts = [
   },
   {
     id: "nova-drip-smile-hoodie",
-    name: "Nova Drip Smile Hoodie",
+    name: "Drip Smile Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
@@ -396,7 +397,7 @@ const localProducts = [
   },
   {
     id: "nova-plain-hoodie",
-    name: "Nova Plain Hoodie",
+    name: "Plain Hoodie",
     collection: "Nova",
     type: "hoodie",
     printify: true,
