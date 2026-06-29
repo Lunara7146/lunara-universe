@@ -174,13 +174,13 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 
 .btn-why-lunara {
   padding: 14px 28px; border-radius: 999px; border: none; cursor: pointer;
-  font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  color: #000 !important;
+  font-weight: 500; font-size: 1rem; text-decoration: none; display: inline-block;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: black !important;
   transition: transform 0.3s, box-shadow 0.3s;
   font-family: inherit;
 }
-.btn-why-lunara:hover { box-shadow: 0 0 20px rgba(168,85,247,0.5); }
+.btn-why-lunara:hover { box-shadow: 0 0 20px rgba(126,231,255,0.4); }
 
 /* ==============================================
    TRUST BAR
