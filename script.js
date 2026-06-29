@@ -1,4 +1,23 @@
 // ==========================
+// 🌌 WHY LUNARA POPUP TOGGLE
+// ==========================
+window.toggleWhyLunara = function(e) {
+  e.stopPropagation();
+  const popup = document.getElementById("why-lunara-popup");
+  if (!popup) return;
+  popup.classList.toggle("hidden");
+};
+
+// Close Why Lunara popup when clicking anywhere else
+document.addEventListener("click", function(e) {
+  const popup = document.getElementById("why-lunara-popup");
+  const dropdown = e.target.closest(".why-lunara-dropdown");
+  if (!dropdown && popup && !popup.classList.contains("hidden")) {
+    popup.classList.add("hidden");
+  }
+});
+
+// ==========================
 // 🌍 GEO DETECTION & REGION SELECTOR
 // ==========================
 let userCountry = "ZA";
