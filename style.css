@@ -423,7 +423,16 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   transition: max-height 0.35s ease, opacity 0.35s ease;
   box-shadow: 0 6px 24px rgba(0,0,0,0.4);
 }
-.footer-dropdown:hover .footer-dropdown-content { max-height: 500px; opacity: 1; }
+.footer-dropdown:hover .footer-dropdown-content {
+  max-height: 420px;
+  opacity: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--panel);
+}
+.footer-dropdown:hover .footer-dropdown-content::-webkit-scrollbar { width: 6px; }
+.footer-dropdown:hover .footer-dropdown-content::-webkit-scrollbar-track { background: var(--panel); border-radius: 3px; }
+.footer-dropdown:hover .footer-dropdown-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 .footer-dropdown-content p, .footer-dropdown-content li { color: var(--text); font-size: 13px; line-height: 1.6; }
 .footer-dropdown-content h3, .footer-dropdown-content h4 { font-size: 14px; margin-bottom: 8px; color: var(--accent); }
 .footer-dropdown-content ul { padding-left: 16px; margin: 6px 0; }
@@ -463,4 +472,64 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 @media (max-width: 480px) {
   .header-inner { padding: 8px 12px; min-height: 58px; gap: 6px; }
   .logo { height: 36px; }
-  
+  .brand-center span { font-size: 13px; }
+  .cart-btn { padding: 7px 10px; font-size: 12px; }
+  .hero-premium { padding: 60px 16px 50px; }
+  .hero-premium h1 { font-size: 28px; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .hero-buttons .btn-primary, .hero-buttons .btn-why-lunara { width: 100%; text-align: center; }
+  .trust-bar-inner { gap: 12px; font-size: 12px; }
+  .products { grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 12px 28px; }
+  .product-card { border-radius: 14px; }
+  .product-info { padding: 12px; }
+  .product-top h4 { font-size: 13px; }
+  .product-price { font-size: 14px; }
+  .product-tag, .product-stock, .product-reviews { font-size: 11px; }
+  .footer-dropdown-content { left: 0; right: auto; }
+  .why-statement blockquote { font-size: 14px; }
+}
+
+@media (max-width: 360px) {
+  .products { grid-template-columns: 1fr; }
+  .brand-center span { font-size: 11px; }
+}
+
+/* ==============================================
+   WHY LUNARA POPUP (dropdown from hero button)
+   ============================================== */
+.why-lunara-dropdown { position: relative; display: inline-block; }
+
+.why-lunara-popup {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  border: 1px solid rgba(185,140,255,0.35);
+  border-radius: 18px;
+  padding: 24px;
+  width: 680px;
+  max-width: 92vw;
+  max-height: 75vh;
+  overflow-y: auto;
+  z-index: 1500;
+  box-shadow: 0 0 40px rgba(140,80,255,0.25);
+  text-align: left;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--panel);
+}
+.why-lunara-popup::-webkit-scrollbar { width: 6px; }
+.why-lunara-popup::-webkit-scrollbar-track { background: var(--panel); border-radius: 3px; }
+.why-lunara-popup::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+.why-lunara-popup .why-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .why-lunara-popup { width: 95vw; padding: 18px 14px; }
+  .why-lunara-popup .why-grid { grid-template-columns: 1fr; }
+}
