@@ -1376,6 +1376,7 @@ const IMAGE_FOLDER_MAP = {
   "lunara-energy-bloom-tshirt":     "shirts/energy-bloom-tee",
   "lunara-jellyfish-tshirt":        "shirts/jellyfish-tee",
   "lunara-mushroom-tshirt":         "shirts/mushroom-tee",
+  "lunara-mushrooms-tshirt":        "shirts/mushroom-tee",
   // Long sleeve T-shirts (images/long-sleeve-shirts/)
   "lunara-butterfly-longsleeve":    "long-sleeve-shirts/butterfly-long-sleeve-shirts",
   "lunara-compass-longsleeve":      "long-sleeve-shirts/Compass-long-sleeve-shirts",
@@ -1400,7 +1401,7 @@ const IMAGE_FOLDER_MAP = {
   "nova-energy-bloom-hoodie":       "nova-collection/energy-bloom-hoodie",
   "nova-jellyfish-hoodie":          "nova-collection/jellyfish-hoodie",
   "nova-mushroom-hoodie":           "nova-collection/mushroom-hoodie",
-  "nova-plain-hoodie":              "nova-collection/plain%20-hoodie",
+  "nova-plain-hoodie":              "nova-collection/plain-hoodie",
   // Sweatpants (images/sweatpants/) — white only
   "lunara-butterfly-sweatpants":    "sweatpants/butterfly-sweatpants",
   "lunara-compass-sweatpants":      "sweatpants/compass-sweatpants",
@@ -1493,8 +1494,17 @@ function displayProducts(products) {
 
   if (!products.length) return;
 
+  // Sort so plain items appear first within each type
+  const sorted = [...products].sort((a, b) => {
+    const aPlain = /plain/i.test(a.name) ? 0 : 1;
+    const bPlain = /plain/i.test(b.name) ? 0 : 1;
+    return aPlain - bPlain;
+  });
+  // Keep storeProducts in sync with sort order so index lookups (addToCart, etc.) still work
+  storeProducts = sorted;
+
   let globalIndex = 0;
-  products.forEach((product) => {
+  sorted.forEach((product) => {
     const index = globalIndex++;
     const stock = Math.floor(Math.random() * 6) + 3;
     const reviews = Math.floor(Math.random() * 1500) + 300;
