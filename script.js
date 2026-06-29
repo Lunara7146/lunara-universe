@@ -87,7 +87,7 @@ function updateRegionUI(region) {
   }
   if (flagEl) {
     const currency = region === "ZA" ? "ZAR" : "USD";
-    flagEl.innerHTML = `<span style="font-size:20px;line-height:1;">${getFlagEmoji(region)}</span><span style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:0.04em;">${currency}</span>`;
+    flagEl.innerHTML = `<span class="flag-emoji">${getFlagEmoji(region)}</span><span class="flag-currency">${currency}</span>`;
     flagEl.title = region === "ZA" ? "South Africa (ZAR)" : region === "GB" ? "United Kingdom (USD)" : "USA / International (USD)";
   }
 }
@@ -1373,15 +1373,15 @@ const IMAGE_FOLDER_MAP = {
   "lunara-energy-bloom-sweatshirt": "sweatshirts/energy-bloom-sweatshirt",
   "lunara-jellyfish-sweatshirt":    "sweatshirts/jellyfish-sweatshirt",
   "lunara-mushroom-sweatshirt":     "sweatshirts/mushroom-sweatshirt",
-  // Hoodies (images/nova-collection/) — exact folder names from repo
-  "lunara-butterfly-hoodie":        "nova-collection/butterfly-hoodie",
-  "lunara-compass-hoodie":          "nova-collection/compass-hoodie",
-  "lunara-cosmic-eye-hoodie":       "nova-collection/cosmic-eye-hoodie",
-  "lunara-drip-smile-hoodie":       "nova-collection/drip-smile-hoodie",
-  "lunara-energy-bloom-hoodie":     "nova-collection/energy-bloom-hoodie",
-  "lunara-jellyfish-hoodie":        "nova-collection/jellyfish-hoodie",
-  "lunara-mushroom-hoodie":         "nova-collection/mushroom-hoodie",
-  "lunara-plain-hoodie":            "nova-collection/plain%20-hoodie",
+  // Hoodies (images/nova-collection/) — IDs match localProducts nova-* prefix
+  "nova-butterfly-hoodie":          "nova-collection/butterfly-hoodie",
+  "nova-compass-hoodie":            "nova-collection/compass-hoodie",
+  "nova-cosmic-eye-hoodie":         "nova-collection/cosmic-eye-hoodie",
+  "nova-drip-smile-hoodie":         "nova-collection/drip-smile-hoodie",
+  "nova-energy-bloom-hoodie":       "nova-collection/energy-bloom-hoodie",
+  "nova-jellyfish-hoodie":          "nova-collection/jellyfish-hoodie",
+  "nova-mushroom-hoodie":           "nova-collection/mushroom-hoodie",
+  "nova-plain-hoodie":              "nova-collection/plain%20-hoodie",
   // Sweatpants (images/sweatpants/) — white only
   "lunara-butterfly-sweatpants":    "sweatpants/butterfly-sweatpants",
   "lunara-compass-sweatpants":      "sweatpants/compass-sweatpants",
@@ -1803,13 +1803,13 @@ const DESIGN_NAMES = {
   "lunara-energy-bloom-tshirt":    "Energy Bloom",
   "lunara-jellyfish-tshirt":       "Jellyfish",
   "lunara-mushroom-tshirt":        "Mushroom",
-  "lunara-butterfly-hoodie":       "Butterfly",
-  "lunara-compass-hoodie":         "Compass",
-  "lunara-cosmic-eye-hoodie":      "Cosmic Eye",
-  "lunara-drip-smile-hoodie":      "Drip Smile",
-  "lunara-energy-bloom-hoodie":    "Energy Bloom",
-  "lunara-jellyfish-hoodie":       "Jellyfish",
-  "lunara-mushroom-hoodie":        "Mushroom",
+  "nova-butterfly-hoodie":         "Butterfly",
+  "nova-compass-hoodie":           "Compass",
+  "nova-cosmic-eye-hoodie":        "Cosmic Eye",
+  "nova-drip-smile-hoodie":        "Drip Smile",
+  "nova-energy-bloom-hoodie":      "Energy Bloom",
+  "nova-jellyfish-hoodie":         "Jellyfish",
+  "nova-mushroom-hoodie":          "Mushroom",
   "lunara-butterfly-sweatshirt":   "Butterfly",
   "lunara-compass-sweatshirt":     "Compass",
   "lunara-cosmic-eye-sweatshirt":  "Cosmic Eye",
