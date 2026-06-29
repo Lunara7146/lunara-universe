@@ -100,7 +100,49 @@
       <p class="hero-sub">Designed for expression. Built for presence. Premium cosmic streetwear crafted for those who stand apart.</p>
       <div class="hero-buttons">
         <a href="#shop" class="btn-primary">Shop Collection</a>
-        <a href="#premium-trust" class="btn-why-lunara">Why Lunara</a>
+        <div class="why-lunara-dropdown" style="position:relative;display:inline-block;">
+          <button class="btn-why-lunara" onclick="toggleWhyLunara(event)">Why Lunara</button>
+          <div id="why-lunara-popup" class="why-lunara-popup hidden">
+            <p class="why-eyebrow" style="margin-bottom:8px;">✦ Why Lunara's Universe</p>
+            <h2 style="font-size:1.3rem;margin-bottom:10px;font-family:'Playfair Display',serif;">Born to Shine, Dressed to Wander</h2>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Lunara's Universe is a South African cosmic streetwear brand built for people who express themselves through what they wear.</p>
+            <div class="why-statement" style="margin-bottom:20px;">
+              <blockquote style="font-size:14px;">"We didn't create Lunara's Universe to follow trends.<br>We created it to give people clothing that feels like them."</blockquote>
+            </div>
+            <div class="why-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="why-card why-card--featured">
+                <span class="why-icon" style="font-size:22px;">🇿🇦</span>
+                <h3 style="font-size:14px;">Proudly Made in South Africa</h3>
+                <p style="font-size:13px;">Our hoodies, sweatshirts, long sleeve T-shirts and T-shirts are printed right here in South Africa by a trusted local print provider.</p>
+              </div>
+              <div class="why-card">
+                <span class="why-icon" style="font-size:22px;">🌍</span>
+                <h3 style="font-size:14px;">European Quality Sweatpants</h3>
+                <p style="font-size:13px;">Our sweatpants are sourced and fulfilled from Europe, delivering premium heavyweight fabric — no compromise on quality.</p>
+              </div>
+              <div class="why-card">
+                <span class="why-icon" style="font-size:22px;">🌌</span>
+                <h3 style="font-size:14px;">Exclusive Cosmic Designs</h3>
+                <p style="font-size:13px;">Every design is original and exclusive. Butterflies, jellyfish, cosmic eyes, mushrooms — wearable art you won't find anywhere else.</p>
+              </div>
+              <div class="why-card">
+                <span class="why-icon" style="font-size:22px;">✦</span>
+                <h3 style="font-size:14px;">Premium Quality, Every Time</h3>
+                <p style="font-size:13px;">High-quality DTG and DTF printing. Vivid, lasting colour that doesn't crack, fade or peel — season after season.</p>
+              </div>
+              <div class="why-card">
+                <span class="why-icon" style="font-size:22px;">📦</span>
+                <h3 style="font-size:14px;">Made to Order — Made for You</h3>
+                <p style="font-size:13px;">Every piece is printed when you order it. No mass production — your garment is made specifically for you.</p>
+              </div>
+              <div class="why-card">
+                <span class="why-icon" style="font-size:22px;">🚀</span>
+                <h3 style="font-size:14px;">Delivered Worldwide</h3>
+                <p style="font-size:13px;">SA customers get fast local fulfilment with PayFast. International customers get tracked global shipping with Stripe.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <p class="hero-proof">✨ New arrivals added regularly – discover your next favourite piece</p>
     </div>
@@ -112,53 +154,6 @@
       <span>🔒 Secure checkout</span>
       <span>🚚 Tracked shipping</span>
       <span>💫 Premium quality</span>
-    </div>
-  </section>
-
-  <section id="premium-trust" class="why-lunara-section">
-    <div class="why-lunara-inner">
-      <p class="why-eyebrow">✦ Why Lunara's Universe</p>
-      <h2>Born to Shine, Dressed to Wander</h2>
-      <p class="why-sub">Lunara's Universe is a South African cosmic streetwear brand built for people who express themselves through what they wear. Every piece in our collection carries a story — from the design to the fabric to the hands that made it.</p>
-      <div class="why-statement">
-        <blockquote>"We didn't create Lunara's Universe to follow trends.<br>We created it to give people clothing that feels like them."</blockquote>
-      </div>
-      <div class="why-grid">
-        <div class="why-card why-card--featured">
-          <span class="why-icon">🇿🇦</span>
-          <h3>Proudly Made in South Africa</h3>
-          <p>Our hoodies, sweatshirts, long sleeve T-shirts and T-shirts are printed right here in South Africa by a trusted local print provider. Faster delivery, premium quality control, and your money supporting local craftsmanship.</p>
-        </div>
-        <div class="why-card">
-          <span class="why-icon">🌍</span>
-          <h3>European Quality Sweatpants</h3>
-          <p>Our sweatpants are sourced and fulfilled from Europe, delivering premium heavyweight fabric with a fit and finish that matches the rest of the collection — no compromise on quality, wherever you are.</p>
-        </div>
-        <div class="why-card">
-          <span class="why-icon">🌌</span>
-          <h3>Cosmic Designs You Won't Find Anywhere Else</h3>
-          <p>Every design is original and exclusive to Lunara's Universe. Butterflies, jellyfish, cosmic eyes, mushrooms, compass roses — wearable art inspired by the universe. You won't find these anywhere else.</p>
-        </div>
-        <div class="why-card">
-          <span class="why-icon">✦</span>
-          <h3>Premium Quality, Every Time</h3>
-          <p>High-quality DTG and DTF printing on premium garments. Vivid, lasting colour that doesn't crack, fade or peel. Lunara clothing is built to be worn, washed and loved — season after season.</p>
-        </div>
-        <div class="why-card">
-          <span class="why-icon">📦</span>
-          <h3>Made to Order — Made for You</h3>
-          <p>Every Lunara piece is printed when you order it. No mass production, no sitting in a warehouse. Your garment is made specifically for you — better quality, less waste, truly personal.</p>
-        </div>
-        <div class="why-card">
-          <span class="why-icon">🚀</span>
-          <h3>Built for Everyone, Delivered Worldwide</h3>
-          <p>Ships to South Africa and internationally. SA customers get fast local fulfilment with PayFast. International customers get tracked global shipping with Stripe — wherever you are, Lunara reaches you.</p>
-        </div>
-      </div>
-      <div class="why-cta">
-        <a href="#shop" class="btn-primary">Shop the Collection</a>
-        <p class="why-cta-note">New designs added regularly — find yours now.</p>
-      </div>
     </div>
   </section>
 
@@ -325,4 +320,4 @@
   <script src="script.js"></script>
 
 </body>
-              </html>
+  </html>
