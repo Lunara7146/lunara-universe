@@ -424,11 +424,15 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   box-shadow: 0 6px 24px rgba(0,0,0,0.4);
 }
 .footer-dropdown:hover .footer-dropdown-content {
-  max-height: 420px;
+  max-height: 520px;
   opacity: 1;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) var(--panel);
+}
+.footer-trust .footer-dropdown:first-child .footer-dropdown-content {
+  min-width: 360px;
+  max-width: 420px;
 }
 .footer-dropdown:hover .footer-dropdown-content::-webkit-scrollbar { width: 6px; }
 .footer-dropdown:hover .footer-dropdown-content::-webkit-scrollbar-track { background: var(--panel); border-radius: 3px; }
@@ -437,7 +441,6 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .footer-dropdown-content h3, .footer-dropdown-content h4 { font-size: 14px; margin-bottom: 8px; color: var(--accent); }
 .footer-dropdown-content ul { padding-left: 16px; margin: 6px 0; }
 .terms-box { min-width: 320px; max-width: 500px; }
-.footer-trust .footer-dropdown:first-child .footer-dropdown-content { min-width: 320px; }
 
 .footer-legal--glow {
   margin: 24px 16px 8px; padding: 16px 20px;
