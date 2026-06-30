@@ -4,6 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lunara's Universe</title>
+  <!-- SEO -->
+  <meta name="description" content="Lunara's Universe — premium cosmic streetwear crafted for those who move differently. Exclusive designs, DTF & DTG printing, delivered worldwide.">
+  <meta name="keywords" content="cosmic streetwear, South Africa streetwear, Lunara, hoodies, sweatpants, graphic tees, premium clothing">
+  <meta name="author" content="Lunara's Universe">
+  <meta name="robots" content="index, follow">
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn previews) -->
+  <meta property="og:title" content="Lunara's Universe — Streetwear for Those Who Move Differently">
+  <meta property="og:description" content="Premium cosmic streetwear. Exclusive designs. DTF & DTG printing. Shop the Nova Collection.">
+  <meta property="og:image" content="https://lunara-universe-tau.vercel.app/images/lunara-website-logo.png">
+  <meta property="og:url" content="https://lunara-universe-tau.vercel.app">
+  <meta property="og:type" content="website">
+  <!-- Twitter/X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lunara's Universe">
+  <meta name="twitter:description" content="Premium cosmic streetwear for those who stand apart.">
+  <meta name="twitter:image" content="https://lunara-universe-tau.vercel.app/images/lunara-website-logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -64,6 +80,7 @@
         <span>Total</span>
         <span id="cart-total">R0.00</span>
       </div>
+      <p class="promo-hint">✨ Use code <strong>LUNA5</strong> for 5% off</p>
       <div class="promo-row">
         <input id="promo-input" type="text" placeholder="Promo code" class="promo-input"/>
         <button onclick="applyPromo()" class="promo-btn">Apply</button>
@@ -290,6 +307,23 @@
 
   </footer>
 
+  <!-- Customs Notice Popup -->
+  <div id="customs-modal-overlay" class="modal-overlay active" onclick="closeCustomsModal(event)">
+    <div class="modal-box customs-modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeCustomsModal()" aria-label="Close">✕</button>
+      <div style="font-size:2rem;margin-bottom:8px;">🌍</div>
+      <h2 class="modal-title">Customs & International Orders</h2>
+      <p class="modal-sub" style="margin-bottom:14px;">Before you shop, please note:</p>
+      <ul style="text-align:left;font-size:13px;color:var(--muted);line-height:1.8;padding-left:18px;margin-bottom:16px;">
+        <li>International orders may be subject to <strong style="color:var(--text);">customs duties and import taxes</strong> upon delivery.</li>
+        <li>These fees are set by your country's customs authority and are <strong style="color:var(--text);">not charged by Lunara's Universe</strong>.</li>
+        <li>Lunara's Universe is <strong style="color:var(--text);">not liable</strong> for delays caused by customs clearance.</li>
+        <li>By placing an order, you accept responsibility for any customs fees that may apply.</li>
+      </ul>
+      <button class="checkout-btn" onclick="closeCustomsModal()" style="max-width:200px;margin:0 auto;display:block;">I Understand →</button>
+    </div>
+  </div>
+
   <div id="details-modal-overlay" class="modal-overlay" onclick="closeDetailsModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeDetailsModal()" aria-label="Close">✕</button>
@@ -320,4 +354,4 @@
   <script src="script.js"></script>
 
 </body>
-            </html>
+          </html>
