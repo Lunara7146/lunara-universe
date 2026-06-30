@@ -1352,10 +1352,10 @@ function formatCurrency(amount) {
 // Anchor prices — ZAR only, South African local print provider items
 // Anchor = real price + 20% (shown crossed out, makes the real price look like a 20% discount)
 const ZAR_REAL_PRICES = {
-  hoodie:      { black: 949.99, white: 859.99, "stone-blue": 859.99 },
-  sweatshirt:  { black: 879.99, white: 749.99 },
-  tshirt:      { black: 549.99, white: 469.99 },
-  longsleeve:  { black: 589.99, white: 479.99 }
+  hoodie:      { black: 949.99, white: 854.50, "stone-blue": 854.50 },
+  sweatshirt:  { black: 879.99, white: 704.50 },
+  tshirt:      { black: 549.99, white: 464.50 },
+  longsleeve:  { black: 589.99, white: 474.50 }
 };
 
 function formatZAR(amount) {
@@ -1563,7 +1563,7 @@ function displayProducts(products) {
     card.className = "product-card";
 
     const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve");
+    const hasBack = (type === "hoodie" || type === "sweatshirt");
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${defaultColor}.png` : null;
     const frontSrc = imageSrc;
     // Hoodies and sweatshirts: show back first, front on swipe
@@ -1625,8 +1625,6 @@ function displayProducts(products) {
     }
     // If no matching section, skip — API products with unknown types don't show
   });
-
-  renderFavorites();
 }
 
 window.updatePremiumPricing = function(index) {
@@ -1670,107 +1668,12 @@ function toggleFavorite(id, el) {
   if (!id) return;
   if (favorites.includes(id)) {
     favorites = favorites.filter((f) => f !== id);
-    if (el) el.classList.remove("active");
+    el.classList.remove("active");
   } else {
     favorites.push(id);
-    if (el) el.classList.add("active");
+    el.classList.add("active");
   }
   saveFavorites();
-  renderFavorites();
-}
-
-// ==========================
-// ❤️ RENDER FAVOURITES SECTION
-// ==========================
-function renderFavorites() {
-  const section = document.getElementById("favorites");
-  const grid = section ? section.querySelector(".products") : null;
-  if (!grid) return;
-
-  grid.innerHTML = "";
-
-  if (!favorites.length) {
-    grid.innerHTML = `<p style="color:var(--muted);grid-column:1/-1;text-align:center;">No favourites yet — tap the 🦋 on any product to save it here.</p>`;
-    return;
-  }
-
-  favorites.forEach((favId) => {
-    const index = storeProducts.findIndex(p => p.id === favId);
-    if (index === -1) return; // product no longer exists
-    const product = storeProducts[index];
-
-    const isSweatpants = String(product.type || "").toLowerCase() === "sweatpants";
-    const defaultColor = isSweatpants ? "white" : "black";
-    const imageSrc = getImagePath(product, defaultColor);
-    const defaultSize = product.pricing?.["M"] !== undefined ? "M" : Object.keys(product.pricing || {})[0] || "M";
-    const activeDisplayPrice = getCalculatedRegionalPrice(product, defaultSize);
-    const sizes = Object.keys(product.pricing || { "S": 0, "M": 0, "L": 0, "XL": 0 });
-
-    let finalColors;
-    if (isSweatpants) {
-      finalColors = ["white"];
-    } else if (product.colors && product.colors.length) {
-      finalColors = product.colors.filter(c => {
-        if (c === "stone-blue" && userCountry === "ZA") return false;
-        return true;
-      });
-    } else {
-      const dynamicColors = [...new Set(Object.keys(product.variants || {}).map(k => k.split("-").slice(1).join("-")))];
-      finalColors = dynamicColors.length ? dynamicColors : ["black", "white"];
-    }
-
-    const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve");
-    const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${defaultColor}.png` : null;
-    const displaySrc = hasBack ? backSrc : imageSrc;
-
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.innerHTML = `
-      <div class="product-image-wrap${hasBack ? " swipeable" : ""}"
-           ${hasBack ? `data-front="${imageSrc}" data-back="${backSrc}" data-showing="back"` : ""}>
-        <img
-          id="img-${index}"
-          src="${displaySrc}"
-          class="product-image"
-          alt="${product.name}"
-          onerror="this.onerror=null;this.src='images/lunara-website-logo.png'"
-        >
-        ${hasBack ? `<div class="swipe-hint">swipe →</div>` : ""}
-      </div>
-
-      <div class="product-info">
-        <div class="product-top">
-          <h4>${product.name}</h4>
-          <button class="fav-btn active" onclick="toggleFavorite('${product.id}', this)">
-            🦋
-          </button>
-        </div>
-
-        ${(() => {
-          const ap = getAnchorPrice(product.type, defaultColor);
-          return ap ? `<p class="anchor-price" id="anchor-display-${index}">${ap}</p>` : "";
-        })()}
-        <p class="product-price" id="price-display-${index}">${formatCurrency(activeDisplayPrice)}</p>
-
-        <select id="size-${index}" onchange="updatePremiumPricing(${index})">
-          ${sizes.map(size => `<option value="${size}" ${size === defaultSize ? "selected" : ""}>${size}</option>`).join("")}
-        </select>
-
-        ${finalColors.length > 1
-          ? `<select id="color-${index}" onchange="changeColor(${index})">
-              ${finalColors.map(color => `<option value="${color}" ${color === defaultColor ? "selected" : ""}>${color.charAt(0).toUpperCase() + color.slice(1)}</option>`).join("")}
-            </select>`
-          : `<input type="hidden" id="color-${index}" value="${finalColors[0] || defaultColor}">`
-        }
-
-        <button onclick="addToCart(${index}, event)">
-          Add to Cart →
-        </button>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
 }
 
 // ==========================
@@ -2017,38 +1920,8 @@ function updateCart() {
   });
 
   const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
-
-  // 🎁 BUNDLE DEAL: Tiered discounts when buying 3+ items.
-  // 3 items = 10% off | 4+ items = 12% off
-  // Bundle discount takes priority over ALL promo codes — they don't stack.
-  let bundleActive = false;
-  let bundlePercent = 0;
-  if (itemCount >= 4) {
-    bundleActive = true;
-    bundlePercent = 0.12;
-  } else if (itemCount === 3) {
-    bundleActive = true;
-    bundlePercent = 0.10;
-  }
-  const totalPercentOff = bundleActive ? bundlePercent : activePromos.reduce((sum, p) => sum + p.percent, 0);
+  const totalPercentOff = activePromos.reduce((sum, p) => sum + p.percent, 0);
   const total = subtotal * (1 - totalPercentOff);
-
-  // Show bundle messaging in the promo area
-  const msg = document.getElementById("promo-msg");
-  const promoRow = document.querySelector(".promo-row");
-  const promoHint = document.querySelector(".promo-hint");
-  if (bundleActive) {
-    const discountPercent = Math.round(bundlePercent * 100);
-    if (msg) { msg.innerText = `🎁 Bundle deal active — ${discountPercent}% off your order!`; msg.style.color = "var(--success, #4ade80)"; }
-    if (promoRow) promoRow.style.display = "none";
-    if (promoHint) promoHint.style.display = "none";
-  } else {
-    if (promoRow) promoRow.style.display = "";
-    if (promoHint) promoHint.style.display = "";
-    if (msg && !activePromos.length) msg.innerText = "";
-    else if (msg && activePromos.length) msg.innerText = getActivePromoMessage();
-  }
 
   if (document.getElementById("cart-total")) document.getElementById("cart-total").innerText = formatCurrency(total);
   if (document.getElementById("cart-count")) document.getElementById("cart-count").innerText = cart.reduce((sum, i) => sum + i.quantity, 0);
@@ -2272,28 +2145,15 @@ async function checkout() {
   localStorage.setItem("lunaraCustomerProfile", JSON.stringify(customerProfile));
 
   const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
-  let bundleActive = false;
-  let bundlePercent = 0;
-  if (itemCount >= 4) {
-    bundleActive = true;
-    bundlePercent = 0.12;
-  } else if (itemCount === 3) {
-    bundleActive = true;
-    bundlePercent = 0.10;
-  }
-  const totalPercentOff = bundleActive ? bundlePercent : activePromos.reduce((sum, p) => sum + p.percent, 0);
+  const totalPercentOff = activePromos.reduce((sum, p) => sum + p.percent, 0);
   const total = subtotal * (1 - totalPercentOff);
   const orderId = "LUNARA-" + Date.now();
   localStorage.setItem("lunara_order_id", orderId);
 
   // Lock one-time-use promo codes (e.g. WELCOME10) so they can't be reused
-  // (skipped automatically if the bundle deal applied instead of a promo code)
-  if (!bundleActive) {
-    activePromos.forEach(p => {
-      if (PROMO_CODES[p.code]?.oneTimeUse) markOneTimeCodeUsed(p.code);
-    });
-  }
+  activePromos.forEach(p => {
+    if (PROMO_CODES[p.code]?.oneTimeUse) markOneTimeCodeUsed(p.code);
+  });
 
   // Promo codes are tied to THIS order only — clear them now so they never
   // carry over into the customer's next visit or next purchase.
