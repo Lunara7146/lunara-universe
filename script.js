@@ -1349,6 +1349,31 @@ function formatCurrency(amount) {
   return "$" + Number(amount || 0).toFixed(2);
 }
 
+// Anchor prices — ZAR only, South African local print provider items
+// Anchor = real price + 20% (shown crossed out, makes the real price look like a 20% discount)
+const ZAR_REAL_PRICES = {
+  hoodie:      { black: 949.99, white: 854.50, "stone-blue": 854.50 },
+  sweatshirt:  { black: 879.99, white: 704.50 },
+  tshirt:      { black: 549.99, white: 464.50 },
+  longsleeve:  { black: 589.99, white: 474.50 }
+};
+
+function formatZAR(amount) {
+  return "R" + Number(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d)\.)/g, " ");
+}
+
+function getAnchorPrice(type, color) {
+  if (userCountry !== "ZA") return null;
+  const t = String(type || "").toLowerCase();
+  const c = String(color || "black").toLowerCase();
+  const map = ZAR_REAL_PRICES[t];
+  if (!map) return null;
+  const real = map[c] || map["black"];
+  if (real === undefined) return null;
+  const anchor = real * 1.20; // flat 20% above real price
+  return formatZAR(anchor);
+}
+
 // ==========================
 // 🖼️ PRODUCT IMAGES
 // All customers see images from your GitHub repo.
@@ -1506,7 +1531,6 @@ function displayProducts(products) {
   let globalIndex = 0;
   sorted.forEach((product) => {
     const index = globalIndex++;
-    const stock = Math.floor(Math.random() * 6) + 3;
     const reviews = Math.floor(Math.random() * 1500) + 300;
     const isFav = favorites.includes(product.id);
     const isSweatpants = String(product.type || "").toLowerCase() === "sweatpants";
@@ -1538,15 +1562,25 @@ function displayProducts(products) {
     const card = document.createElement("div");
     card.className = "product-card";
 
+    const type = String(product.type || "").toLowerCase();
+    const hasBack = (type === "hoodie" || type === "sweatshirt");
+    const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${defaultColor}.png` : null;
+    const frontSrc = imageSrc;
+    // Hoodies and sweatshirts: show back first, front on swipe
+    const displaySrc = hasBack ? backSrc : frontSrc;
+    const altSrc    = hasBack ? frontSrc : null;
+
     card.innerHTML = `
-      <div class="product-image-wrap">
+      <div class="product-image-wrap${hasBack ? " swipeable" : ""}"
+           ${hasBack ? `data-front="${frontSrc}" data-back="${backSrc}" data-showing="back"` : ""}>
         <img
           id="img-${index}"
-          src="${imageSrc}"
+          src="${displaySrc}"
           class="product-image"
           alt="${product.name}"
           onerror="this.onerror=null;this.src='images/lunara-website-logo.png'"
         >
+        ${hasBack ? `<div class="swipe-hint">swipe →</div>` : ""}
       </div>
 
       <div class="product-info">
@@ -1557,9 +1591,12 @@ function displayProducts(products) {
           </button>
         </div>
 
+        ${(() => {
+          const ap = getAnchorPrice(product.type, defaultColor);
+          return ap ? `<p class="anchor-price" id="anchor-display-${index}">${ap}</p>` : "";
+        })()}
         <p class="product-price" id="price-display-${index}">${formatCurrency(activeDisplayPrice)}</p>
-        <p class="product-tag">🔥 Almost sold out</p>
-        <p class="product-stock">Only ${stock} left</p>
+
         <p class="product-reviews">★★★★★ (${reviews})</p>
 
         <select id="size-${index}" onchange="updatePremiumPricing(${index})">
@@ -1594,9 +1631,14 @@ window.updatePremiumPricing = function(index) {
   const product = storeProducts[index];
   if (!product) return;
   const size = document.getElementById(`size-${index}`)?.value || "M";
+  const color = document.getElementById(`color-${index}`)?.value || "black";
+  const price = getCalculatedRegionalPrice(product, size);
   const priceDisplay = document.getElementById(`price-display-${index}`);
-  if (priceDisplay) {
-    priceDisplay.innerText = formatCurrency(getCalculatedRegionalPrice(product, size));
+  const anchorDisplay = document.getElementById(`anchor-display-${index}`);
+  if (priceDisplay) priceDisplay.innerText = formatCurrency(price);
+  if (anchorDisplay) {
+    const ap = getAnchorPrice(product.type, color);
+    if (ap) anchorDisplay.innerText = ap;
   }
 };
 
@@ -1609,15 +1651,21 @@ function changeColor(index) {
   const img = document.getElementById(`img-${index}`);
   if (!img || !product) return;
 
-  // Set local image immediately as placeholder
   img.src = getImagePath(product, color);
 
+  // Update anchor price when colour changes (hoodies & sweatshirts only)
+  const anchorDisplay = document.getElementById(`anchor-display-${index}`);
+  if (anchorDisplay) {
+    const ap = getAnchorPrice(product.type, color);
+    if (ap) anchorDisplay.innerText = ap;
+  }
 }
 
 // ==========================
 // ❤️ FAVORITES
 // ==========================
 function toggleFavorite(id, el) {
+  if (!id) return;
   if (favorites.includes(id)) {
     favorites = favorites.filter((f) => f !== id);
     el.classList.remove("active");
@@ -1705,6 +1753,142 @@ function addToCart(index, event) {
 // ==========================
 // 🧾 CART UI MANAGEMENT
 // ==========================
+// ==========================
+// 🎟️ PROMO CODES
+// ==========================
+// LUNA5      = 5% off cart total, reusable, type: "general" — shareable as a link
+// AMBASSADOR codes = 5% off cart total, reusable, type: "ambassador" — unique per ambassador, trackable
+// WELCOME10  = 10% off cart total, ONE-TIME USE per customer, type: "welcome" — currently DISABLED (set live: false)
+//
+// STACKING RULE: one "general" code (LUNA5) + one "ambassador" code can combine for 10% off together.
+// Two ambassador codes cannot stack with each other. Only you control this list — customers cannot
+// add, edit, or create their own codes; they can only type in ones you've published.
+const PROMO_CODES = {
+  "LUNA5":      { percent: 0.05, oneTimeUse: false, type: "general",    live: true  },
+  "WELCOME10":  { percent: 0.10, oneTimeUse: true,  type: "welcome",    live: false }, // flip live:true to launch later
+
+  // ⭐ AMBASSADOR CODE POOL — 15 pre-made star-themed codes, ready to hand out.
+  // Give each new ambassador the next unused code below (just flip "assigned" to their name as a note).
+  // No code changes needed when someone new joins — just hand out the next one and share their link:
+  // https://lunara-universe-tau.vercel.app/?promo=CODE
+  "NOVA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "STAR5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "ORBI5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "GLOW5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "BEAM5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "FLAR5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "VEGA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "RISE5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "AURA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "DUST5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "MOON5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "HALO5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "WISP5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "DAWN5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+  "GAZE5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+};
+
+let activePromos = []; // array of { code, percent, type } — supports stacking
+
+function hasUsedOneTimeCode(code) {
+  const used = JSON.parse(localStorage.getItem("lunaraUsedPromoCodes") || "[]");
+  return used.includes(code);
+}
+
+function markOneTimeCodeUsed(code) {
+  const used = JSON.parse(localStorage.getItem("lunaraUsedPromoCodes") || "[]");
+  if (!used.includes(code)) {
+    used.push(code);
+    localStorage.setItem("lunaraUsedPromoCodes", JSON.stringify(used));
+  }
+}
+
+function getActivePromoMessage() {
+  if (!activePromos.length) return "";
+  const totalPercent = Math.round(activePromos.reduce((sum, p) => sum + p.percent, 0) * 100);
+  const codes = activePromos.map(p => p.code).join(" + ");
+  return `✓ ${codes} applied — ${totalPercent}% off!`;
+}
+
+// Core apply logic, usable both from the input box and from URL auto-apply
+function tryApplyPromoCode(code, msg) {
+  code = code.trim().toUpperCase();
+  if (!code) return false;
+
+  const promo = PROMO_CODES[code];
+
+  if (!promo || !promo.live) {
+    if (msg) { msg.innerText = "Invalid promo code."; msg.style.color = "#f87171"; }
+    return false;
+  }
+
+  if (promo.oneTimeUse && hasUsedOneTimeCode(code)) {
+    if (msg) { msg.innerText = "This code has already been used."; msg.style.color = "#f87171"; }
+    return false;
+  }
+
+  // Already applied?
+  if (activePromos.some(p => p.code === code)) {
+    if (msg) { msg.innerText = "This code is already applied."; msg.style.color = "var(--muted)"; }
+    return false;
+  }
+
+  // Stacking rules:
+  // - "general" (LUNA5) can stack with ONE "ambassador" code
+  // - two "ambassador" codes cannot stack together
+  // - "welcome" codes don't stack with anything (used alone)
+  if (promo.type === "welcome" && activePromos.length > 0) {
+    if (msg) { msg.innerText = "This code can't be combined with other codes."; msg.style.color = "#f87171"; }
+    return false;
+  }
+  if (activePromos.some(p => p.type === "welcome")) {
+    if (msg) { msg.innerText = "Remove your current code first to add another."; msg.style.color = "#f87171"; }
+    return false;
+  }
+  if (promo.type === "ambassador" && activePromos.some(p => p.type === "ambassador")) {
+    if (msg) { msg.innerText = "Only one ambassador code can be used per order."; msg.style.color = "#f87171"; }
+    return false;
+  }
+  if (promo.type === "general" && activePromos.some(p => p.type === "general")) {
+    if (msg) { msg.innerText = "This code is already applied."; msg.style.color = "var(--muted)"; }
+    return false;
+  }
+
+  activePromos.push({ code, percent: promo.percent, type: promo.type });
+  if (msg) {
+    msg.innerText = getActivePromoMessage();
+    msg.style.color = "var(--success, #4ade80)";
+  }
+  return true;
+}
+
+window.applyPromo = function() {
+  const input = document.getElementById("promo-input");
+  const msg = document.getElementById("promo-msg");
+  if (!input) return;
+  const code = input.value;
+
+  if (!code.trim()) {
+    if (msg) { msg.innerText = "Please enter a code."; msg.style.color = "var(--muted)"; }
+    return;
+  }
+
+  tryApplyPromoCode(code, msg);
+  updateCart();
+};
+
+// Auto-apply promo codes from a shareable link, e.g. ?promo=LUNA5 or ?promo=AMBKARLA5
+function autoApplyPromoFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const promoParam = params.get("promo");
+  if (!promoParam) return;
+  const msg = document.getElementById("promo-msg");
+  const input = document.getElementById("promo-input");
+  const applied = tryApplyPromoCode(promoParam, msg);
+  if (applied && input) input.value = promoParam.toUpperCase();
+  updateCart();
+}
+
 function updateCart() {
   const items = document.getElementById("cart-items");
   if (!items) return;
@@ -1735,7 +1919,10 @@ function updateCart() {
     items.appendChild(row);
   });
 
-  const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const totalPercentOff = activePromos.reduce((sum, p) => sum + p.percent, 0);
+  const total = subtotal * (1 - totalPercentOff);
+
   if (document.getElementById("cart-total")) document.getElementById("cart-total").innerText = formatCurrency(total);
   if (document.getElementById("cart-count")) document.getElementById("cart-count").innerText = cart.reduce((sum, i) => sum + i.quantity, 0);
 }
@@ -1957,9 +2144,24 @@ async function checkout() {
   const customerProfile = { firstName, lastName, email, country, phone, address1, city, region, zip };
   localStorage.setItem("lunaraCustomerProfile", JSON.stringify(customerProfile));
 
-  const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const totalPercentOff = activePromos.reduce((sum, p) => sum + p.percent, 0);
+  const total = subtotal * (1 - totalPercentOff);
   const orderId = "LUNARA-" + Date.now();
   localStorage.setItem("lunara_order_id", orderId);
+
+  // Lock one-time-use promo codes (e.g. WELCOME10) so they can't be reused
+  activePromos.forEach(p => {
+    if (PROMO_CODES[p.code]?.oneTimeUse) markOneTimeCodeUsed(p.code);
+  });
+
+  // Promo codes are tied to THIS order only — clear them now so they never
+  // carry over into the customer's next visit or next purchase.
+  activePromos = [];
+  const promoInputEl = document.getElementById("promo-input");
+  const promoMsgEl = document.getElementById("promo-msg");
+  if (promoInputEl) promoInputEl.value = "";
+  if (promoMsgEl) promoMsgEl.innerText = "";
 
   // Split cart: OTC items (SA local fulfillment) vs Printful items (sweatpants, all regions)
   const otcItems = cart.filter(i => i.fulfilledByOTC);
@@ -2124,10 +2326,11 @@ function checkWelcomeGate() {
   const saved = localStorage.getItem("lunaraCustomerProfile");
   if (saved) {
     // Returning visitor — load store straight away
-    loadProducts().then(() => updateCart());
+    loadProducts().then(() => { updateCart(); autoApplyPromoFromURL(); });
   } else {
     // First visit — show the details modal as a gentle prompt (can be closed)
     openDetailsModal();
+    loadProducts().then(() => { updateCart(); autoApplyPromoFromURL(); });
   }
 }
 
@@ -2224,3 +2427,60 @@ window.setRegion = function(region) {
   const dd = document.getElementById("regionDropdown");
   if (dd) dd.classList.add("hidden");
 };
+
+// ==========================
+// 👆 IMAGE SWIPE (back/front for hoodies & sweatshirts)
+// ==========================
+document.addEventListener("touchstart", function(e) {
+  const wrap = e.target.closest(".swipeable");
+  if (!wrap) return;
+  wrap._touchStartX = e.touches[0].clientX;
+}, { passive: true });
+
+document.addEventListener("touchend", function(e) {
+  const wrap = e.target.closest(".swipeable");
+  if (!wrap || wrap._touchStartX === undefined) return;
+  const dx = e.changedTouches[0].clientX - wrap._touchStartX;
+  if (Math.abs(dx) > 30) {
+    swapImage(wrap);
+  }
+}, { passive: true });
+
+// Also allow click/tap to toggle on desktop
+document.addEventListener("click", function(e) {
+  const wrap = e.target.closest(".swipeable");
+  if (!wrap) return;
+  swapImage(wrap);
+});
+
+function swapImage(wrap) {
+  const img = wrap.querySelector("img");
+  const showing = wrap.dataset.showing;
+  if (showing === "back") {
+    img.src = wrap.dataset.front;
+    wrap.dataset.showing = "front";
+    const hint = wrap.querySelector(".swipe-hint");
+    if (hint) hint.textContent = "← swipe";
+  } else {
+    img.src = wrap.dataset.back;
+    wrap.dataset.showing = "back";
+    const hint = wrap.querySelector(".swipe-hint");
+    if (hint) hint.textContent = "swipe →";
+  }
+}
+
+// ==========================
+// 🌍 CUSTOMS MODAL
+// ==========================
+window.closeCustomsModal = function(e) {
+  if (e && e.target !== document.getElementById("customs-modal-overlay")) return;
+  const overlay = document.getElementById("customs-modal-overlay");
+  if (overlay) overlay.classList.remove("active");
+};
+// Allow the button to close it directly
+document.addEventListener("click", function(e) {
+  if (e.target && e.target.closest("#customs-modal-overlay .checkout-btn")) {
+    const overlay = document.getElementById("customs-modal-overlay");
+    if (overlay) overlay.classList.remove("active");
+  }
+});
