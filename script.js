@@ -1310,16 +1310,21 @@ function saveFavorites() {
 // ==========================
 const SA_PRICING = {
   hoodie: {
-    "S": 750, "M": 750, "L": 750, "XL": 750, "2XL": 750,
-    "3XL": 860, "4XL": 860, "5XL": 860
+    black:       { "S": 949.99, "M": 949.99, "L": 949.99, "XL": 949.99, "2XL": 949.99, "3XL": 949.99, "4XL": 949.99, "5XL": 949.99 },
+    white:       { "S": 859.99, "M": 859.99, "L": 859.99, "XL": 859.99, "2XL": 859.99, "3XL": 859.99, "4XL": 859.99, "5XL": 859.99 },
+    "stone-blue":{ "S": 859.99, "M": 859.99, "L": 859.99, "XL": 859.99, "2XL": 859.99, "3XL": 859.99, "4XL": 859.99, "5XL": 859.99 }
   },
   sweatshirt: {
-    "S": 480, "M": 480, "L": 480, "XL": 480, "2XL": 480,
-    "3XL": 550, "4XL": 550, "5XL": 550
+    black: { "S": 879.99, "M": 879.99, "L": 879.99, "XL": 879.99, "2XL": 879.99, "3XL": 879.99, "4XL": 879.99, "5XL": 879.99 },
+    white: { "S": 749.99, "M": 749.99, "L": 749.99, "XL": 749.99, "2XL": 749.99, "3XL": 749.99, "4XL": 749.99, "5XL": 749.99 }
   },
   tshirt: {
-    "S": 280, "M": 280, "L": 280, "XL": 280, "2XL": 280,
-    "3XL": 320, "4XL": 320
+    black: { "S": 549.99, "M": 549.99, "L": 549.99, "XL": 549.99, "2XL": 549.99, "3XL": 549.99, "4XL": 549.99 },
+    white: { "S": 469.99, "M": 469.99, "L": 469.99, "XL": 469.99, "2XL": 469.99, "3XL": 469.99, "4XL": 469.99 }
+  },
+  longsleeve: {
+    black: { "S": 589.99, "M": 589.99, "L": 589.99, "XL": 589.99, "2XL": 589.99, "3XL": 589.99, "4XL": 589.99 },
+    white: { "S": 479.99, "M": 479.99, "L": 479.99, "XL": 479.99, "2XL": 479.99, "3XL": 479.99, "4XL": 479.99 }
   },
   sweatpants: {
     "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
@@ -1330,13 +1335,20 @@ const SA_PRICING = {
 // Returns the correct display price for a product + size.
 // SA  → your ZAR price from SA_PRICING (ZAR).
 // INT → Printify's published USD price from product.pricing (set in your Printify dashboard).
-function getCalculatedRegionalPrice(product, size) {
+function getCalculatedRegionalPrice(product, size, color) {
   const type = String(product?.type || "").toLowerCase();
 
   if (userCountry === "ZA") {
-    const saPrice = SA_PRICING[type]?.[size];
-    if (saPrice !== undefined) return saPrice;
-    // Fallback if size not in table
+    if (type === "sweatpants") {
+      const saPrice = SA_PRICING.sweatpants?.[size];
+      if (saPrice !== undefined) return saPrice;
+    } else {
+      const c = String(color || "black").toLowerCase();
+      const colorTable = SA_PRICING[type]?.[c] || SA_PRICING[type]?.black;
+      const saPrice = colorTable?.[size];
+      if (saPrice !== undefined) return saPrice;
+    }
+    // Fallback if size/color not in table
     return product.pricing?.[size] || product.price || 0;
   }
 
@@ -1540,11 +1552,7 @@ function displayProducts(products) {
     const imageSrc = getImagePath(product, defaultColor);
 
     const defaultSize = product.pricing?.["M"] !== undefined ? "M" : Object.keys(product.pricing || {})[0] || "M";
-    const activeDisplayPrice = getCalculatedRegionalPrice(product, defaultSize);
-
-    const sizes = Object.keys(product.pricing || { "S": 0, "M": 0, "L": 0, "XL": 0 });
-
-    // Colors: sweatpants are white only; other products derive colors from variant keys
+    const activeDisplayPrice = getCalculatedRegionalPrice(product, defaultSize, defaultColor);
     let finalColors;
     if (isSweatpants) {
       finalColors = ["white"];
@@ -1634,7 +1642,7 @@ window.updatePremiumPricing = function(index) {
   if (!product) return;
   const size = document.getElementById(`size-${index}`)?.value || "M";
   const color = document.getElementById(`color-${index}`)?.value || "black";
-  const price = getCalculatedRegionalPrice(product, size);
+  const price = getCalculatedRegionalPrice(product, size, color);
   const priceDisplay = document.getElementById(`price-display-${index}`);
   const anchorDisplay = document.getElementById(`anchor-display-${index}`);
   if (priceDisplay) priceDisplay.innerText = formatCurrency(price);
@@ -1654,6 +1662,12 @@ function changeColor(index) {
   if (!img || !product) return;
 
   img.src = getImagePath(product, color);
+
+  // Update main price for the newly selected color
+  const size = document.getElementById(`size-${index}`)?.value || "M";
+  const price = getCalculatedRegionalPrice(product, size, color);
+  const priceDisplay = document.getElementById(`price-display-${index}`);
+  if (priceDisplay) priceDisplay.innerText = formatCurrency(price);
 
   // Update anchor price when colour changes (hoodies & sweatshirts only)
   const anchorDisplay = document.getElementById(`anchor-display-${index}`);
@@ -1703,10 +1717,7 @@ function renderFavorites() {
     const defaultColor = isSweatpants ? "white" : "black";
     const imageSrc = getImagePath(product, defaultColor);
     const defaultSize = product.pricing?.["M"] !== undefined ? "M" : Object.keys(product.pricing || {})[0] || "M";
-    const activeDisplayPrice = getCalculatedRegionalPrice(product, defaultSize);
-    const sizes = Object.keys(product.pricing || { "S": 0, "M": 0, "L": 0, "XL": 0 });
-
-    let finalColors;
+    const activeDisplayPrice = getCalculatedRegionalPrice(product, defaultSize, defaultColor);
     if (isSweatpants) {
       finalColors = ["white"];
     } else if (product.colors && product.colors.length) {
@@ -1791,7 +1802,7 @@ function addToCart(index, event) {
   }
 
   const variantKey = `${size}-${color}`;
-  const regionalPrice = getCalculatedRegionalPrice(product, size);
+  const regionalPrice = getCalculatedRegionalPrice(product, size, color);
   const variantSku = product.variants?.[variantKey]?.sku || product.variants?.[`S-${color}`]?.sku || "LOCAL-PROD";
 
   // Fulfillment routing:
