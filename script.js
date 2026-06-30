@@ -1404,6 +1404,9 @@ function getAnchorPrice(type, color) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Maps product id → exact repo folder name
+// Products that only have a front design (no back print) — skip swipe/back image for these
+const NO_BACK_IDS = ["nova-plain-hoodie"];
+
 const IMAGE_FOLDER_MAP = {
   // T-shirts (images/shirts/)
   "lunara-butterfly-tshirt":        "shirts/butterfly-tee",
@@ -1574,7 +1577,7 @@ function displayProducts(products) {
     card.className = "product-card";
 
     const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve");
+    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve") && !NO_BACK_IDS.includes(product.id);
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${defaultColor}.png` : null;
     const frontSrc = imageSrc;
     // Hoodies and sweatshirts: show back first, front on swipe
@@ -1737,7 +1740,7 @@ function renderFavorites() {
     }
 
     const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve");
+    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve") && !NO_BACK_IDS.includes(product.id);
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${defaultColor}.png` : null;
     const displaySrc = hasBack ? backSrc : imageSrc;
 
