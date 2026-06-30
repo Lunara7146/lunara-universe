@@ -1553,7 +1553,10 @@ function displayProducts(products) {
 
     const defaultSize = product.pricing?.["M"] !== undefined ? "M" : Object.keys(product.pricing || {})[0] || "M";
     const activeDisplayPrice = getCalculatedRegionalPrice(product, defaultSize, defaultColor);
-    let finalColors;
+
+    const sizes = Object.keys(product.pricing || { "S": 0, "M": 0, "L": 0, "XL": 0 });
+
+    // Colors: sweatpants are white only; other products derive colors from variant keys
     if (isSweatpants) {
       finalColors = ["white"];
     } else if (product.colors && product.colors.length) {
@@ -1718,6 +1721,9 @@ function renderFavorites() {
     const imageSrc = getImagePath(product, defaultColor);
     const defaultSize = product.pricing?.["M"] !== undefined ? "M" : Object.keys(product.pricing || {})[0] || "M";
     const activeDisplayPrice = getCalculatedRegionalPrice(product, defaultSize, defaultColor);
+    const sizes = Object.keys(product.pricing || { "S": 0, "M": 0, "L": 0, "XL": 0 });
+
+    let finalColors;
     if (isSweatpants) {
       finalColors = ["white"];
     } else if (product.colors && product.colors.length) {
