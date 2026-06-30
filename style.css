@@ -245,6 +245,15 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   gap: 30px; padding: 24px 20px 40px;
 }
 
+/* Favourites can have just 1-2 items — auto-fit would stretch them huge.
+   Use auto-fill + a max-width cap so cards stay the same size as the main grids. */
+#favorites .products {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+#favorites .product-card {
+  max-width: 320px;
+}
+
 .product-card {
   background: var(--panel); border-radius: 20px; overflow: hidden;
   transition: 0.3s; border: 1px solid var(--line);
@@ -259,7 +268,14 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .product-info { padding: 20px; }
 .product-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .product-top h4 { font-size: 16px; }
-.fav-btn { background: transparent; border: none; font-size: 13px; cursor: pointer; opacity: 0.5; padding: 2px; line-height: 1; flex-shrink: 0; }
+.fav-btn {
+  background: transparent; border: none; font-size: 16px; cursor: pointer;
+  opacity: 0.6; padding: 0; width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  line-height: 1; flex-shrink: 0;
+  /* Tint the 🦋 emoji blue (it's a full-color glyph, so we push its hue toward blue) */
+  filter: grayscale(1) sepia(1) hue-rotate(175deg) saturate(4);
+}
 .fav-btn.active { opacity: 1; }
 .anchor-price {
   color: var(--muted); font-size: 13px; text-decoration: line-through;
@@ -509,7 +525,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   .why-statement blockquote { font-size: 13px; }
   .modal-box { padding: 24px 16px; }
   .customs-modal-box { padding: 20px 14px; }
-  .fav-btn { font-size: 11px; }
+  .fav-btn { font-size: 14px; width: 20px; height: 20px; }
 }
 
 @media (max-width: 360px) {
