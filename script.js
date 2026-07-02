@@ -1327,8 +1327,8 @@ const SA_PRICING = {
     white: { "S": 479.99, "M": 479.99, "L": 479.99, "XL": 479.99, "2XL": 479.99, "3XL": 479.99, "4XL": 479.99 }
   },
   sweatpants: {
-    "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-    "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+    "2XS": 1140, "XS": 1140, "S": 1140, "M": 1140, "L": 1140, "XL": 1140,
+    "2XL": 1240, "3XL": 1270, "4XL": 1320, "5XL": 1370, "6XL": 1410
   }
 };
 
@@ -1370,19 +1370,31 @@ const ZAR_REAL_PRICES = {
   longsleeve:  { black: 589.99, white: 479.99 }
 };
 
+// Sweatpants anchor prices vary by size (from OTC spreadsheet, rounded to nearest R10)
+const ZAR_SWEATPANTS_ANCHOR = {
+  "2XS": 1280, "XS": 1280, "S": 1280, "M": 1280, "L": 1280, "XL": 1280,
+  "2XL": 1390, "3XL": 1420, "4XL": 1480, "5XL": 1530, "6XL": 1580
+};
+
 function formatZAR(amount) {
   return "R" + Number(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d)\.)/g, " ");
 }
 
-function getAnchorPrice(type, color) {
+function getAnchorPrice(type, color, size) {
   if (userCountry !== "ZA") return null;
   const t = String(type || "").toLowerCase();
+
+  if (t === "sweatpants") {
+    const anchor = ZAR_SWEATPANTS_ANCHOR[size];
+    return anchor !== undefined ? formatZAR(anchor) : null;
+  }
+
   const c = String(color || "black").toLowerCase();
   const map = ZAR_REAL_PRICES[t];
   if (!map) return null;
   const real = map[c] || map["black"];
   if (real === undefined) return null;
-  const anchor = real * 1.20; // flat 20% above real price
+  const anchor = real * 1.20;
   return formatZAR(anchor);
 }
 
@@ -1606,7 +1618,7 @@ function displayProducts(products) {
         </div>
 
         ${(() => {
-          const ap = getAnchorPrice(product.type, defaultColor);
+          const ap = getAnchorPrice(product.type, defaultColor, defaultSize);
           return ap ? `<p class="anchor-price" id="anchor-display-${index}">${ap}</p>` : "";
         })()}
         <p class="product-price" id="price-display-${index}">${formatCurrency(activeDisplayPrice)}</p>
@@ -1653,7 +1665,7 @@ window.updatePremiumPricing = function(index) {
   const anchorDisplay = document.getElementById(`anchor-display-${index}`);
   if (priceDisplay) priceDisplay.innerText = formatCurrency(price);
   if (anchorDisplay) {
-    const ap = getAnchorPrice(product.type, color);
+    const ap = getAnchorPrice(product.type, color, size);
     if (ap) anchorDisplay.innerText = ap;
   }
 };
@@ -1678,7 +1690,7 @@ function changeColor(index) {
   // Update anchor price when colour changes (hoodies & sweatshirts only)
   const anchorDisplay = document.getElementById(`anchor-display-${index}`);
   if (anchorDisplay) {
-    const ap = getAnchorPrice(product.type, color);
+    const ap = getAnchorPrice(product.type, color, size);
     if (ap) anchorDisplay.innerText = ap;
   }
 }
@@ -1768,7 +1780,7 @@ function renderFavorites() {
         </div>
 
         ${(() => {
-          const ap = getAnchorPrice(product.type, defaultColor);
+          const ap = getAnchorPrice(product.type, defaultColor, defaultSize);
           return ap ? `<p class="anchor-price" id="anchor-display-${index}">${ap}</p>` : "";
         })()}
         <p class="product-price" id="price-display-${index}">${formatCurrency(activeDisplayPrice)}</p>
