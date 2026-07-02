@@ -1327,8 +1327,8 @@ const SA_PRICING = {
     white: { "S": 479.99, "M": 479.99, "L": 479.99, "XL": 479.99, "2XL": 479.99, "3XL": 479.99, "4XL": 479.99 }
   },
   sweatpants: {
-    "2XS": 1140, "XS": 1140, "S": 1140, "M": 1140, "L": 1140, "XL": 1140,
-    "2XL": 1240, "3XL": 1270, "4XL": 1320, "5XL": 1370, "6XL": 1410
+    "2XS": 969.99, "XS": 969.99, "S": 969.99, "M": 969.99, "L": 969.99, "XL": 969.99,
+    "2XL": 1099.99, "3XL": 1149.99, "4XL": 1239.99, "5XL": 1299.99, "6XL": 1349.99
   }
 };
 
@@ -1370,10 +1370,10 @@ const ZAR_REAL_PRICES = {
   longsleeve:  { black: 589.99, white: 479.99 }
 };
 
-// Sweatpants anchor prices vary by size (from OTC spreadsheet, rounded to nearest R10)
+// Sweatpants anchor prices vary by size — exactly 20% above sale price, kept at .99
 const ZAR_SWEATPANTS_ANCHOR = {
-  "2XS": 1280, "XS": 1280, "S": 1280, "M": 1280, "L": 1280, "XL": 1280,
-  "2XL": 1390, "3XL": 1420, "4XL": 1480, "5XL": 1530, "6XL": 1580
+  "2XS": 1163.99, "XS": 1163.99, "S": 1163.99, "M": 1163.99, "L": 1163.99, "XL": 1163.99,
+  "2XL": 1319.99, "3XL": 1379.99, "4XL": 1487.99, "5XL": 1559.99, "6XL": 1619.99
 };
 
 function formatZAR(amount) {
