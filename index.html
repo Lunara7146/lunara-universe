@@ -117,7 +117,7 @@
       <h1>Streetwear for those who move differently</h1>
       <p class="hero-sub">Designed for expression. Built for presence. Premium cosmic streetwear crafted for those who stand apart.</p>
       <div class="hero-buttons">
-        <a href="#shop" class="btn-primary">Shop Collection</a>
+        <button onclick="openCustomsModal()" class="btn-primary">Custom</button>
         <div class="why-lunara-dropdown" style="position:relative;display:inline-block;">
           <button class="btn-why-lunara" onclick="toggleWhyLunara(event)">Why Lunara</button>
           <div id="why-lunara-popup" class="why-lunara-popup hidden">
@@ -280,13 +280,7 @@
         </div>
       </div>
 
-      <div class="footer-dropdown">
-        <button class="footer-dropbtn">Customs</button>
-        <div class="footer-dropdown-content">
-          <h3>🌍 Customs</h3>
-          <p>Customers are responsible for customs duties and taxes when items are shipped internationally. Lunara's Universe is not liable for delays caused by customs clearance.</p>
-        </div>
-      </div>
+      <button class="footer-dropbtn" onclick="openCustomsModal()">Customs</button>
 
       <div class="footer-dropdown">
         <button class="footer-dropbtn">Shipping Times</button>
@@ -308,7 +302,7 @@
   </footer>
 
   <!-- Customs Notice Popup -->
-  <div id="customs-modal-overlay" class="modal-overlay active" onclick="closeCustomsModal(event)">
+  <div id="customs-modal-overlay" class="modal-overlay" onclick="closeCustomsModal(event)">
     <div class="modal-box customs-modal-box" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeCustomsModal()" aria-label="Close">✕</button>
       <div style="font-size:2rem;margin-bottom:8px;">🌍</div>

@@ -381,10 +381,11 @@ function displayProducts(products) {
     card.className = "product-card";
 
     const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve") && !NO_BACK_IDS.includes(product.id);
-    const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${defaultColor}.png` : null;
+    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants") && !NO_BACK_IDS.includes(product.id);
+    const backColor = type === "sweatpants" ? "white" : defaultColor;
+    const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${backColor}.png` : null;
     const frontSrc = imageSrc;
-    // Hoodies and sweatshirts: show back first, front on swipe
+    // Back shown first, front on swipe
     const displaySrc = hasBack ? backSrc : frontSrc;
     const altSrc    = hasBack ? frontSrc : null;
 
@@ -544,8 +545,9 @@ function renderFavorites() {
     }
 
     const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve") && !NO_BACK_IDS.includes(product.id);
-    const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${defaultColor}.png` : null;
+    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants") && !NO_BACK_IDS.includes(product.id);
+    const backColor = type === "sweatpants" ? "white" : defaultColor;
+    const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${backColor}.png` : null;
     const displaySrc = hasBack ? backSrc : imageSrc;
 
     const card = document.createElement("div");
@@ -1436,6 +1438,11 @@ function swapImage(wrap) {
 // ==========================
 // 🌍 CUSTOMS MODAL
 // ==========================
+window.openCustomsModal = function() {
+  const overlay = document.getElementById("customs-modal-overlay");
+  if (overlay) overlay.classList.add("active");
+};
+
 window.closeCustomsModal = function(e) {
   if (e && e.target !== document.getElementById("customs-modal-overlay")) return;
   const overlay = document.getElementById("customs-modal-overlay");
