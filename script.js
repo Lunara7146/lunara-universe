@@ -388,7 +388,7 @@ function displayProducts(products) {
     const frontSrc = imageSrc;
     // Sweatpants: front first, swipe → back
     // All others (hoodie, sweatshirt, longsleeve): back first, swipe → front
-    const showBackFirst = hasBack && type !== "sweatpants";
+    const showBackFirst = hasBack && type !== "sweatpants" && type !== "longsleeve";
     const displaySrc = showBackFirst ? backSrc : frontSrc;
     const initialShowing = showBackFirst ? "back" : "front";
 
@@ -400,7 +400,15 @@ function displayProducts(products) {
           src="${displaySrc}"
           class="product-image"
           alt="${product.name}"
-          onerror="this.onerror=null;this.src='images/lunara-website-logo.png'"
+          onerror="(function(img){
+            var src=img.src;
+            // Try back.png (no color suffix) as fallback
+            if(src.indexOf('/back-')!==-1 && src.indexOf('lunara-website-logo')===-1){
+              var alt=src.replace(/\/back-[^/]+\.png$/,'/back.png');
+              if(alt!==src){ img.src=alt; return; }
+            }
+            img.onerror=null; img.src='images/lunara-website-logo.png';
+          })(this)"
         >
         ${hasBack ? `<div class="swipe-hint">${showBackFirst ? "swipe →" : "swipe ←"}</div>` : ""}
       </div>
@@ -475,7 +483,23 @@ function changeColor(index) {
   const img = document.getElementById(`img-${index}`);
   if (!img || !product) return;
 
-  img.src = getImagePath(product, color);
+  const type = String(product.type || "").toLowerCase();
+  const wrap = img.closest("[data-front]");
+  const newFront = getImagePath(product, color);
+  const backColor = type === "sweatpants" ? "white" : color;
+  const folder = (typeof IMAGE_FOLDER_MAP !== "undefined") ? IMAGE_FOLDER_MAP[product.id] : null;
+  const newBack = folder ? `images/${folder}/back-${backColor}.png` : null;
+
+  if (wrap) {
+    // Update data attributes so swipe still works after color change
+    wrap.dataset.front = newFront;
+    if (newBack) wrap.dataset.back = newBack;
+    // Show whichever side is currently showing
+    const showing = wrap.dataset.showing || "front";
+    img.src = (showing === "back" && newBack) ? newBack : newFront;
+  } else {
+    img.src = newFront;
+  }
 
   // Update main price for the newly selected color
   const size = document.getElementById(`size-${index}`)?.value || "M";
@@ -483,7 +507,7 @@ function changeColor(index) {
   const priceDisplay = document.getElementById(`price-display-${index}`);
   if (priceDisplay) priceDisplay.innerText = formatCurrency(price);
 
-  // Update anchor price when colour changes (hoodies & sweatshirts only)
+  // Update anchor price
   const anchorDisplay = document.getElementById(`anchor-display-${index}`);
   if (anchorDisplay) {
     const ap = getAnchorPrice(product.type, color, size);
@@ -552,7 +576,7 @@ function renderFavorites() {
     const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants") && !NO_BACK_IDS.includes(product.id);
     const backColor = type === "sweatpants" ? "white" : defaultColor;
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${backColor}.png` : null;
-    const showBackFirst = hasBack && type !== "sweatpants";
+    const showBackFirst = hasBack && type !== "sweatpants" && type !== "longsleeve";
     const displaySrc = showBackFirst ? backSrc : imageSrc;
     const initialShowing = showBackFirst ? "back" : "front";
 
@@ -566,7 +590,15 @@ function renderFavorites() {
           src="${displaySrc}"
           class="product-image"
           alt="${product.name}"
-          onerror="this.onerror=null;this.src='images/lunara-website-logo.png'"
+          onerror="(function(img){
+            var src=img.src;
+            // Try back.png (no color suffix) as fallback
+            if(src.indexOf('/back-')!==-1 && src.indexOf('lunara-website-logo')===-1){
+              var alt=src.replace(/\/back-[^/]+\.png$/,'/back.png');
+              if(alt!==src){ img.src=alt; return; }
+            }
+            img.onerror=null; img.src='images/lunara-website-logo.png';
+          })(this)"
         >
         ${hasBack ? `<div class="swipe-hint">${showBackFirst ? "swipe →" : "swipe ←"}</div>` : ""}
       </div>
