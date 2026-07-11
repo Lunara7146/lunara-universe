@@ -373,7 +373,8 @@ function displayProducts(products) {
         return true;
       });
     } else {
-      const dynamicColors = [...new Set(Object.keys(product.variants || {}).map(k => k.split("-").slice(1).join("-")))];
+      const dynamicColors = [...new Set(Object.keys(product.variants || {}).map(k => k.split("-").slice(1).join("-")))]
+        .filter(c => !(c === "stone-blue" && userCountry === "ZA"));
       finalColors = dynamicColors.length ? dynamicColors : ["black", "white"];
     }
 
@@ -385,13 +386,15 @@ function displayProducts(products) {
     const backColor = type === "sweatpants" ? "white" : defaultColor;
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${backColor}.png` : null;
     const frontSrc = imageSrc;
-    // Back shown first, front on swipe
-    const displaySrc = hasBack ? backSrc : frontSrc;
-    const altSrc    = hasBack ? frontSrc : null;
+    // Sweatpants: front first, swipe → back
+    // All others (hoodie, sweatshirt, longsleeve): back first, swipe → front
+    const showBackFirst = hasBack && type !== "sweatpants";
+    const displaySrc = showBackFirst ? backSrc : frontSrc;
+    const initialShowing = showBackFirst ? "back" : "front";
 
     card.innerHTML = `
       <div class="product-image-wrap${hasBack ? " swipeable" : ""}"
-           ${hasBack ? `data-front="${frontSrc}" data-back="${backSrc}" data-showing="back"` : ""}>
+           ${hasBack ? `data-front="${frontSrc}" data-back="${backSrc}" data-showing="${initialShowing}"` : ""}>
         <img
           id="img-${index}"
           src="${displaySrc}"
@@ -399,7 +402,7 @@ function displayProducts(products) {
           alt="${product.name}"
           onerror="this.onerror=null;this.src='images/lunara-website-logo.png'"
         >
-        ${hasBack ? `<div class="swipe-hint">swipe →</div>` : ""}
+        ${hasBack ? `<div class="swipe-hint">${showBackFirst ? "swipe →" : "swipe ←"}</div>` : ""}
       </div>
 
       <div class="product-info">
@@ -540,7 +543,8 @@ function renderFavorites() {
         return true;
       });
     } else {
-      const dynamicColors = [...new Set(Object.keys(product.variants || {}).map(k => k.split("-").slice(1).join("-")))];
+      const dynamicColors = [...new Set(Object.keys(product.variants || {}).map(k => k.split("-").slice(1).join("-")))]
+        .filter(c => !(c === "stone-blue" && userCountry === "ZA"));
       finalColors = dynamicColors.length ? dynamicColors : ["black", "white"];
     }
 
@@ -548,13 +552,15 @@ function renderFavorites() {
     const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants") && !NO_BACK_IDS.includes(product.id);
     const backColor = type === "sweatpants" ? "white" : defaultColor;
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${backColor}.png` : null;
-    const displaySrc = hasBack ? backSrc : imageSrc;
+    const showBackFirst = hasBack && type !== "sweatpants";
+    const displaySrc = showBackFirst ? backSrc : imageSrc;
+    const initialShowing = showBackFirst ? "back" : "front";
 
     const card = document.createElement("div");
     card.className = "product-card";
     card.innerHTML = `
       <div class="product-image-wrap${hasBack ? " swipeable" : ""}"
-           ${hasBack ? `data-front="${imageSrc}" data-back="${backSrc}" data-showing="back"` : ""}>
+           ${hasBack ? `data-front="${imageSrc}" data-back="${backSrc}" data-showing="${initialShowing}"` : ""}>
         <img
           id="img-${index}"
           src="${displaySrc}"
@@ -562,7 +568,7 @@ function renderFavorites() {
           alt="${product.name}"
           onerror="this.onerror=null;this.src='images/lunara-website-logo.png'"
         >
-        ${hasBack ? `<div class="swipe-hint">swipe →</div>` : ""}
+        ${hasBack ? `<div class="swipe-hint">${showBackFirst ? "swipe →" : "swipe ←"}</div>` : ""}
       </div>
 
       <div class="product-info">
@@ -1395,8 +1401,10 @@ window.setRegion = function(region) {
 };
 
 // ==========================
-// 👆 IMAGE SWIPE (back/front for hoodies & sweatshirts)
+// 👆 IMAGE SWIPE (back/front toggle)
 // ==========================
+let _lastSwipeTime = 0;
+
 document.addEventListener("touchstart", function(e) {
   const wrap = e.target.closest(".swipeable");
   if (!wrap) return;
@@ -1408,29 +1416,33 @@ document.addEventListener("touchend", function(e) {
   if (!wrap || wrap._touchStartX === undefined) return;
   const dx = e.changedTouches[0].clientX - wrap._touchStartX;
   if (Math.abs(dx) > 30) {
+    _lastSwipeTime = Date.now();
     swapImage(wrap);
   }
 }, { passive: true });
 
-// Also allow click/tap to toggle on desktop
+// Desktop click — skip if a touch swipe just fired (prevents double-fire on mobile)
 document.addEventListener("click", function(e) {
+  if (Date.now() - _lastSwipeTime < 500) return;
   const wrap = e.target.closest(".swipeable");
   if (!wrap) return;
+  // Don't trigger swap if they clicked a button/select inside the card
+  if (e.target.closest("button, select, a")) return;
   swapImage(wrap);
 });
 
 function swapImage(wrap) {
   const img = wrap.querySelector("img");
+  if (!img) return;
   const showing = wrap.dataset.showing;
+  const hint = wrap.querySelector(".swipe-hint");
   if (showing === "back") {
     img.src = wrap.dataset.front;
     wrap.dataset.showing = "front";
-    const hint = wrap.querySelector(".swipe-hint");
     if (hint) hint.textContent = "← swipe";
   } else {
     img.src = wrap.dataset.back;
     wrap.dataset.showing = "back";
-    const hint = wrap.querySelector(".swipe-hint");
     if (hint) hint.textContent = "swipe →";
   }
 }
