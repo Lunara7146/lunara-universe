@@ -28,87 +28,57 @@ async function detectCountry() {
     const data = await res.json();
     // Check if the user has a manually saved preference first; otherwise use IP
     const savedRegion = localStorage.getItem("selectedRegion");
-    userCountry = savedRegion || data.country_code || "ZA";
+    userCountry = savedRegion || (data.country_code === "ZA" ? "ZA" : "INTL");
   } catch {
     userCountry = localStorage.getItem("selectedRegion") || "ZA";
   }
 }
 
 function initRegionSelector() {
-  const regionBtn = document.getElementById("regionBtn");
-  const regionDropdown = document.getElementById("regionDropdown");
-  if (!regionBtn || !regionDropdown) return;
-
-  const regionLinks = regionDropdown.querySelectorAll("a");
-
   updateRegionUI(userCountry);
-
-  // Toggle dropdown
-  regionBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    regionDropdown.style.display = regionDropdown.style.display === "block" ? "none" : "block";
-  });
 
   // Close dropdown on outside click
   document.addEventListener("click", () => {
-    regionDropdown.style.display = "none";
-  });
-
-  // Handle choice selection
-  regionLinks.forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const chosenRegion = link.getAttribute("data-region");
-      
-      localStorage.setItem("selectedRegion", chosenRegion);
-      userCountry = chosenRegion;
-
-      updateRegionUI(chosenRegion);
-      
-      // Rerender products and update cart totals instantly
-      if (storeProducts.length > 0) {
-        displayProducts(storeProducts);
-      }
-      updateCart();
-    });
+    const dd = document.getElementById("regionDropdown");
+    if (dd) dd.classList.add("hidden");
   });
 }
+
+window.toggleRegionDropdown = function(e) {
+  e.stopPropagation();
+  const dd = document.getElementById("regionDropdown");
+  if (dd) dd.classList.toggle("hidden");
+};
+
+window.setRegion = function(region) {
+  localStorage.setItem("selectedRegion", region);
+  userCountry = region;
+  const dd = document.getElementById("regionDropdown");
+  if (dd) dd.classList.add("hidden");
+  updateRegionUI(region);
+  if (storeProducts.length > 0) displayProducts(storeProducts);
+  updateCart();
+};
 
 function getFlagEmoji(region) {
   if (region === "ZA") return "🇿🇦";
-  if (region === "GB") return "🇬🇧";
-  return "🇺🇸";
+  return "🌍";
 }
 
 function updateRegionUI(region) {
-  const regionBtn = document.getElementById("regionBtn");
-  if (regionBtn) regionBtn.style.display = "none";
+  // Update flag button display
+  const flagDisplay = document.getElementById("regionFlagDisplay");
+  const currDisplay = document.getElementById("regionCurrencyDisplay");
+  if (flagDisplay) flagDisplay.textContent = getFlagEmoji(region);
+  if (currDisplay) currDisplay.textContent = region === "ZA" ? "ZAR" : "USD";
 
-  // Build or update the flag button next to the logo
-  let flagEl = document.getElementById("logo-flag");
-  if (!flagEl) {
-    const logoLeftGroup = document.querySelector(".logo-left-group");
-    if (logoLeftGroup) {
-      flagEl = document.createElement("button");
-      flagEl.id = "logo-flag";
-      flagEl.className = "logo-flag-btn";
-      flagEl.setAttribute("aria-label", "Select region");
-      flagEl.onclick = (e) => {
-        e.stopPropagation();
-        const dd = document.getElementById("regionDropdown");
-        if (dd) dd.classList.toggle("hidden");
-      };
-      // Insert after logo-left inside the group
-      const logoLeft = logoLeftGroup.querySelector(".logo-left");
-      if (logoLeft) logoLeft.insertAdjacentElement("afterend", flagEl);
-      else logoLeftGroup.appendChild(flagEl);
-    }
-  }
-  if (flagEl) {
-    const currency = region === "ZA" ? "ZAR" : "USD";
-    flagEl.innerHTML = `<span class="flag-emoji">${getFlagEmoji(region)}</span><span class="flag-currency">${currency}</span>`;
-    flagEl.title = region === "ZA" ? "South Africa (ZAR)" : region === "GB" ? "United Kingdom (USD)" : "USA / International (USD)";
-  }
+  // International fulfillment message under Nova Collection heading
+  const intlMsg = document.getElementById("intl-fulfillment-msg");
+  if (intlMsg) intlMsg.style.display = region === "ZA" ? "none" : "block";
+
+  // Why Lunara — swap SA card vs international card
+  document.querySelectorAll(".why-sa-only").forEach(el => el.style.display = region === "ZA" ? "" : "none");
+  document.querySelectorAll(".why-intl-only").forEach(el => el.style.display = region === "ZA" ? "none" : "");
 }
 
 // ==========================

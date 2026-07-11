@@ -33,10 +33,14 @@
           <img src="images/lunara-website-logo.png" class="logo" alt="Lunara logo"/>
         </a>
         <div class="region-selector-left" style="position:relative;">
+          <button id="regionFlagBtn" class="region-flag-btn" onclick="toggleRegionDropdown(event)" aria-label="Select region">
+            <span id="regionFlagDisplay">🇿🇦</span>
+            <span id="regionCurrencyDisplay">ZAR</span>
+            <span style="font-size:10px;opacity:0.6;">▾</span>
+          </button>
           <div id="regionDropdown" class="region-dropdown hidden">
             <button onclick="setRegion('ZA')">🇿🇦 South Africa (ZAR)</button>
-            <button onclick="setRegion('US')">🇺🇸 USA / International (USD)</button>
-            <button onclick="setRegion('GB')">🇬🇧 United Kingdom (USD)</button>
+            <button onclick="setRegion('INTL')">🌍 International (USD)</button>
           </div>
         </div>
       </div>
@@ -60,7 +64,6 @@
           </div>
           <a href="#favorites" aria-label="Favorites">❤️</a>
         </nav>
-        <button id="regionBtn" class="region-btn" style="display:none;" aria-label="Select region">🌍</button>
         <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
           🛒 <span id="cart-count">0</span>
         </button>
@@ -123,21 +126,26 @@
           <div id="why-lunara-popup" class="why-lunara-popup hidden">
             <p class="why-eyebrow" style="margin-bottom:8px;">✦ Why Lunara's Universe</p>
             <h2 style="font-size:1.3rem;margin-bottom:10px;font-family:'Playfair Display',serif;">Born to Shine, Dressed to Wander</h2>
-            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Lunara's Universe is a South African cosmic streetwear brand built for people who express themselves through what they wear.</p>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Lunara's Universe is a cosmic streetwear brand built for people who express themselves through what they wear.</p>
             <div class="why-statement" style="margin-bottom:20px;">
               <blockquote style="font-size:14px;">"We didn't create Lunara's Universe to follow trends.<br>We created it to give people clothing that feels like them."</blockquote>
             </div>
             <div class="why-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
-              <div class="why-card why-card--featured">
+
+              <!-- SA customers -->
+              <div class="why-card why-card--featured why-sa-only">
                 <span class="why-icon" style="font-size:22px;">🇿🇦</span>
                 <h3 style="font-size:14px;">Proudly Made in South Africa</h3>
                 <p style="font-size:13px;">Our hoodies, sweatshirts, long sleeve T-shirts and T-shirts are printed right here in South Africa by a trusted local print provider.</p>
               </div>
-              <div class="why-card">
+
+              <!-- International customers -->
+              <div class="why-card why-card--featured why-intl-only" style="display:none;">
                 <span class="why-icon" style="font-size:22px;">🌍</span>
-                <h3 style="font-size:14px;">European Quality Sweatpants</h3>
-                <p style="font-size:13px;">Our sweatpants are sourced and fulfilled from Europe, delivering premium heavyweight fabric — no compromise on quality.</p>
+                <h3 style="font-size:14px;">Produced in Europe, Shipped to You</h3>
+                <p style="font-size:13px;">All your items are produced at certified print facilities in Europe and shipped directly to your door — wherever you are in the world.</p>
               </div>
+
               <div class="why-card">
                 <span class="why-icon" style="font-size:22px;">🌌</span>
                 <h3 style="font-size:14px;">Exclusive Cosmic Designs</h3>
@@ -177,6 +185,9 @@
   <section class="featured-banner" id="shop">
     <h2>Nova Collection</h2>
     <p>The first drop from Lunara's Universe — cosmic streetwear for those who move differently.</p>
+    <p id="intl-fulfillment-msg" style="display:none; margin-top:10px; font-size:0.85rem; color:var(--muted);">
+      🌍 International orders are produced at certified print facilities in <strong>Europe</strong> and shipped directly to you.
+    </p>
   </section>
 
   <section id="tshirts" class="product-section">
