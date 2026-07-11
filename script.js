@@ -183,9 +183,19 @@ function formatZAR(amount) {
 }
 
 function getAnchorPrice(type, color, size) {
-  if (userCountry !== "ZA") return null;
   const t = String(type || "").toLowerCase();
 
+  // ── International USD anchor pricing (20% above sale price)
+  if (userCountry !== "ZA") {
+    const product = storeProducts.find(p => String(p.type||"").toLowerCase() === t);
+    if (!product) return null;
+    const salePrice = product.pricing?.[size];
+    if (!salePrice) return null;
+    const anchor = Math.round(salePrice * 1.20 * 100) / 100;
+    return "$" + anchor.toFixed(2);
+  }
+
+  // ── ZAR anchor pricing
   if (t === "sweatpants") {
     const anchor = ZAR_SWEATPANTS_ANCHOR[size];
     return anchor !== undefined ? formatZAR(anchor) : null;

@@ -129,8 +129,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15, "5XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "21940095079773517440" },
@@ -167,8 +167,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15, "5XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "28571040350495723673" },
@@ -205,8 +205,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15, "5XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "30118873665581099432" },
@@ -243,8 +243,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15, "5XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "17793786073888751435" },
@@ -281,8 +281,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15, "5XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "12105606950059646796" },
@@ -319,8 +319,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15, "5XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "25001590446010187334" },
@@ -357,8 +357,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15, "5XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "21798205749017144152" },
@@ -395,8 +395,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50, "2XL": 75.50,
-      "3XL": 86.15, "4XL": 86.15
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
     },
     variants: {
       "S-white": { sku: "14547336435723357435" },
@@ -432,10 +432,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 47.30, "M": 47.30, "L": 47.30, "XL": 47.30, "2XL": 47.30,
-      "3XL-white": 53.97, "3XL-black": 57.23,
-      "4XL-white": 53.97, "4XL-black": 57.23,
-      "5XL-white": 53.97, "5XL-black": 57.23
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99, "2XL": 49.99,
+      "3XL": 59.99, "4XL": 59.99, "5XL": 59.99
     },
     variants: {
       "S-white": { sku: "12215601454483147981" },
@@ -465,10 +463,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 47.30, "M": 47.30, "L": 47.30, "XL": 47.30, "2XL": 47.30,
-      "3XL-white": 53.97, "3XL-black": 57.23,
-      "4XL-white": 53.97, "4XL-black": 57.23,
-      "5XL-white": 53.97, "5XL-black": 57.23
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99, "2XL": 49.99,
+      "3XL": 59.99, "4XL": 59.99, "5XL": 59.99
     },
     variants: {
       "S-white": { sku: "98664956381073655910" },
@@ -498,10 +494,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 47.30, "M": 47.30, "L": 47.30, "XL": 47.30, "2XL": 47.30,
-      "3XL-white": 53.97, "3XL-black": 57.23,
-      "4XL-white": 53.97, "4XL-black": 57.23,
-      "5XL-white": 53.97, "5XL-black": 57.23
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99, "2XL": 49.99,
+      "3XL": 59.99, "4XL": 59.99, "5XL": 59.99
     },
     variants: {
       "S-white": { sku: "15269016618941423882" },
@@ -531,10 +525,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 47.30, "M": 47.30, "L": 47.30, "XL": 47.30, "2XL": 47.30,
-      "3XL-white": 53.97, "3XL-black": 57.23,
-      "4XL-white": 53.97, "4XL-black": 57.23,
-      "5XL-white": 53.97, "5XL-black": 57.23
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99, "2XL": 49.99,
+      "3XL": 59.99, "4XL": 59.99, "5XL": 59.99
     },
     variants: {
       "S-white": { sku: "18375061045631364680" },
@@ -564,10 +556,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 47.30, "M": 47.30, "L": 47.30, "XL": 47.30, "2XL": 47.30,
-      "3XL-white": 53.97, "3XL-black": 57.23,
-      "4XL-white": 53.97, "4XL-black": 57.23,
-      "5XL-white": 53.97, "5XL-black": 57.23
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99, "2XL": 49.99,
+      "3XL": 59.99, "4XL": 59.99, "5XL": 59.99
     },
     variants: {
       "S-white": { sku: "18114924691398441951" },
@@ -597,10 +587,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 47.30, "M": 47.30, "L": 47.30, "XL": 47.30, "2XL": 47.30,
-      "3XL-white": 53.97, "3XL-black": 57.23,
-      "4XL-white": 53.97, "4XL-black": 57.23,
-      "5XL-white": 53.97, "5XL-black": 57.23
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99, "2XL": 49.99,
+      "3XL": 59.99, "4XL": 59.99, "5XL": 59.99
     },
     variants: {
       "S-white": { sku: "28977423494072789834" },
@@ -630,10 +618,8 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     pricing: {
-      "S": 47.30, "M": 47.30, "L": 47.30, "XL": 47.30, "2XL": 47.30,
-      "3XL-white": 53.97, "3XL-black": 57.23,
-      "4XL-white": 53.97, "4XL-black": 57.23,
-      "5XL-white": 53.97, "5XL-black": 57.23
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99, "2XL": 49.99,
+      "3XL": 59.99, "4XL": 59.99, "5XL": 59.99
     },
     variants: {
       "S-white": { sku: "71752840872619484676" },
@@ -666,8 +652,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/drip-smile-black.png"
     },
     pricing: {
-      "S": 25.48, "M": 25.48, "L": 25.48, "XL": 25.48, "2XL": 25.48,
-      "3XL": 29.17, "4XL": 29.17
+      "S": 29.99, "M": 29.99, "L": 29.99, "XL": 29.99,
+      "2XL": 29.99, "3XL": 29.99, "4XL": 29.99
     },
     variants: {
       "S-white": { sku: "29719655575795381164" },
@@ -697,8 +683,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/energy-bloom-black.png"
     },
     pricing: {
-      "S": 25.48, "M": 25.48, "L": 25.48, "XL": 25.48, "2XL": 25.48,
-      "3XL": 29.17, "4XL": 29.17
+      "S": 29.99, "M": 29.99, "L": 29.99, "XL": 29.99,
+      "2XL": 29.99, "3XL": 29.99, "4XL": 29.99
     },
     variants: {
       "S-white": { sku: "22223449383717038040" },
@@ -728,8 +714,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/cosmic-eye-black.png"
     },
     pricing: {
-      "S": 25.48, "M": 25.48, "L": 25.48, "XL": 25.48, "2XL": 25.48,
-      "3XL": 29.17, "4XL": 29.17
+      "S": 29.99, "M": 29.99, "L": 29.99, "XL": 29.99,
+      "2XL": 29.99, "3XL": 29.99, "4XL": 29.99
     },
     variants: {
       "S-white": { sku: "11284324430853904842" },
@@ -759,8 +745,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/butterfly-black.png"
     },
     pricing: {
-      "S": 25.48, "M": 25.48, "L": 25.48, "XL": 25.48, "2XL": 25.48,
-      "3XL": 29.17, "4XL": 29.17
+      "S": 29.99, "M": 29.99, "L": 29.99, "XL": 29.99,
+      "2XL": 29.99, "3XL": 29.99, "4XL": 29.99
     },
     variants: {
       "S-white": { sku: "51785286841295804704" },
@@ -790,8 +776,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/compass-black.png"
     },
     pricing: {
-      "S": 25.48, "M": 25.48, "L": 25.48, "XL": 25.48, "2XL": 25.48,
-      "3XL": 29.17, "4XL": 29.17
+      "S": 29.99, "M": 29.99, "L": 29.99, "XL": 29.99,
+      "2XL": 29.99, "3XL": 29.99, "4XL": 29.99
     },
     variants: {
       "S-white": { sku: "19886627746431602842" },
@@ -821,8 +807,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/jellyfish-black.png"
     },
     pricing: {
-      "S": 25.48, "M": 25.48, "L": 25.48, "XL": 25.48, "2XL": 25.48,
-      "3XL": 29.17, "4XL": 29.17
+      "S": 29.99, "M": 29.99, "L": 29.99, "XL": 29.99,
+      "2XL": 29.99, "3XL": 29.99, "4XL": 29.99
     },
     variants: {
       "S-white": { sku: "26950914780223382864" },
@@ -852,8 +838,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/mushrooms-black.png"
     },
     pricing: {
-      "S": 25.48, "M": 25.48, "L": 25.48, "XL": 25.48, "2XL": 25.48,
-      "3XL": 29.17, "4XL": 29.17
+      "S": 29.99, "M": 29.99, "L": 29.99, "XL": 29.99,
+      "2XL": 29.99, "3XL": 29.99, "4XL": 29.99
     },
     variants: {
       "S-white": { sku: "80684890803304168302" },
@@ -886,7 +872,10 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     colors: ["black", "white"],
-    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    pricing: {
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99,
+      "2XL": 49.99, "3XL": 59.99, "4XL": 59.99
+    },
     variants: {
       "XS-black": { sku: "14565843900138959191" },
       "XS-white": { sku: "26410651627673067066" },
@@ -911,7 +900,10 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     colors: ["black", "white"],
-    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    pricing: {
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99,
+      "2XL": 49.99, "3XL": 59.99, "4XL": 59.99
+    },
     variants: {
       "XS-black": { sku: "3105257932000892338"  },
       "XS-white": { sku: "29630365646563435557" },
@@ -936,7 +928,10 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     colors: ["black", "white"],
-    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    pricing: {
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99,
+      "2XL": 49.99, "3XL": 59.99, "4XL": 59.99
+    },
     variants: {
       "XS-black": { sku: "30228667861757543765" },
       "XS-white": { sku: "18872622006121012211" },
@@ -961,7 +956,10 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     colors: ["black", "white"],
-    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    pricing: {
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99,
+      "2XL": 49.99, "3XL": 59.99, "4XL": 59.99
+    },
     variants: {
       "XS-black": { sku: "24454639172267251019" },
       "XS-white": { sku: "18384445783577218746" },
@@ -986,7 +984,10 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     colors: ["black", "white"],
-    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    pricing: {
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99,
+      "2XL": 49.99, "3XL": 59.99, "4XL": 59.99
+    },
     variants: {
       "XS-black": { sku: "10136865203835994259" },
       "XS-white": { sku: "32235786470473565744" },
@@ -1011,7 +1012,10 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     colors: ["black", "white"],
-    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    pricing: {
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99,
+      "2XL": 49.99, "3XL": 59.99, "4XL": 59.99
+    },
     variants: {
       "XS-black": { sku: "66290131641490892448" },
       "XS-white": { sku: "19712933345322208982" },
@@ -1036,7 +1040,10 @@ const NOVA_COLLECTION = {
     prodigi: false,
     yoycol: false,
     colors: ["black", "white"],
-    pricing: { "XS": 49.50, "S": 49.50, "M": 49.50, "L": 49.50, "XL": 49.50, "2XL": 54.50 },
+    pricing: {
+      "S": 49.99, "M": 49.99, "L": 49.99, "XL": 49.99,
+      "2XL": 49.99, "3XL": 59.99, "4XL": 59.99
+    },
     variants: {
       "XS-black": { sku: "14567290856872514994" },
       "XS-white": { sku: "11851480867459002726" },
@@ -1067,8 +1074,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39cd8d70c186",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "energy-bloom-sweatpants-XS-white" },
@@ -1095,8 +1102,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39ca43d9f616",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "plain-sweatpants-XS-white" },
@@ -1123,8 +1130,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39c9067d5643",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "drip-smile-sweatpants-XS-white" },
@@ -1151,8 +1158,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39c65b1e87d9",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "mushroom-sweatpants-XS-white" },
@@ -1179,8 +1186,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39c391f41f91",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "compass-sweatpants-XS-white" },
@@ -1207,8 +1214,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39bf6076fbe5",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "butterfly-sweatpants-XS-white" },
@@ -1235,8 +1242,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a38cd71dc9f44",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "jellyfish-sweatpants-XS-white" },
@@ -1263,8 +1270,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a38cb06256fd9",
     colors: ["white"],
     pricing: {
-      "XS": 58, "S": 58, "M": 58, "L": 58, "XL": 58,
-      "2XL": 63, "3XL": 63, "4XL": 68, "5XL": 68, "6XL": 68
+      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
+      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
     },
     variants: {
       "XS-white":  { sku: "cosmic-eye-sweatpants-XS-white" },
@@ -1314,7 +1321,10 @@ const FESTIVAL_COLLECTION = {
       type: "hoodie",
       printify: true, printful: false, prodigi: false, yoycol: false,
       colors: ["black", "white"],
-      pricing: { "S": 75.50, "M": 75.50, "L": 75.50, "XL": 75.50 },
+      pricing: {
+      "S": 79.99, "M": 79.99, "L": 79.99, "XL": 79.99, "2XL": 79.99,
+      "3XL": 89.99, "4XL": 89.99, "5XL": 89.99
+    },
       variants: {
         "S-black":  { sku: "PASTE_SKU_FROM_PRINTIFY" },
         "M-black":  { sku: "PASTE_SKU_FROM_PRINTIFY" },
