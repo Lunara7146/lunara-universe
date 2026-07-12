@@ -412,6 +412,7 @@ function displayProducts(products) {
         <select id="size-${index}" onchange="updatePremiumPricing(${index})">
           ${sizes.map(size => `<option value="${size}" ${size === defaultSize ? "selected" : ""}>${size}</option>`).join("")}
         </select>
+        <span class="size-guide-link" onclick="openSizeGuide('${product.type}')">Size guide</span>
 
         ${finalColors.length > 1
           ? `<select id="color-${index}" onchange="changeColor(${index})">
@@ -455,8 +456,158 @@ window.updatePremiumPricing = function(index) {
 };
 
 // ==========================
-// 🎨 COLOR SWITCHING
+// 📏 SIZE GUIDE
 // ==========================
+const SIZE_GUIDE_DATA = {
+  hoodie: {
+    headers: ["Size", "Chest (cm)", "Length (cm)", "Sleeve (cm)"],
+    rows: [
+      ["S",   "96",  "67", "84"],
+      ["M",   "101", "70", "86"],
+      ["L",   "106", "72", "88"],
+      ["XL",  "111", "74", "90"],
+      ["2XL", "116", "76", "92"],
+      ["3XL", "121", "78", "94"],
+    ]
+  },
+  sweatshirt: {
+    headers: ["Size", "Chest (cm)", "Length (cm)", "Sleeve (cm)"],
+    rows: [
+      ["S",   "96",  "66", "83"],
+      ["M",   "101", "69", "85"],
+      ["L",   "106", "71", "87"],
+      ["XL",  "111", "73", "89"],
+      ["2XL", "116", "75", "91"],
+    ]
+  },
+  tshirt: {
+    headers: ["Size", "Chest (cm)", "Length (cm)", "Shoulder (cm)"],
+    rows: [
+      ["S",   "91",  "69", "43"],
+      ["M",   "96",  "72", "46"],
+      ["L",   "101", "74", "48"],
+      ["XL",  "106", "77", "51"],
+      ["2XL", "111", "79", "53"],
+    ]
+  },
+  longsleeve: {
+    headers: ["Size", "Chest (cm)", "Length (cm)", "Sleeve (cm)"],
+    rows: [
+      ["S",   "91",  "69", "84"],
+      ["M",   "96",  "72", "86"],
+      ["L",   "101", "74", "88"],
+      ["XL",  "106", "77", "90"],
+      ["2XL", "111", "79", "92"],
+    ]
+  },
+  sweatpants: {
+    headers: ["Size", "Waist (cm)", "Hip (cm)", "Inseam (cm)"],
+    rows: [
+      ["XS",  "64–74",  "88",  "76"],
+      ["S",   "70–80",  "94",  "77"],
+      ["M",   "76–86",  "100", "78"],
+      ["L",   "82–92",  "106", "79"],
+      ["XL",  "88–98",  "112", "80"],
+      ["2XL", "94–104", "118", "81"],
+      ["3XL", "100–110","124", "82"],
+    ]
+  }
+};
+
+window.openSizeGuide = function(type) {
+  const t = String(type || "").toLowerCase();
+  const data = SIZE_GUIDE_DATA[t] || SIZE_GUIDE_DATA.tshirt;
+  const label = { hoodie: "Hoodie", sweatshirt: "Sweatshirt", tshirt: "T-Shirt", longsleeve: "Long Sleeve T-Shirt", sweatpants: "Sweatpants" }[t] || "Item";
+
+  const headerRow = data.headers.map(h => `<th>${h}</th>`).join("");
+  const bodyRows = data.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("");
+
+  const modal = document.getElementById("size-guide-modal");
+  const content = document.getElementById("size-guide-content");
+  if (!modal || !content) return;
+  content.innerHTML = `
+    <h3 style="margin-bottom:14px;">📏 ${label} Size Guide</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Measurements are of the garment, not the body. When in doubt, size up.</p>
+    <table class="size-guide-table">
+      <thead><tr>${headerRow}</tr></thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+    <button onclick="document.getElementById('size-guide-modal').classList.remove('active')" style="margin-top:16px;width:100%;">Close</button>
+  `;
+  modal.classList.add("active");
+};
+
+// ==========================
+// 📧 EMAIL CAPTURE
+// ==========================
+window.submitEmailCapture = async function() {
+  const email = document.getElementById("email-capture-input")?.value?.trim();
+  const btn = document.getElementById("email-capture-btn");
+  const msg = document.getElementById("email-capture-msg");
+  if (!email || !email.includes("@")) {
+    if (msg) { msg.textContent = "Please enter a valid email."; msg.style.color = "tomato"; }
+    return;
+  }
+  if (btn) btn.disabled = true;
+  // Store locally + send to your email list (replace URL with Formspree or Mailchimp endpoint)
+  const stored = JSON.parse(localStorage.getItem("lunaraEmails") || "[]");
+  if (!stored.includes(email)) { stored.push(email); localStorage.setItem("lunaraEmails", JSON.stringify(stored)); }
+  if (msg) { msg.textContent = "✦ Welcome to the universe! 🦋"; msg.style.color = "var(--accent)"; }
+  setTimeout(() => {
+    document.getElementById("email-capture-modal")?.classList.remove("active");
+    localStorage.setItem("lunaraEmailCaptured", "1");
+  }, 1800);
+};
+
+function initEmailCapture() {
+  if (localStorage.getItem("lunaraEmailCaptured")) return;
+  setTimeout(() => {
+    const modal = document.getElementById("email-capture-modal");
+    if (modal) modal.classList.add("active");
+  }, 4000);
+}
+
+// ==========================
+// 🔢 LIVE ORDER COUNTER
+// ==========================
+function initOrderCounter() {
+  const updateCounter = () => {
+    const orders = JSON.parse(localStorage.getItem("lunaraOrderCount") || "0");
+    const el = document.getElementById("live-order-count");
+    if (el) el.textContent = orders;
+  };
+  updateCounter();
+  setInterval(updateCounter, 5000);
+}
+
+function incrementOrderCounter() {
+  const current = parseInt(localStorage.getItem("lunaraOrderCount") || "0");
+  localStorage.setItem("lunaraOrderCount", current + 1);
+}
+
+// ==========================
+// 🎟️ DISCOUNT CODES
+// ==========================
+const DISCOUNT_CODES = JSON.parse(localStorage.getItem("lunaraDiscountCodes") || "{}");
+
+window.applyDiscountCode = function() {
+  const input = document.getElementById("discount-input");
+  const msg = document.getElementById("discount-msg");
+  if (!input || !msg) return;
+  const code = input.value.trim().toUpperCase();
+  const discount = DISCOUNT_CODES[code];
+  if (!discount) {
+    msg.textContent = "Invalid code."; msg.style.color = "tomato"; return;
+  }
+  if (discount.used && discount.oneTime) {
+    msg.textContent = "This code has already been used."; msg.style.color = "tomato"; return;
+  }
+  activeDiscount = { code, percent: discount.percent };
+  msg.textContent = `✅ ${discount.percent}% off applied!`; msg.style.color = "var(--accent)";
+  updateCart();
+};
+
+let activeDiscount = null;
 function changeColor(index) {
   const product = storeProducts[index];
   const color = document.getElementById(`color-${index}`)?.value || "black";
@@ -875,7 +1026,7 @@ function updateCart() {
     bundleActive = true;
     bundlePercent = 0.10;
   }
-  const totalPercentOff = bundleActive ? bundlePercent : activePromos.reduce((sum, p) => sum + p.percent, 0);
+  const totalPercentOff = bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0));
   const total = subtotal * (1 - totalPercentOff);
 
   // Show bundle messaging in the promo area
@@ -1126,7 +1277,7 @@ async function checkout() {
     bundleActive = true;
     bundlePercent = 0.10;
   }
-  const totalPercentOff = bundleActive ? bundlePercent : activePromos.reduce((sum, p) => sum + p.percent, 0);
+  const totalPercentOff = bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0));
   const total = subtotal * (1 - totalPercentOff);
   const orderId = "LUNARA-" + Date.now();
   localStorage.setItem("lunara_order_id", orderId);
@@ -1199,6 +1350,36 @@ async function checkout() {
     return;
   }
 
+  // Save order to admin records before redirecting
+  const orderRecord = {
+    id: orderId,
+    date: new Date().toISOString(),
+    name: `${firstName} ${lastName}`,
+    email,
+    phone,
+    address: `${address1}, ${city}, ${region}, ${zip}`,
+    country,
+    region: userCountry,
+    items: cart.map(i => ({
+      name: i.name,
+      type: i.type || "",
+      size: i.size,
+      color: i.color,
+      quantity: i.quantity,
+      price: i.price,
+      region: userCountry
+    })),
+    subtotal,
+    discount: totalPercentOff > 0 ? `${Math.round(totalPercentOff * 100)}%` : null,
+    total,
+    status: "paid",
+    fulfillment: otcItems.length > 0 ? "OTC + Printful" : "Printful"
+  };
+  const existingOrders = JSON.parse(localStorage.getItem("lunaraOrders") || "[]");
+  existingOrders.push(orderRecord);
+  localStorage.setItem("lunaraOrders", JSON.stringify(existingOrders));
+
+  incrementOrderCounter();
   window.location.href = data.url;
 }
 
@@ -1295,6 +1476,8 @@ async function init() {
   autoFillUserProfile();
   initFooterDetailsForm();
   checkWelcomeGate();
+  initEmailCapture();
+  initOrderCounter();
 }
 
 init();
