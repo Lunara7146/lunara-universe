@@ -1,22 +1,16 @@
 // api/otc-order.js
 // ─────────────────────────────────────────────────────────────────────────────
-// Triggered at checkout when a SA customer orders hoodies, sweatshirts,
-// tees, or long sleeve tees. Sends a fulfillment email to OTC Printing
-// via your Wix automation webhook.
+// Sends a fulfillment email directly from your Gmail to OTC Printing
+// and a copy to yourself when a SA customer places an order.
+// Uses Gmail SMTP — completely free, no custom domain needed.
 //
 // SETUP (one time in Vercel → Settings → Environment Variables):
-//   WIX_OTC_WEBHOOK_URL  = your Wix automation webhook URL
-//
-// HOW TO SET UP THE WIX AUTOMATION:
-//   1. In Wix Studio → Automations → New Automation
-//   2. Trigger: "When a webhook is received" → copy the webhook URL → paste into Vercel env
-//   3. Action: "Send an email"
-//   4. In the email body field, insert the variable: {{emailBody}}
-//   5. Set To: OTC Printing's email address
-//   6. Set Subject: "New Print Order {{orderId}} — Lunara's Universe"
-//   7. Activate the automation
+//   GMAIL_USER         = lunarasuniverse@gmail.com
+//   GMAIL_APP_PASSWORD = 16-character app password from Google Account → Security
+//   OTC_EMAIL          = OTC Printing's email address
 // ─────────────────────────────────────────────────────────────────────────────
 
+import nodemailer from "nodemailer";
 import { generatePrinterEmailBody } from "../lib/email.js";
 
 export default async function handler(req, res) {
@@ -30,65 +24,148 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing required order fields" });
   }
 
-  const webhookUrl = process.env.WIX_OTC_WEBHOOK_URL;
-  if (!webhookUrl) {
-    console.error("WIX_OTC_WEBHOOK_URL is not configured in environment variables.");
-    return res.status(500).json({ error: "Webhook URL not configured" });
+  const gmailUser    = process.env.GMAIL_USER;
+  const gmailPass    = process.env.GMAIL_APP_PASSWORD;
+  const otcEmail     = process.env.OTC_EMAIL;
+  const lunaEmail    = gmailUser || "lunarasuniverse@gmail.com";
+
+  if (!gmailUser || !gmailPass || !otcEmail) {
+    console.error("Missing GMAIL_USER, GMAIL_APP_PASSWORD or OTC_EMAIL");
+    return res.status(500).json({ error: "Email config not set" });
   }
 
-  // ── Build customer data shape for email.js ─────────────────────────────────
+  // ── Build customer data for email.js ──────────────────────────────────────
   const customerData = {
-    name:        customer.name,
-    email:       customer.email,
-    phone:       customer.phone || "—",
-    addressLine1: customer.address?.split(",")[0]?.trim() || customer.address || "",
+    name:         customer.name || `${customer.firstName || ""} ${customer.lastName || ""}`.trim(),
+    email:        customer.email,
+    phone:        customer.phone || "—",
+    addressLine1: customer.address1 || customer.address || "",
     addressLine2: "",
-    city:        customer.city    || customer.address?.split(",")[1]?.trim() || "",
-    postalCode:  customer.zip     || customer.address?.split(",")[3]?.trim() || "",
-    country:     customer.country || "South Africa"
+    city:         customer.city    || "",
+    postalCode:   customer.zip     || "",
+    country:      customer.country || "South Africa"
   };
 
-  // ── Build order items shape for email.js ───────────────────────────────────
-  // Each item needs: design, productType, color, size, quantity
+  // ── Build order items for email.js ────────────────────────────────────────
   const orderItems = items.map(item => ({
-    design:      item.name.replace(/(T-Shirt|Long Sleeve T-Shirt|Hoodie|Sweatshirt)/gi, "").trim(),
+    design:      item.name
+      .replace(/(T-Shirt|Long Sleeve T-Shirt|Hoodie|Sweatshirt)/gi, "")
+      .trim(),
     productType: item.type || "t_shirt",
     color:       item.color,
     size:        item.size,
     quantity:    item.quantity
   }));
 
-  // ── Generate the email body text ───────────────────────────────────────────
   const emailBody = generatePrinterEmailBody(customerData, orderItems);
+  const subject   = `New Print Order ${orderId} — Lunara's Universe`;
 
-  // ── Send to Wix webhook ────────────────────────────────────────────────────
-  // Wix receives this payload and maps the fields into your email template.
-  // In your Wix automation email body, use the variable: {{emailBody}}
-  const payload = {
-    orderId,
-    emailBody,
-    subject: `New Print Order ${orderId} — Lunara's Universe`,
-    customer: customerData,
-    items: orderItems
-  };
-
+  // ── Send via Gmail SMTP ───────────────────────────────────────────────────
   try {
-    const wixRes = await fetch(webhookUrl, {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify(payload)
+    const transporter = nodemailer.createTransporter({
+      service: "gmail",
+      auth: {
+        user: gmailUser,
+        pass: gmailPass
+      }
     });
 
-    if (!wixRes.ok) {
-      const text = await wixRes.text();
-      console.error("Wix webhook error:", wixRes.status, text);
-      return res.status(502).json({ error: "Wix webhook failed", detail: text });
-    }
+    // Send to OTC + copy to Luna in one call
+    await transporter.sendMail({
+      from:    `"Lunara's Universe" <${gmailUser}>`,
+      to:      otcEmail,
+      cc:      lunaEmail,
+      subject,
+      text:    emailBody
+    });
 
+    console.log(`✅ OTC order email sent for ${orderId}`);
     return res.status(200).json({ success: true, orderId });
 
   } catch (err) {
-    console.error("OTC order error:", err);
-    return res.status(500).json({ error: "Failed to reach Wix webhook" });
+    console.error("❌ Gmail send error:", err);
+    return res.status(500).json({ error: "Failed to send order email", detail: err.message });
+  }
+}
+
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { orderId, customer, items } = req.body;
+
+  if (!orderId || !customer || !items?.length) {
+    return res.status(400).json({ error: "Missing required order fields" });
+  }
+
+  const resendKey = process.env.RESEND_API_KEY;
+  const otcEmail  = process.env.OTC_EMAIL;
+  const lunaEmail = process.env.LUNARA_EMAIL || "lunarasuniverse@gmail.com";
+
+  if (!resendKey || !otcEmail) {
+    console.error("Missing RESEND_API_KEY or OTC_EMAIL env vars");
+    return res.status(500).json({ error: "Email config not set" });
+  }
+
+  // ── Build customer data for email.js ──────────────────────────────────────
+  const customerData = {
+    name:         customer.name || `${customer.firstName} ${customer.lastName}`,
+    email:        customer.email,
+    phone:        customer.phone || "—",
+    addressLine1: customer.address1 || customer.address || "",
+    addressLine2: "",
+    city:         customer.city    || "",
+    postalCode:   customer.zip     || "",
+    country:      customer.country || "South Africa"
+  };
+
+  // ── Build order items for email.js ────────────────────────────────────────
+  const orderItems = items.map(item => ({
+    design:      item.name
+      .replace(/(T-Shirt|Long Sleeve T-Shirt|Hoodie|Sweatshirt)/gi, "")
+      .trim(),
+    productType: item.type || "t_shirt",
+    color:       item.color,
+    size:        item.size,
+    quantity:    item.quantity
+  }));
+
+  const emailBody = generatePrinterEmailBody(customerData, orderItems);
+  const subject   = `New Print Order ${orderId} — Lunara's Universe`;
+
+  // ── Send email via Resend ─────────────────────────────────────────────────
+  try {
+    const sendEmail = async (to) => {
+      const r = await fetch("https://api.resend.com/emails", {
+        method:  "POST",
+        headers: {
+          "Authorization": `Bearer ${resendKey}`,
+          "Content-Type":  "application/json"
+        },
+        body: JSON.stringify({
+          from:    "Lunara's Universe <orders@lunarauniverse.co.za>",
+          to:      [to],
+          subject,
+          text:    emailBody
+        })
+      });
+      if (!r.ok) throw new Error(`Resend error ${r.status}: ${await r.text()}`);
+      return r.json();
+    };
+
+    // Send to OTC Printing + copy to Luna
+    await Promise.all([
+      sendEmail(otcEmail),
+      sendEmail(lunaEmail)
+    ]);
+
+    console.log(`✅ OTC order email sent for ${orderId}`);
+    return res.status(200).json({ success: true, orderId });
+
+  } catch (err) {
+    console.error("OTC email error:", err);
+    return res.status(500).json({ error: "Failed to send order email", detail: err.message });
   }
 }
