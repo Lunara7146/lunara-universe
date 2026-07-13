@@ -204,8 +204,13 @@ function getAnchorPrice(type, color, size) {
   const c = String(color || "black").toLowerCase();
   const map = ZAR_REAL_PRICES[t];
   if (!map) return null;
-  const real = map[c] || map["black"];
-  if (real === undefined) return null;
+  const colorMap = map[c] || map["black"];
+  if (!colorMap) return null;
+  // colorMap may be a size object {S:x, M:x} or a flat number
+  const real = typeof colorMap === "object"
+    ? (colorMap[size] || Object.values(colorMap)[0])
+    : colorMap;
+  if (!real) return null;
   const anchor = real * 1.20;
   return formatZAR(anchor);
 }
