@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lunara Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0a0a12;--panel:#12121e;--panel-2:#1a1a2e;
+      --accent:#b98cff;--accent-2:#7ee7ff;--text:#f0eeff;
+      --muted:#8888aa;--success:#4ade80;--danger:#ff6b6b;
+      --border:rgba(255,255,255,0.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+    /* LOGIN */
+    #login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:16px;padding:24px;}
+    #login-screen h1{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--accent);}
+    #login-screen p{color:var(--muted);font-size:13px;}
+    #login-screen input{width:100%;max-width:320px;padding:12px 16px;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:15px;text-align:center;letter-spacing:3px;}
+    #login-screen button{width:100%;max-width:320px;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#000;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-size:15px;}
+    #login-error{color:var(--danger);font-size:13px;min-height:18px;}
+
+    /* DASHBOARD */
+    #dashboard{display:none;}
+    header{background:var(--panel);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
+    header h1{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--accent);}
+    header button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;}
+
+    .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;padding:24px;}
+    .stat-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 16px;text-align:center;}
+    .stat-card .val{font-size:1.8rem;font-weight:700;color:var(--accent);}
+    .stat-card .val.profit{color:var(--success);}
+    .stat-card .lbl{font-size:12px;color:var(--muted);margin-top:4px;}
+
+    section.panel{margin:0 24px 24px;background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+    section.panel h2{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;}
+
+    /* ORDERS TABLE */
+    .tbl-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th{padding:10px 14px;text-align:left;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap;}
+    td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:12px;}
+    tr:last-child td{border-bottom:none;}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+    .badge.paid{background:rgba(74,222,128,0.15);color:var(--success);}
+    .badge.pending{background:rgba(255,200,50,0.15);color:#ffc832;}
+    .badge.shipped{background:rgba(126,231,255,0.15);color:var(--accent-2);}
+    .profit-cell{color:var(--success);font-weight:600;}
+    .empty-state{padding:40px;text-align:center;color:var(--muted);font-size:13px;}
+
+    /* POPULAR */
+    .product-row{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--border);font-size:13px;}
+    .product-row:last-child{border-bottom:none;}
+    .rank{color:var(--accent);font-weight:700;width:24px;flex-shrink:0;}
+    .bar-wrap{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:4px;}
+    .bar{height:6px;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+    .sold{color:var(--muted);white-space:nowrap;}
+
+    /* COST SETTINGS */
+    .cost-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;padding:16px 20px;}
+    .cost-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .cost-row label{font-size:13px;color:var(--muted);flex:1;}
+    .cost-row input{width:100px;padding:7px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;text-align:right;}
+    .save-costs-btn{margin:0 20px 16px;padding:9px 20px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#000;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+
+    /* CODES */
+    .code-form{display:flex;gap:10px;padding:16px 20px;flex-wrap:wrap;}
+    .code-form input{flex:1;min-width:100px;padding:8px 12px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;}
+    .code-form button{padding:8px 18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#000;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+    .codes-list{padding:0 20px 16px;}
+    .code-chip{display:inline-flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;margin:4px;font-size:12px;}
+    .code-chip button{background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;}
+
+    /* ORDER COUNTER */
+    .counter-row{display:flex;align-items:center;gap:12px;padding:16px 20px;flex-wrap:wrap;}
+    .counter-row span{font-size:13px;color:var(--muted);}
+    .counter-row input{width:90px;padding:8px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;text-align:center;}
+    .counter-row button{padding:8px 16px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:13px;}
+    .counter-note{padding:0 20px 14px;font-size:12px;color:var(--muted);}
+
+    /* EMAILS */
+    .email-section{padding:16px 20px;}
+    .email-section p{font-size:12px;color:var(--muted);margin-bottom:10px;}
+    .email-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+    .email-tag{background:var(--panel-2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;}
+    .copy-btn{padding:8px 16px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;cursor:pointer;font-size:12px;}
+    .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+    @media(max-width:600px){
+      .dash-grid{grid-template-columns:1fr 1fr;padding:14px;}
+      section.panel{margin:0 14px 16px;}
+    }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <h1>✦ Lunara Admin</h1>
+  <p>Owner access only</p>
+  <input type="password" id="admin-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()">
+  <button onclick="adminLogin()">Enter</button>
+  <p id="login-error"></p>
+</div>
+
+<div id="dashboard">
+  <header>
+    <h1>✦ Lunara's Universe — Admin</h1>
+    <button onclick="adminLogout()">Log out</button>
+  </header>
+
+  <div class="dash-grid">
+    <div class="stat-card"><div class="val" id="stat-orders">0</div><div class="lbl">Total Orders</div></div>
+    <div class="stat-card"><div class="val" id="stat-revenue">R0</div><div class="lbl">Total Revenue</div></div>
+    <div class="stat-card"><div class="val" id="stat-costs">R0</div><div class="lbl">Total Costs</div></div>
+    <div class="stat-card"><div class="val profit" id="stat-profit">R0</div><div class="lbl">Total Profit 💚</div></div>
+    <div class="stat-card"><div class="val" id="stat-avg">R0</div><div class="lbl">Avg Order Value</div></div>
+    <div class="stat-card"><div class="val" id="stat-emails">0</div><div class="lbl">Email Signups</div></div>
+  </div>
+
+  <!-- COST SETTINGS -->
+  <section class="panel">
+    <h2>⚙️ Cost Prices (what you pay per item — set once)</h2>
+    <div class="cost-grid">
+      <div>
+        <p style="font-size:12px;color:var(--accent);padding:0 0 10px;font-weight:600;">🇿🇦 SA — OTC Printing (ZAR)</p>
+        <div class="cost-row"><label>Hoodie (black)</label><input id="cost-hoodie-black-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Hoodie (white)</label><input id="cost-hoodie-white-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Sweatshirt (black)</label><input id="cost-sweatshirt-black-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Sweatshirt (white)</label><input id="cost-sweatshirt-white-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>T-Shirt (black)</label><input id="cost-tshirt-black-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>T-Shirt (white)</label><input id="cost-tshirt-white-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Long Sleeve (black)</label><input id="cost-longsleeve-black-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Long Sleeve (white)</label><input id="cost-longsleeve-white-za" placeholder="R0.00"></div>
+      </div>
+      <div>
+        <p style="font-size:12px;color:var(--accent);padding:0 0 10px;font-weight:600;">🌍 SA + INTL — Printful Sweatpants (ZAR)</p>
+        <div class="cost-row"><label>Sweatpants XS–XL</label><input id="cost-sweatpants-s-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Sweatpants 2XL</label><input id="cost-sweatpants-2xl-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Sweatpants 3XL</label><input id="cost-sweatpants-3xl-za" placeholder="R0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Sweatpants 4XL+</label><input id="cost-sweatpants-4xl-za" placeholder="R0.00"></div>
+        <br>
+        <p style="font-size:12px;color:var(--accent);padding:8px 0 10px;font-weight:600;">🌍 INTL — Printify (USD)</p>
+        <div class="cost-row"><label>Hoodie S–2XL</label><input id="cost-hoodie-intl" placeholder="$0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Sweatshirt S–2XL</label><input id="cost-sweatshirt-intl" placeholder="$0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>T-Shirt</label><input id="cost-tshirt-intl" placeholder="$0.00"></div>
+        <div class="cost-row" style="margin-top:8px;"><label>Long Sleeve</label><input id="cost-longsleeve-intl" placeholder="$0.00"></div>
+      </div>
+    </div>
+    <button class="save-costs-btn" onclick="saveCosts()">Save Cost Prices</button>
+  </section>
+
+  <!-- ORDERS -->
+  <section class="panel">
+    <h2>📦 Orders</h2>
+    <div id="orders-container"><p class="empty-state">No orders yet — they'll appear here as they come in 🦋</p></div>
+  </section>
+
+  <!-- TOP PRODUCTS -->
+  <section class="panel">
+    <h2>🔥 Most Popular Designs</h2>
+    <div id="popular-container"><p class="empty-state">Sales data will appear here after first orders.</p></div>
+  </section>
+
+  <!-- ORDER COUNTER -->
+  <section class="panel">
+    <h2>🛍️ Live Order Counter (private — visible only here)</h2>
+    <div class="counter-row">
+      <span>Current count:</span>
+      <input type="number" id="counter-input" min="0">
+      <button onclick="saveCounter()">Update</button>
+      <button onclick="document.getElementById('counter-input').value=0;saveCounter()">Reset</button>
+    </div>
+    <p class="counter-note">This counter is stored privately. Only visible on this admin page.</p>
+  </section>
+
+  <!-- DISCOUNT CODES -->
+  <section class="panel">
+    <h2>🎟️ Discount Codes</h2>
+    <div class="code-form">
+      <input id="new-code" placeholder="Code e.g. LAUNCH20" style="text-transform:uppercase;">
+      <input id="new-percent" type="number" placeholder="%" min="1" max="100" style="max-width:70px;">
+      <button onclick="addDiscountCode()">Add Code</button>
+    </div>
+    <div class="codes-list" id="codes-list"></div>
+  </section>
+
+  <!-- EMAILS -->
+  <section class="panel">
+    <h2>📧 Email Signups</h2>
+    <div class="email-section">
+      <p id="email-count-label">Loading...</p>
+      <div class="email-tags" id="email-tags"></div>
+      <button class="copy-btn" onclick="copyEmails()">Copy all emails</button>
+    </div>
+  </section>
+</div>
+
+<script>
+  const ADMIN_PASSWORD = "lunara2026"; // ← change this before uploading
+
+  function adminLogin() {
+    const pw = document.getElementById("admin-pw").value;
+    if (pw === ADMIN_PASSWORD) {
+      sessionStorage.setItem("lunaraAdmin","1");
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      loadDashboard();
+    } else {
+      document.getElementById("login-error").textContent = "Incorrect password.";
+      document.getElementById("admin-pw").value = "";
+    }
+  }
+
+  function adminLogout() {
+    sessionStorage.removeItem("lunaraAdmin");
+    location.reload();
+  }
+
+  if (sessionStorage.getItem("lunaraAdmin")) {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+  }
+
+  // ── COST PRICES ──────────────────────────────────────
+  const COST_KEYS = [
+    "cost-hoodie-black-za","cost-hoodie-white-za",
+    "cost-sweatshirt-black-za","cost-sweatshirt-white-za",
+    "cost-tshirt-black-za","cost-tshirt-white-za",
+    "cost-longsleeve-black-za","cost-longsleeve-white-za",
+    "cost-sweatpants-s-za","cost-sweatpants-2xl-za",
+    "cost-sweatpants-3xl-za","cost-sweatpants-4xl-za",
+    "cost-hoodie-intl","cost-sweatshirt-intl",
+    "cost-tshirt-intl","cost-longsleeve-intl"
+  ];
+
+  const OTC_DEFAULTS = {
+    "cost-hoodie-black-za":       698.00,
+    "cost-hoodie-white-za":       690.00,
+    "cost-sweatshirt-black-za":   655.50,
+    "cost-sweatshirt-white-za":   632.50,
+    "cost-tshirt-black-za":       392.73,
+    "cost-tshirt-white-za":       359.38,
+    "cost-longsleeve-black-za":   491.63,
+    "cost-longsleeve-white-za":   416.88,
+    "cost-sweatpants-s-za":       969.99,
+    "cost-sweatpants-2xl-za":    1099.99,
+    "cost-sweatpants-3xl-za":    1149.99,
+    "cost-sweatpants-4xl-za":    1239.99,
+    "cost-hoodie-intl":            75.50,
+    "cost-sweatshirt-intl":        47.30,
+    "cost-tshirt-intl":            25.48,
+    "cost-longsleeve-intl":        49.50
+  };
+
+  function loadCosts() {
+    const saved = JSON.parse(localStorage.getItem("lunaraCosts") || "{}");
+    COST_KEYS.forEach(k => {
+      const el = document.getElementById(k);
+      if (el) el.value = saved[k] !== undefined ? saved[k] : (OTC_DEFAULTS[k] || "");
+    });
+  }
+
+  function saveCosts() {
+    const costs = {};
+    COST_KEYS.forEach(k => {
+      const el = document.getElementById(k);
+      if (el) costs[k] = parseFloat(el.value) || 0;
+    });
+    localStorage.setItem("lunaraCosts", JSON.stringify(costs));
+    loadDashboard();
+    alert("Cost prices saved ✅");
+  }
+
+  function getCostForItem(item) {
+    const costs = JSON.parse(localStorage.getItem("lunaraCosts") || "{}");
+    const type = (item.type || "").toLowerCase();
+    const color = (item.color || "black").toLowerCase();
+    const size = (item.size || "M").toUpperCase();
+    const region = item.region || "ZA";
+
+    if (region !== "ZA") {
+      return costs[`cost-${type}-intl`] || 0; // USD
+    }
+
+    if (type === "sweatpants") {
+      if (["2XL"].includes(size)) return costs["cost-sweatpants-2xl-za"] || 0;
+      if (["3XL"].includes(size)) return costs["cost-sweatpants-3xl-za"] || 0;
+      if (["4XL","5XL","6XL"].includes(size)) return costs["cost-sweatpants-4xl-za"] || 0;
+      return costs["cost-sweatpants-s-za"] || 0;
+    }
+
+    const col = color === "white" || color === "stone-blue" ? "white" : "black";
+    return costs[`cost-${type}-${col}-za`] || 0;
+  }
+
+  // ── LOAD DASHBOARD ───────────────────────────────────
+  function loadDashboard() {
+    loadCosts();
+    loadOrders();
+    loadPopular();
+    loadCounter();
+    loadDiscountCodes();
+    loadEmails();
+  }
+
+  // ── ORDERS ───────────────────────────────────────────
+  function loadOrders() {
+    const orders = JSON.parse(localStorage.getItem("lunaraOrders") || "[]");
+    let totalRevenue = 0, totalCosts = 0;
+
+    const rows = orders.slice().reverse().map(o => {
+      const rev = o.total || 0;
+      const cost = (o.items || []).reduce((s, item) => s + getCostForItem(item) * (item.quantity || 1), 0);
+      const profit = rev - cost;
+      totalRevenue += rev;
+      totalCosts += cost;
+      return `<tr>
+        <td>${o.id || "—"}</td>
+        <td>${o.name || "—"}</td>
+        <td style="color:var(--muted)">${o.email || "—"}</td>
+        <td>${(o.items||[]).map(i=>`${i.name} (${i.size}/${i.color})`).join(", ") || "—"}</td>
+        <td>R${rev.toFixed(2)}</td>
+        <td style="color:var(--muted)">R${cost.toFixed(2)}</td>
+        <td class="profit-cell">R${profit.toFixed(2)}</td>
+        <td><span class="badge ${o.status||'paid'}">${o.status||'paid'}</span></td>
+        <td style="color:var(--muted)">${o.date ? new Date(o.date).toLocaleDateString("en-ZA") : "—"}</td>
+      </tr>`;
+    }).join("");
+
+    const totalProfit = totalRevenue - totalCosts;
+    const avg = orders.length ? totalRevenue / orders.length : 0;
+
+    document.getElementById("stat-orders").textContent = orders.length;
+    document.getElementById("stat-revenue").textContent = "R"+totalRevenue.toFixed(2);
+    document.getElementById("stat-costs").textContent = "R"+totalCosts.toFixed(2);
+    document.getElementById("stat-profit").textContent = "R"+totalProfit.toFixed(2);
+    document.getElementById("stat-avg").textContent = "R"+avg.toFixed(2);
+
+    const container = document.getElementById("orders-container");
+    if (!orders.length) { container.innerHTML = '<p class="empty-state">No orders yet — they\'ll appear here as they come in 🦋</p>'; return; }
+    container.innerHTML = `<div class="tbl-wrap"><table>
+      <thead><tr>
+        <th>Order ID</th><th>Customer</th><th>Email</th><th>Items</th>
+        <th>Revenue</th><th>Cost</th><th>Profit</th><th>Status</th><th>Date</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+  }
+
+  // ── POPULAR ──────────────────────────────────────────
+  function loadPopular() {
+    const orders = JSON.parse(localStorage.getItem("lunaraOrders") || "[]");
+    const counts = {};
+    orders.forEach(o => (o.items||[]).forEach(item => {
+      counts[item.name] = (counts[item.name]||0) + (item.quantity||1);
+    }));
+    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const max = sorted[0]?.[1] || 1;
+    const container = document.getElementById("popular-container");
+    if (!sorted.length) { container.innerHTML = '<p class="empty-state">Sales data will appear here after first orders.</p>'; return; }
+    container.innerHTML = sorted.map(([name,count],i) => `
+      <div class="product-row">
+        <span class="rank">#${i+1}</span>
+        <span style="flex:2">${name}</span>
+        <div class="bar-wrap"><div class="bar" style="width:${Math.round(count/max*100)}%"></div></div>
+        <span class="sold">${count} sold</span>
+      </div>`).join("");
+  }
+
+  // ── COUNTER ──────────────────────────────────────────
+  function loadCounter() {
+    document.getElementById("counter-input").value = localStorage.getItem("lunaraOrderCount") || "0";
+  }
+  function saveCounter() {
+    localStorage.setItem("lunaraOrderCount", document.getElementById("counter-input").value || "0");
+    alert("Counter updated ✅");
+  }
+
+  // ── DISCOUNT CODES ───────────────────────────────────
+  function loadDiscountCodes() {
+    const codes = JSON.parse(localStorage.getItem("lunaraDiscountCodes") || "{}");
+    document.getElementById("codes-list").innerHTML = Object.entries(codes).map(([code,data]) =>
+      `<span class="code-chip"><strong>${code}</strong> — ${data.percent}% off
+       <button onclick="removeCode('${code}')">×</button></span>`
+    ).join("") || "<p style='color:var(--muted);font-size:13px;padding:4px 0'>No codes yet.</p>";
+  }
+  function addDiscountCode() {
+    const code = document.getElementById("new-code").value.trim().toUpperCase();
+    const percent = parseInt(document.getElementById("new-percent").value);
+    if (!code || !percent || percent < 1 || percent > 100) { alert("Enter a code and a % between 1–100."); return; }
+    const codes = JSON.parse(localStorage.getItem("lunaraDiscountCodes") || "{}");
+    codes[code] = { percent };
+    localStorage.setItem("lunaraDiscountCodes", JSON.stringify(codes));
+    document.getElementById("new-code").value = "";
+    document.getElementById("new-percent").value = "";
+    loadDiscountCodes();
+  }
+  function removeCode(code) {
+    const codes = JSON.parse(localStorage.getItem("lunaraDiscountCodes") || "{}");
+    delete codes[code]; localStorage.setItem("lunaraDiscountCodes", JSON.stringify(codes));
+    loadDiscountCodes();
+  }
+
+  // ── EMAILS ───────────────────────────────────────────
+  function loadEmails() {
+    const emails = JSON.parse(localStorage.getItem("lunaraEmails") || "[]");
+    document.getElementById("stat-emails").textContent = emails.length;
+    document.getElementById("email-count-label").textContent = `${emails.length} subscriber${emails.length!==1?"s":""} collected`;
+    document.getElementById("email-tags").innerHTML = emails.map(e=>`<span class="email-tag">${e}</span>`).join("") || "<p style='color:var(--muted);font-size:13px'>No signups yet.</p>";
+  }
+  function copyEmails() {
+    const emails = JSON.parse(localStorage.getItem("lunaraEmails") || "[]");
+    if (!emails.length) { alert("No emails yet."); return; }
+    navigator.clipboard.writeText(emails.join(", ")).then(()=>alert("Emails copied!"));
+  }
+
+  if (sessionStorage.getItem("lunaraAdmin")) loadDashboard();
+</script>
+</body>
+</html>
