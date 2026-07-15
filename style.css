@@ -245,15 +245,6 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   gap: 30px; padding: 24px 20px 40px;
 }
 
-/* Favourites can have just 1-2 items — auto-fit would stretch them huge.
-   Use auto-fill + a max-width cap so cards stay the same size as the main grids. */
-#favorites .products {
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-}
-#favorites .product-card {
-  max-width: 320px;
-}
-
 .product-card {
   background: var(--panel); border-radius: 20px; overflow: hidden;
   transition: 0.3s; border: 1px solid var(--line);
@@ -266,17 +257,9 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .product-image { width: 100%; display: block; }
 
 .product-info { padding: 20px; }
-.product-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.product-top h4 { font-size: 16px; flex: 1; min-width: 0; }
-.fav-btn {
-  background: transparent; border: none; font-size: 16px; cursor: pointer;
-  opacity: 0.6; padding: 4px;
-  width: 32px; height: 32px; min-width: 32px; max-width: 32px;
-  display: inline-flex; align-items: center; justify-content: center;
-  line-height: 1; flex-shrink: 0; flex-grow: 0;
-  border-radius: 50%;
-  filter: grayscale(1) sepia(1) hue-rotate(175deg) saturate(4);
-}
+.product-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.product-top h4 { font-size: 16px; }
+.fav-btn { background: transparent; border: none; font-size: 13px; cursor: pointer; opacity: 0.5; padding: 2px; line-height: 1; flex-shrink: 0; }
 .fav-btn.active { opacity: 1; }
 .anchor-price {
   color: var(--muted); font-size: 13px; text-decoration: line-through;
@@ -506,35 +489,47 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   .logo { height: 36px; }
   .brand-center span { font-size: 13px; }
   .cart-btn { padding: 7px 10px; font-size: 12px; }
-  .hero-premium { padding: 60px 16px 50px; }
-  .hero-premium h1 { font-size: 26px; line-height: 1.25; }
-  .hero-sub { font-size: 13px; }
-  .hero-buttons { flex-direction: column; align-items: center; gap: 10px; }
-  .hero-buttons .btn-primary, .hero-buttons .btn-why-lunara { width: 90%; text-align: center; }
-  .trust-bar-inner { gap: 10px; font-size: 11px; flex-wrap: wrap; justify-content: center; }
-  .products { grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 10px 24px; }
-  .product-card { border-radius: 14px; }
-  .product-info { padding: 10px; }
-  .product-top h4 { font-size: 12px; }
-  .product-price { font-size: 13px; margin: 6px 0; }
-  .anchor-price { font-size: 11px; }
-  .product-reviews { font-size: 11px; }
-  .product-card select { padding: 7px; font-size: 12px; }
-  .product-card button { padding: 9px; font-size: 12px; }
+  .hero-premium { padding: 40px 12px 30px; }
+  .hero-premium h1 { font-size: 22px; line-height: 1.2; }
+  .hero-sub { font-size: 12px; }
+  .hero-buttons { flex-direction: row; align-items: center; gap: 8px; justify-content: center; }
+  .hero-buttons .btn-primary, .hero-buttons .btn-why-lunara { width: auto; padding: 10px 16px; font-size: 13px; }
+  .trust-bar-inner { gap: 8px; font-size: 10px; flex-wrap: wrap; justify-content: center; }
+
+  /* 4 columns on mobile — matching tablet layout */
+  .products { grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 6px 16px; }
+  #favorites .products { grid-template-columns: repeat(4, 1fr); }
+  #favorites .product-card { max-width: none; }
+  .product-card { border-radius: 10px; }
+  .product-image { height: 80px; object-fit: cover; }
+  .product-info { padding: 6px; }
+  .product-top { gap: 4px; }
+  .product-top h4 { font-size: 9px; line-height: 1.2; }
+  .fav-btn { width: 20px; height: 20px; min-width: 20px; max-width: 20px; font-size: 11px; }
+  .product-price { font-size: 10px; margin: 3px 0; }
+  .anchor-price { font-size: 9px; }
+  .product-reviews { font-size: 9px; margin: 2px 0; }
+  .size-guide-link { font-size: 9px; margin: 2px 0; }
+  .product-card select { padding: 4px 2px; font-size: 9px; margin-bottom: 4px; }
+  .product-card button { padding: 6px 4px; font-size: 9px; }
+  .product-heading { font-size: 16px; padding: 16px 12px 0; }
+  .featured-banner { padding: 20px 12px 8px; }
+  .featured-banner h2 { font-size: 20px; }
   .footer-dropdown-content { left: 0; right: auto; min-width: 90vw; max-width: 96vw; }
   .footer-trust { flex-wrap: wrap; justify-content: center; gap: 8px; }
   .why-statement blockquote { font-size: 13px; }
   .modal-box { padding: 24px 16px; }
   .customs-modal-box { padding: 20px 14px; }
-  .fav-btn { font-size: 14px; width: 20px; height: 20px; }
 }
 
 @media (max-width: 360px) {
-  .products { grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 8px; }
+  .products { grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 8px 5px; }
   .brand-center span { font-size: 11px; }
-  .product-info { padding: 8px; }
-  .product-top h4 { font-size: 11px; }
-  .product-card button { font-size: 11px; padding: 8px; }
+  .product-info { padding: 5px; }
+  .product-top h4 { font-size: 8px; }
+  .product-image { height: 70px; }
+  .product-card button { font-size: 8px; padding: 5px 2px; }
+  .product-card select { font-size: 8px; padding: 3px 2px; }
 }
 
 /* ==============================================
@@ -605,16 +600,29 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   max-width: 420px;
 }
 
-/* ── Size Guide ─────────────────────────────── */
-.size-guide-link { font-size:11px; color:var(--accent); cursor:pointer; display:block; margin:-6px 0 8px; text-decoration:underline; }
-.size-guide-table { width:100%; border-collapse:collapse; font-size:13px; }
-.size-guide-table th { background:rgba(185,140,255,0.15); padding:8px; text-align:left; font-size:12px; }
-.size-guide-table td { padding:7px 8px; border-bottom:1px solid rgba(255,255,255,0.06); }
-.size-guide-table tr:last-child td { border-bottom:none; }
-
-/* ── Low Stock Badge ────────────────────────── */
-.low-stock-badge { font-size:12px; color:#ff6b6b; font-weight:600; margin:4px 0; }
-
-/* ── Region Flag Button ─────────────────────── */
-.region-flag-btn { background:transparent; border:1px solid rgba(255,255,255,0.15); border-radius:20px; padding:4px 10px; cursor:pointer; display:flex; align-items:center; gap:6px; color:var(--text); font-size:13px; }
-.region-flag-btn:hover { border-color:var(--accent); }
+/* ── Size Chart Modal ────────────────────────────────── */
+.size-chart-modal-box {
+  background: var(--panel);
+  border-radius: 20px;
+  padding: 28px 24px;
+  max-width: 92vw;
+  width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+}
+.size-chart-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.size-chart-images img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+@media (max-width: 480px) {
+  .size-chart-images { grid-template-columns: 1fr; }
+  .size-chart-modal-box { padding: 20px 14px; }
+}
