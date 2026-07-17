@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
   // ── Send via Gmail SMTP ───────────────────────────────────────────────────
   try {
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: gmailUser,
@@ -84,88 +84,6 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("❌ Gmail send error:", err);
-    return res.status(500).json({ error: "Failed to send order email", detail: err.message });
-  }
-}
-
-
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const { orderId, customer, items } = req.body;
-
-  if (!orderId || !customer || !items?.length) {
-    return res.status(400).json({ error: "Missing required order fields" });
-  }
-
-  const resendKey = process.env.RESEND_API_KEY;
-  const otcEmail  = process.env.OTC_EMAIL;
-  const lunaEmail = process.env.LUNARA_EMAIL || "lunarasuniverse@gmail.com";
-
-  if (!resendKey || !otcEmail) {
-    console.error("Missing RESEND_API_KEY or OTC_EMAIL env vars");
-    return res.status(500).json({ error: "Email config not set" });
-  }
-
-  // ── Build customer data for email.js ──────────────────────────────────────
-  const customerData = {
-    name:         customer.name || `${customer.firstName} ${customer.lastName}`,
-    email:        customer.email,
-    phone:        customer.phone || "—",
-    addressLine1: customer.address1 || customer.address || "",
-    addressLine2: "",
-    city:         customer.city    || "",
-    postalCode:   customer.zip     || "",
-    country:      customer.country || "South Africa"
-  };
-
-  // ── Build order items for email.js ────────────────────────────────────────
-  const orderItems = items.map(item => ({
-    design:      item.name
-      .replace(/(T-Shirt|Long Sleeve T-Shirt|Hoodie|Sweatshirt)/gi, "")
-      .trim(),
-    productType: item.type || "t_shirt",
-    color:       item.color,
-    size:        item.size,
-    quantity:    item.quantity
-  }));
-
-  const emailBody = generatePrinterEmailBody(customerData, orderItems);
-  const subject   = `New Print Order ${orderId} — Lunara's Universe`;
-
-  // ── Send email via Resend ─────────────────────────────────────────────────
-  try {
-    const sendEmail = async (to) => {
-      const r = await fetch("https://api.resend.com/emails", {
-        method:  "POST",
-        headers: {
-          "Authorization": `Bearer ${resendKey}`,
-          "Content-Type":  "application/json"
-        },
-        body: JSON.stringify({
-          from:    "Lunara's Universe <orders@lunarauniverse.co.za>",
-          to:      [to],
-          subject,
-          text:    emailBody
-        })
-      });
-      if (!r.ok) throw new Error(`Resend error ${r.status}: ${await r.text()}`);
-      return r.json();
-    };
-
-    // Send to OTC Printing + copy to Luna
-    await Promise.all([
-      sendEmail(otcEmail),
-      sendEmail(lunaEmail)
-    ]);
-
-    console.log(`✅ OTC order email sent for ${orderId}`);
-    return res.status(200).json({ success: true, orderId });
-
-  } catch (err) {
-    console.error("OTC email error:", err);
     return res.status(500).json({ error: "Failed to send order email", detail: err.message });
   }
 }
