@@ -3,6 +3,7 @@
 // SA clothing → OTC Printing (email + PayFast payout)
 // SA + INTL sweatpants → Printful
 // INTL clothing → Printify
+// SA + INTL merchize-flagged items → Merchize (INACTIVE until MERCHIZE_ENABLED=true)
 
 import crypto from "crypto";
 import { supabase } from "../lib/supabase.js";
@@ -105,9 +106,11 @@ export default async function handler(req, res) {
       .eq("order_id", orderId);
 
     // ── Split cart by supplier ───────────────────────────────────────────────
-    const otcItems      = isZA ? cart.filter(i => OTC_TYPES.includes(String(i.type||"").toLowerCase())) : [];
-    const printfulItems = cart.filter(i => String(i.type||"").toLowerCase() === "sweatpants");
-    const printifyItems = !isZA ? cart.filter(i => String(i.type||"").toLowerCase() !== "sweatpants") : [];
+    const merchizeEnabled = process.env.MERCHIZE_ENABLED === "true";
+    const otcItems       = isZA ? cart.filter(i => OTC_TYPES.includes(String(i.type||"").toLowerCase())) : [];
+    const printfulItems  = cart.filter(i => String(i.type||"").toLowerCase() === "sweatpants");
+    const printifyItems  = !isZA ? cart.filter(i => String(i.type||"").toLowerCase() !== "sweatpants") : [];
+    const merchizeItems  = merchizeEnabled ? cart.filter(i => i.merchize) : [];
 
     // ════════════════════════════════════════════════════════════════════════
     // 🇿🇦  OTC PRINTING — SA hoodies, sweatshirts, tees, longsleeves
@@ -202,6 +205,33 @@ export default async function handler(req, res) {
         console.log(`✅ Printful order submitted for ${orderId}`);
       } catch (e) {
         console.error("❌ Printful error:", e);
+      }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // 🧵  MERCHIZE — SA + International (INACTIVE until MERCHIZE_ENABLED=true)
+    // ════════════════════════════════════════════════════════════════════════
+    if (merchizeEnabled && merchizeItems.length > 0) {
+      try {
+        const { sendToMerchize } = await import("../lib/merchize.js");
+        await retry(() => sendToMerchize({
+          order_id: orderId,
+          email:    customer.email,
+          items:    merchizeItems,
+          shipping: {
+            firstName: customer.firstName,
+            lastName:  customer.lastName,
+            address1:  customer.address1,
+            city:      customer.city,
+            zip:       customer.zip,
+            country:   customer.country || "ZA",
+            phone:     customer.phone,
+            email:     customer.email
+          }
+        }));
+        console.log(`✅ Merchize order submitted for ${orderId}`);
+      } catch (e) {
+        console.error("❌ Merchize error:", e);
       }
     }
 
