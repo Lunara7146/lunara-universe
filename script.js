@@ -785,7 +785,7 @@ function addToCart(index, event) {
   const image = getImagePath(product, color);
   const type = String(product.type || "").toLowerCase();
 
-  if (!product.printify && !product.printful && !product.prodigi && !product.yoycol) {
+  if (!product.printify && !product.printful && !product.prodigi && !product.yoycol && !product.merchize) {
     alert("This product is currently unavailable.");
     return;
   }
@@ -800,8 +800,9 @@ function addToCart(index, event) {
   // INT + anything                            → Printify
   const otcTypes = ["hoodie", "sweatshirt", "tshirt", "longsleeve"]; // all go to OTC for SA customers
   const fulfilledByOTC = userCountry === "ZA" && otcTypes.includes(type);
-  const fulfilledByPrintful = userCountry === "ZA" && type === "sweatpants";
-  const fulfilledByPrintify = userCountry !== "ZA";
+  const fulfilledByPrintful = type === "sweatpants"; // Printful covers SA + international
+  const fulfilledByPrintify = userCountry !== "ZA" && type !== "sweatpants";
+  const fulfilledByMerchize = Boolean(product.merchize); // Merchize covers SA + international, once enabled
 
   const existing = cart.find(
     (item) => item.id === product.id && item.size === size && item.color === color
@@ -824,9 +825,11 @@ function addToCart(index, event) {
       printful: product.printful || false,
       printfulId: product.printfulId || null,
       prodigi: product.prodigi,
+      merchize: product.merchize || false,
       fulfilledByOTC,
       fulfilledByPrintful,
       fulfilledByPrintify,
+      fulfilledByMerchize,
       designUrl: image
     });
   }
@@ -1378,7 +1381,12 @@ async function checkout() {
     discount: totalPercentOff > 0 ? `${Math.round(totalPercentOff * 100)}%` : null,
     total,
     status: "paid",
-    fulfillment: otcItems.length > 0 ? "OTC + Printful" : "Printful"
+    fulfillment: [
+      otcItems.length > 0 ? "OTC" : null,
+      cart.some(i => i.fulfilledByPrintful) ? "Printful" : null,
+      cart.some(i => i.fulfilledByPrintify) ? "Printify" : null,
+      cart.some(i => i.fulfilledByMerchize) ? "Merchize" : null
+    ].filter(Boolean).join(" + ") || "Unknown"
   };
   const existingOrders = JSON.parse(localStorage.getItem("lunaraOrders") || "[]");
   existingOrders.push(orderRecord);
