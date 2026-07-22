@@ -330,6 +330,9 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   font-size: 12px; color: var(--accent); margin: 4px 0 2px;
   text-align: center; letter-spacing: 0.3px;
 }
+.featured-banner .bundle-hint {
+  font-size: 15px; color: var(--accent); margin-top: 12px;
+}
 .promo-hint {
   font-size: 12px; color: var(--accent-2); margin: 4px 0 8px;
   text-align: center; letter-spacing: 0.3px;
@@ -497,12 +500,15 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   .trust-bar-inner { gap: 8px; font-size: 10px; flex-wrap: wrap; justify-content: center; }
 
   /* 4 columns on mobile — matching tablet layout */
-  .products { grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 6px 16px; }
-  #favorites .products { grid-template-columns: repeat(4, 1fr); }
+  /* minmax(0, 1fr) instead of plain 1fr — without the 0, a grid track's
+     minimum size defaults to its content's natural width, which forces
+     the whole page wider than the screen (hence needing to zoom out) */
+  .products { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 8px 6px 16px; }
+  #favorites .products { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   #favorites .product-card { max-width: none; }
-  .product-card { border-radius: 10px; }
+  .product-card { border-radius: 10px; min-width: 0; }
   .product-image { height: 80px; object-fit: cover; }
-  .product-info { padding: 6px; }
+  .product-info { padding: 6px; min-width: 0; }
   .product-top { gap: 4px; }
   .product-top h4 { font-size: 9px; line-height: 1.2; }
   .fav-btn { width: 20px; height: 20px; min-width: 20px; max-width: 20px; font-size: 11px; }
@@ -510,8 +516,11 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   .anchor-price { font-size: 9px; }
   .product-reviews { font-size: 9px; margin: 2px 0; }
   .size-guide-link { font-size: 9px; margin: 2px 0; }
-  .product-card select { padding: 4px 2px; font-size: 9px; margin-bottom: 4px; }
-  .product-card button { padding: 6px 4px; font-size: 9px; }
+  .product-card select {
+    padding: 4px 2px; font-size: 9px; margin-bottom: 4px;
+    width: 100%; min-width: 0; text-overflow: ellipsis;
+  }
+  .product-card button { padding: 6px 4px; font-size: 9px; min-width: 0; }
   .product-heading { font-size: 16px; padding: 16px 12px 0; }
   .featured-banner { padding: 20px 12px 8px; }
   .featured-banner h2 { font-size: 20px; }
@@ -523,13 +532,13 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 }
 
 @media (max-width: 360px) {
-  .products { grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 8px 5px; }
+  .products { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; padding: 8px 5px; }
   .brand-center span { font-size: 11px; }
   .product-info { padding: 5px; }
   .product-top h4 { font-size: 8px; }
   .product-image { height: 70px; }
-  .product-card button { font-size: 8px; padding: 5px 2px; }
-  .product-card select { font-size: 8px; padding: 3px 2px; }
+  .product-card button { font-size: 8px; padding: 5px 2px; min-width: 0; }
+  .product-card select { font-size: 8px; padding: 3px 2px; min-width: 0; }
 }
 
 /* ==============================================
