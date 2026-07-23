@@ -519,10 +519,21 @@ const SIZE_GUIDE_DATA = {
   }
 };
 
+// Real size-chart images uploaded to the repo — shown instead of the generic table below.
+// If an image is missing (e.g. sweatpants until it's uploaded), the table automatically shows instead.
+const SIZE_CHART_IMAGE = {
+  hoodie:     "images/nova-collection/size-chart.png",
+  tshirt:     "images/shirts/size-chart.png",
+  longsleeve: "images/long-sleeve-shirts/size-chart.png",
+  sweatshirt: "images/sweatshirts/size-chart.png",
+  sweatpants: "images/sweatpants/size-chart.png"
+};
+
 window.openSizeGuide = function(type) {
   const t = String(type || "").toLowerCase();
   const data = SIZE_GUIDE_DATA[t] || SIZE_GUIDE_DATA.tshirt;
   const label = { hoodie: "Hoodie", sweatshirt: "Sweatshirt", tshirt: "T-Shirt", longsleeve: "Long Sleeve T-Shirt", sweatpants: "Sweatpants" }[t] || "Item";
+  const chartImage = SIZE_CHART_IMAGE[t];
 
   const headerRow = data.headers.map(h => `<th>${h}</th>`).join("");
   const bodyRows = data.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("");
@@ -532,11 +543,16 @@ window.openSizeGuide = function(type) {
   if (!modal || !content) return;
   content.innerHTML = `
     <h3 style="margin-bottom:14px;">📏 ${label} Size Guide</h3>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Measurements are of the garment, not the body. When in doubt, size up.</p>
-    <table class="size-guide-table">
-      <thead><tr>${headerRow}</tr></thead>
-      <tbody>${bodyRows}</tbody>
-    </table>
+    <img src="${chartImage}" alt="${label} size chart"
+         style="width:100%;border-radius:8px;margin-bottom:12px;"
+         onerror="this.style.display='none'; document.getElementById('size-guide-fallback-table').style.display='block';">
+    <div id="size-guide-fallback-table" style="display:none;">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Measurements are of the garment, not the body. When in doubt, size up.</p>
+      <table class="size-guide-table">
+        <thead><tr>${headerRow}</tr></thead>
+        <tbody>${bodyRows}</tbody>
+      </table>
+    </div>
     <button onclick="document.getElementById('size-guide-modal').classList.remove('active')" style="margin-top:16px;width:100%;">Close</button>
   `;
   modal.classList.add("active");
@@ -934,7 +950,9 @@ function tryApplyPromoCode(code, msg) {
   }
 
   // Stacking rules:
-  // - "general" (LUNA5) can stack with ONE "ambassador" code
+  // - "general" (LUNA5) and "ambassador" codes are mutually exclusive — using
+  //   an ambassador code blocks LUNA5, and vice versa. Neither stacks with the
+  //   other anymore.
   // - two "ambassador" codes cannot stack together
   // - "welcome" codes don't stack with anything (used alone)
   if (promo.type === "welcome" && activePromos.length > 0) {
@@ -951,6 +969,14 @@ function tryApplyPromoCode(code, msg) {
   }
   if (promo.type === "general" && activePromos.some(p => p.type === "general")) {
     if (msg) { msg.innerText = "This code is already applied."; msg.style.color = "var(--muted)"; }
+    return false;
+  }
+  if (promo.type === "ambassador" && activePromos.some(p => p.type === "general")) {
+    if (msg) { msg.innerText = "This code can't be combined with LUNA5."; msg.style.color = "#f87171"; }
+    return false;
+  }
+  if (promo.type === "general" && activePromos.some(p => p.type === "ambassador")) {
+    if (msg) { msg.innerText = "This code can't be combined with an ambassador code."; msg.style.color = "#f87171"; }
     return false;
   }
 
@@ -978,6 +1004,7 @@ window.applyPromo = function() {
 };
 
 // Auto-apply promo codes from a shareable link, e.g. ?promo=LUNA5 or ?promo=AMBKARLA5
+let arrivedViaAmbassadorLink = false; // used to hide the LUNA5 hint for ambassador-referred visitors
 function autoApplyPromoFromURL() {
   const params = new URLSearchParams(window.location.search);
   const promoParam = params.get("promo");
@@ -986,6 +1013,11 @@ function autoApplyPromoFromURL() {
   const input = document.getElementById("promo-input");
   const applied = tryApplyPromoCode(promoParam, msg);
   if (applied && input) input.value = promoParam.toUpperCase();
+  if (applied && PROMO_CODES[promoParam.trim().toUpperCase()]?.type === "ambassador") {
+    arrivedViaAmbassadorLink = true;
+    const luna5Hint = document.getElementById("luna5-hint");
+    if (luna5Hint) luna5Hint.style.display = "none";
+  }
   updateCart();
 }
 
@@ -1023,16 +1055,16 @@ function updateCart() {
   const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
   // 🎁 BUNDLE DEAL: Tiered discounts when buying 3+ items.
-  // 3 items = 10% off | 4+ items = 12% off
-  // Bundle discount takes priority over ALL promo codes — they don't stack.
+  // 3-4 items = 7% off | 5+ items = 10% off
+  // Bundle discount takes priority over ALL promo codes (incl. ambassador codes) — they don't stack.
   let bundleActive = false;
   let bundlePercent = 0;
-  if (itemCount >= 4) {
-    bundleActive = true;
-    bundlePercent = 0.12;
-  } else if (itemCount === 3) {
+  if (itemCount >= 5) {
     bundleActive = true;
     bundlePercent = 0.10;
+  } else if (itemCount >= 3) {
+    bundleActive = true;
+    bundlePercent = 0.07;
   }
   const totalPercentOff = bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0));
   const total = subtotal * (1 - totalPercentOff);
@@ -1048,7 +1080,7 @@ function updateCart() {
     if (promoHint) promoHint.style.display = "none";
   } else {
     if (promoRow) promoRow.style.display = "";
-    if (promoHint) promoHint.style.display = "";
+    if (promoHint) promoHint.style.display = arrivedViaAmbassadorLink ? "none" : "";
     if (msg && !activePromos.length) msg.innerText = "";
     else if (msg && activePromos.length) msg.innerText = getActivePromoMessage();
   }
@@ -1278,12 +1310,12 @@ async function checkout() {
   const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
   let bundleActive = false;
   let bundlePercent = 0;
-  if (itemCount >= 4) {
-    bundleActive = true;
-    bundlePercent = 0.12;
-  } else if (itemCount === 3) {
+  if (itemCount >= 5) {
     bundleActive = true;
     bundlePercent = 0.10;
+  } else if (itemCount >= 3) {
+    bundleActive = true;
+    bundlePercent = 0.07;
   }
   const totalPercentOff = bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0));
   const total = subtotal * (1 - totalPercentOff);
