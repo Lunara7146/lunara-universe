@@ -57,7 +57,8 @@ export default async function handler(req, res) {
     quantity:    item.quantity
   }));
 
-  const emailBody = generatePrinterEmailBody(customerData, orderItems);
+  const emailBody = generatePrinterEmailBody(customerData, orderItems)
+    + "\n\n— Shipping cost (R100) is included in this order's payment. —";
   const subject   = `New Print Order ${orderId} — Lunara's Universe`;
 
   // ── Send via Gmail SMTP ───────────────────────────────────────────────────
