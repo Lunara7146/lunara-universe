@@ -259,8 +259,17 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .product-info { padding: 20px; }
 .product-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .product-top h4 { font-size: 16px; }
-.fav-btn { background: transparent; border: none; font-size: 13px; cursor: pointer; opacity: 0.5; padding: 2px; line-height: 1; flex-shrink: 0; }
-.fav-btn.active { opacity: 1; }
+/* .product-card button.fav-btn (2 classes) beats .product-card button (1 class + element)
+   in specificity, so this correctly overrides the gradient "Add to Cart" button style
+   that was previously leaking onto the favorite button. */
+.product-card button.fav-btn {
+  width: 30px; height: 30px; min-width: 30px; max-width: 30px;
+  margin-top: 0; padding: 0; border-radius: 50%; border: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  font-size: 14px; line-height: 1; cursor: pointer; opacity: 0.85;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+}
+.product-card button.fav-btn.active { opacity: 1; }
 .anchor-price {
   color: var(--muted); font-size: 13px; text-decoration: line-through;
   margin-top: 10px; margin-bottom: 2px; opacity: 0.7;
@@ -274,6 +283,13 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   border-radius: 12px; border: 1px solid var(--line);
   background: var(--panel-2); color: var(--text);
 }
+.size-guide-link {
+  display: block; width: 100%; box-sizing: border-box; text-align: center;
+  margin-top: 10px; padding: 10px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--panel-2);
+  color: var(--text); font-size: 13px; cursor: pointer;
+}
+.size-guide-link:hover { border-color: var(--accent); }
 .product-card button {
   margin-top: 10px; width: 100%; padding: 12px;
   border-radius: 999px; border: none;
@@ -511,11 +527,11 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   .product-info { padding: 6px; min-width: 0; }
   .product-top { gap: 4px; }
   .product-top h4 { font-size: 9px; line-height: 1.2; }
-  .fav-btn { width: 20px; height: 20px; min-width: 20px; max-width: 20px; font-size: 11px; }
+  .product-card button.fav-btn { width: 18px; height: 18px; min-width: 18px; max-width: 18px; font-size: 9px; }
   .product-price { font-size: 10px; margin: 3px 0; }
   .anchor-price { font-size: 9px; }
   .product-reviews { font-size: 9px; margin: 2px 0; }
-  .size-guide-link { font-size: 9px; margin: 2px 0; }
+  .size-guide-link { font-size: 9px; padding: 4px 2px; margin-top: 4px; }
   .product-card select {
     padding: 4px 2px; font-size: 9px; margin-bottom: 4px;
     width: 100%; min-width: 0; text-overflow: ellipsis;
