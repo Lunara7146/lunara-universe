@@ -64,9 +64,12 @@ const NOVA_COLLECTION = {
       black: { "S": 689.99, "M": 689.99, "L": 689.99, "XL": 689.99, "2XL": 689.99, "3XL": 689.99, "4XL": 689.99 },
       white: { "S": 579.99, "M": 579.99, "L": 579.99, "XL": 579.99, "2XL": 579.99, "3XL": 579.99, "4XL": 579.99 }
     },
+    // ZAR prices below = Printful USD retail price × ~16.50 exchange rate,
+    // rounded up to the nearest R5, plus 50c. Re-check the USD/ZAR rate
+    // periodically since it fluctuates — these aren't locked in forever.
     sweatpants: {
-      "2XS": 969.99, "XS": 969.99, "S": 969.99, "M": 969.99, "L": 969.99, "XL": 969.99,
-      "2XL": 1099.99, "3XL": 1149.99, "4XL": 1239.99, "5XL": 1299.99, "6XL": 1349.99
+      "2XS": 1085.50, "XS": 1085.50, "S": 1085.50, "M": 1085.50, "L": 1085.50, "XL": 1085.50,
+      "2XL": 1085.50, "3XL": 1085.50, "4XL": 1150.50, "5XL": 1150.50, "6XL": 1230.50
     }
   },
 
@@ -1063,9 +1066,8 @@ const NOVA_COLLECTION = {
     }
   },
   // --- SWEATPANTS COLLECTION (white only, XS–6XL) ---
-  // SA customers     → fulfilled by Printful (ZAR prices from SA_PRICING)
-  // International   → fulfilled by Printify (USD prices from your Printify dashboard)
-  // Routing is automatic based on userCountry — set in addToCart
+  // SA + International   → fulfilled by Printful (confirmed pricing from Printful dashboard)
+  // Routing is by product type ("sweatpants") in lib/fulfillment.js — same for both regions
   {
     id: "lunara-energy-bloom-sweatpants",
     name: "Energy Bloom Sweatpants",
@@ -1078,8 +1080,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39cd8d70c186",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "energy-bloom-sweatpants-XS-white" },
@@ -1106,8 +1108,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39ca43d9f616",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "plain-sweatpants-XS-white" },
@@ -1134,8 +1136,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39c9067d5643",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "drip-smile-sweatpants-XS-white" },
@@ -1162,8 +1164,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39c65b1e87d9",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "mushroom-sweatpants-XS-white" },
@@ -1190,8 +1192,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39c391f41f91",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "compass-sweatpants-XS-white" },
@@ -1218,8 +1220,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a39bf6076fbe5",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "butterfly-sweatpants-XS-white" },
@@ -1246,8 +1248,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a38cd71dc9f44",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "jellyfish-sweatpants-XS-white" },
@@ -1274,8 +1276,8 @@ const NOVA_COLLECTION = {
     printfulId: "6a38cb06256fd9",
     colors: ["white"],
     pricing: {
-      "2XS": 59.99, "XS": 59.99, "S": 59.99, "M": 59.99, "L": 59.99, "XL": 59.99,
-      "2XL": 69.99, "3XL": 69.99, "4XL": 79.99, "5XL": 79.99, "6XL": 79.99
+      "2XS": 65.50, "XS": 65.50, "S": 65.50, "M": 65.50, "L": 65.50, "XL": 65.50,
+      "2XL": 65.50, "3XL": 65.50, "4XL": 69.50, "5XL": 69.50, "6XL": 74.50
     },
     variants: {
       "XS-white":  { sku: "cosmic-eye-sweatpants-XS-white" },
