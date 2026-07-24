@@ -496,7 +496,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   }
   .main-nav { display: none; }
   .cart-panel { width: 100%; right: -100%; }
-  .footer-contacts { flex-direction: column; gap: 12px; }
+  .footer-contacts { gap: 16px; }
   .footer-trust { gap: 4px; }
   .why-grid { grid-template-columns: 1fr; }
   .modal-box { padding: 28px 18px; }
