@@ -197,8 +197,9 @@
   <section class="panel">
     <h2>💸 Pending OTC Payouts</h2>
     <p style="padding:14px 20px 0;font-size:12px;color:var(--muted);">
-      Shows what you still owe OTC per order (their production cost + R100 shipping, once per order).
-      Tick "Paid" once you've done the manual EFT — it's remembered so you never lose track or double-pay.
+      Grouped by day — do ONE bank transfer per day covering everyone who ordered, using the total shown.
+      OTC still gets an individual email per order automatically, so they know exactly what to fulfill for each customer.
+      Tap "Mark whole day as paid" once you've sent that day's total — it's remembered so you never lose track or double-pay.
     </p>
     <div id="otc-payouts-container"><p class="empty-state">Loading…</p></div>
   </section>
@@ -350,7 +351,7 @@
     container.innerHTML = '<p class="empty-state">Loading orders…</p>';
 
     try {
-      const res = await fetch("/api/admin-orders", {
+      const res = await fetch("/api/admin", {
         headers: { "x-admin-key": sessionStorage.getItem("lunaraAdminKey") || "" }
       });
       if (!res.ok) {
@@ -377,37 +378,73 @@
       container.innerHTML = '<p class="empty-state">No OTC orders yet.</p>';
       return;
     }
-    const rows = otcOrders.map(o => {
-      const otcItems = (o.cart||[]).filter(i => OTC_TYPES_LIST.includes((i.type||"").toLowerCase()));
-      const owed = otcItems.reduce((s,i)=>s+getCostForItem(i)*(i.quantity||1),0) + 100;
-      const dateStr = o.created_at ? new Date(o.created_at).toLocaleDateString("en-ZA",{year:"numeric",month:"short",day:"numeric"}) : "—";
-      const customerName = `${o.customer?.firstName||""} ${o.customer?.lastName||""}`.trim() || "—";
-      const paid = !!o.otc_paid;
-      return `<tr>
-        <td style="color:var(--muted)">${dateStr}</td>
-        <td>${o.order_id||"—"}</td>
-        <td>${customerName}</td>
-        <td>R${owed.toFixed(2)}</td>
-        <td><label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-          <input type="checkbox" ${paid?"checked":""} onchange="toggleOtcPaid('${o.order_id}', this.checked)"> ${paid?"Paid ✅":"Mark paid"}
-        </label></td>
-      </tr>`;
+
+    // Group by calendar day
+    const days = {};
+    otcOrders.forEach(o => {
+      const d = o.created_at ? new Date(o.created_at) : new Date();
+      const dayKey = d.toISOString().slice(0,10); // YYYY-MM-DD
+      if (!days[dayKey]) days[dayKey] = [];
+      days[dayKey].push(o);
+    });
+
+    // Newest day first
+    const sortedDayKeys = Object.keys(days).sort((a,b) => b.localeCompare(a));
+
+    container.innerHTML = sortedDayKeys.map(dayKey => {
+      const dayOrders = days[dayKey];
+      const dateLabel = new Date(dayKey).toLocaleDateString("en-ZA", { weekday: "long", year: "numeric", month: "short", day: "numeric" });
+
+      let dayTotal = 0;
+      const rows = dayOrders.map(o => {
+        const otcItems = (o.cart||[]).filter(i => OTC_TYPES_LIST.includes((i.type||"").toLowerCase()));
+        const owed = otcItems.reduce((s,i)=>s+getCostForItem(i)*(i.quantity||1),0) + 100;
+        dayTotal += owed;
+        const customerName = `${o.customer?.firstName||""} ${o.customer?.lastName||""}`.trim() || "—";
+        const paid = !!o.otc_paid;
+        return `<tr>
+          <td>${o.order_id||"—"}</td>
+          <td>${customerName}</td>
+          <td>R${owed.toFixed(2)}</td>
+          <td>${paid ? "✅ Paid" : "⏳ Pending"}</td>
+        </tr>`;
+      }).join("");
+
+      const allPaid = dayOrders.every(o => o.otc_paid);
+      const dayIds = dayOrders.map(o => o.order_id);
+
+      return `
+        <div class="customer-file">
+          <div class="customer-file-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <div>
+              <strong>${dateLabel}</strong>
+              <div style="color:var(--muted);font-size:12px;">${dayOrders.length} order${dayOrders.length!==1?"s":""} — Total owed to OTC: <strong style="color:var(--text)">R${dayTotal.toFixed(2)}</strong></div>
+            </div>
+            <button onclick='markDayPaid(${JSON.stringify(dayIds)}, ${!allPaid})' style="padding:8px 16px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#000;font-weight:600;font-size:13px;cursor:pointer;">
+              ${allPaid ? "Mark day as unpaid" : `Mark whole day as paid (R${dayTotal.toFixed(2)})`}
+            </button>
+          </div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Owed</th><th>Status</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table></div>
+        </div>`;
     }).join("");
-    container.innerHTML = `<div class="tbl-wrap"><table>
-      <thead><tr><th>Date</th><th>Order ID</th><th>Customer</th><th>Owed to OTC</th><th>Status</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>`;
   }
 
-  async function toggleOtcPaid(orderId, paid) {
+  async function markDayPaid(orderIds, paid) {
     try {
-      await fetch("/api/mark-otc-paid", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-key": sessionStorage.getItem("lunaraAdminKey")||"" },
-        body: JSON.stringify({ orderId, paid })
+      await Promise.all(orderIds.map(orderId =>
+        fetch("/api/admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-admin-key": sessionStorage.getItem("lunaraAdminKey")||"" },
+          body: JSON.stringify({ orderId, paid })
+        })
+      ));
+      orderIds.forEach(id => {
+        const o = allOrders.find(x => x.order_id === id);
+        if (o) o.otc_paid = paid;
       });
-      const o = allOrders.find(x => x.order_id === orderId);
-      if (o) o.otc_paid = paid;
       renderOtcPayouts(allOrders);
     } catch(e) {
       alert("Could not update — check connection and try again.");
@@ -475,7 +512,10 @@
         <div class="customer-file">
           <div class="customer-file-header">
             <strong>${file.name}</strong>
-            <span style="color:var(--muted);font-size:12px;">${file.email} — ${file.orders.length} order${file.orders.length !== 1 ? "s" : ""}</span>
+            <span style="color:var(--muted);font-size:12px;">
+              <a href="mailto:${file.email}" style="color:var(--accent-2);text-decoration:none;">✉️ ${file.email}</a>
+              — ${file.orders.length} order${file.orders.length !== 1 ? "s" : ""}
+            </span>
           </div>
           <div class="tbl-wrap"><table>
             <thead><tr>

@@ -893,6 +893,10 @@ const PROMO_CODES = {
   "GLOW5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
   "BEAM5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
   "FLAR5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
+
+  // 🔒 OWNER-ONLY — for personal test purchases. Charges exact OTC cost price, no profit margin.
+  // NEVER share this code publicly. Change it to something else if you're worried it leaked.
+  "LUNARAOWNERTEST": { percent: 0, oneTimeUse: false, type: "owner", live: true },
   "VEGA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
   "RISE5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
   "AURA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
@@ -1306,18 +1310,39 @@ async function checkout() {
   const customerProfile = { firstName, lastName, email, country, phone, address1, city, region, zip };
   localStorage.setItem("lunaraCustomerProfile", JSON.stringify(customerProfile));
 
-  const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  // 🔒 OWNER TEST MODE — if the owner-only code is active, charge exact OTC
+  // cost price instead of the normal marked-up price (no profit, for personal test orders)
+  const OWNER_TEST_ACTIVE = activePromos.some(p => p.type === "owner");
+  const OTC_COST_LOOKUP = {
+    hoodie:     { black: 598.00, white: 575.00, "stone-blue": 575.00 },
+    sweatshirt: { black: 540.50, white: 517.50 },
+    tshirt:     { black: 277.73, white: 244.38 },
+    longsleeve: { black: 358.23, white: 301.88 }
+  };
+  function getOwnerTestPrice(item) {
+    const type  = String(item.type||"").toLowerCase();
+    const color = String(item.color||"black").toLowerCase();
+    const map   = OTC_COST_LOOKUP[type];
+    if (!map) return item.price; // sweatpants / no cost data — charge normal price
+    return map[color] || map["black"];
+  }
+
+  const subtotal = OWNER_TEST_ACTIVE
+    ? cart.reduce((sum, i) => sum + getOwnerTestPrice(i) * i.quantity, 0)
+    : cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
   let bundleActive = false;
   let bundlePercent = 0;
-  if (itemCount >= 5) {
-    bundleActive = true;
-    bundlePercent = 0.10;
-  } else if (itemCount >= 3) {
-    bundleActive = true;
-    bundlePercent = 0.07;
+  if (!OWNER_TEST_ACTIVE) {
+    if (itemCount >= 5) {
+      bundleActive = true;
+      bundlePercent = 0.10;
+    } else if (itemCount >= 3) {
+      bundleActive = true;
+      bundlePercent = 0.07;
+    }
   }
-  const totalPercentOff = bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0));
+  const totalPercentOff = OWNER_TEST_ACTIVE ? 0 : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
   const total = subtotal * (1 - totalPercentOff);
   const orderId = "LUNARA-" + Date.now();
   localStorage.setItem("lunara_order_id", orderId);
