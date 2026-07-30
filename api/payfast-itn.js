@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     const baseUrl = process.env.BASE_URL || `https://${req.headers.host}`;
 
     // ── Amount check ─────────────────────────────────────────────────────────
-    const expectedAmount = cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
+    const expectedAmount = Number(order.amount);
     const paidAmount     = parseFloat(data.amount_gross);
     if (Math.abs(expectedAmount - paidAmount) > 1) {
       console.error(`❌ Amount mismatch: expected ${expectedAmount}, got ${paidAmount}`);
