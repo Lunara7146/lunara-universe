@@ -983,6 +983,15 @@ function tryApplyPromoCode(code, msg) {
     if (msg) { msg.innerText = "This code can't be combined with an ambassador code."; msg.style.color = "#f87171"; }
     return false;
   }
+  // Owner test code doesn't stack with anything, and nothing stacks with it
+  if (promo.type === "owner" && activePromos.length > 0) {
+    if (msg) { msg.innerText = "Remove your current code first to use this one."; msg.style.color = "#f87171"; }
+    return false;
+  }
+  if (activePromos.some(p => p.type === "owner")) {
+    if (msg) { msg.innerText = "This code can't be combined with other codes."; msg.style.color = "#f87171"; }
+    return false;
+  }
 
   activePromos.push({ code, percent: promo.percent, type: promo.type });
   if (msg) {
@@ -1055,7 +1064,26 @@ function updateCart() {
     items.appendChild(row);
   });
 
-  const subtotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  // 🔒 OWNER TEST MODE — must match the same override used in checkout(), or the
+  // cart display would show a different number than what's actually charged.
+  const OWNER_TEST_ACTIVE_DISPLAY = activePromos.some(p => p.type === "owner");
+  const OTC_COST_LOOKUP_DISPLAY = {
+    hoodie:     { black: 598.00, white: 575.00, "stone-blue": 575.00 },
+    sweatshirt: { black: 540.50, white: 517.50 },
+    tshirt:     { black: 277.73, white: 244.38 },
+    longsleeve: { black: 358.23, white: 301.88 }
+  };
+  function getOwnerTestPriceDisplay(item) {
+    const type  = String(item.type||"").toLowerCase();
+    const color = String(item.color||"black").toLowerCase();
+    const map   = OTC_COST_LOOKUP_DISPLAY[type];
+    if (!map) return item.price;
+    return map[color] || map["black"];
+  }
+
+  const subtotal = OWNER_TEST_ACTIVE_DISPLAY
+    ? cart.reduce((sum, i) => sum + getOwnerTestPriceDisplay(i) * i.quantity, 0)
+    : cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
   // 🎁 BUNDLE DEAL: Tiered discounts when buying 3+ items.
@@ -1063,21 +1091,27 @@ function updateCart() {
   // Bundle discount takes priority over ALL promo codes (incl. ambassador codes) — they don't stack.
   let bundleActive = false;
   let bundlePercent = 0;
-  if (itemCount >= 5) {
-    bundleActive = true;
-    bundlePercent = 0.10;
-  } else if (itemCount >= 3) {
-    bundleActive = true;
-    bundlePercent = 0.07;
+  if (!OWNER_TEST_ACTIVE_DISPLAY) {
+    if (itemCount >= 5) {
+      bundleActive = true;
+      bundlePercent = 0.10;
+    } else if (itemCount >= 3) {
+      bundleActive = true;
+      bundlePercent = 0.07;
+    }
   }
-  const totalPercentOff = bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0));
+  const totalPercentOff = OWNER_TEST_ACTIVE_DISPLAY ? 0 : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
   const total = subtotal * (1 - totalPercentOff);
 
   // Show bundle messaging in the promo area
   const msg = document.getElementById("promo-msg");
   const promoRow = document.querySelector(".promo-row");
   const promoHint = document.querySelector(".promo-hint");
-  if (bundleActive) {
+  if (OWNER_TEST_ACTIVE_DISPLAY) {
+    if (msg) { msg.innerText = `🔒 Owner test mode — charging exact OTC cost, no profit margin.`; msg.style.color = "var(--success, #4ade80)"; }
+    if (promoRow) promoRow.style.display = "none";
+    if (promoHint) promoHint.style.display = "none";
+  } else if (bundleActive) {
     const discountPercent = Math.round(bundlePercent * 100);
     if (msg) { msg.innerText = `🎁 Bundle deal active — ${discountPercent}% off your order!`; msg.style.color = "var(--success, #4ade80)"; }
     if (promoRow) promoRow.style.display = "none";
