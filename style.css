@@ -24,7 +24,7 @@
    RESET & BASE
    ============================================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   font-family: 'Inter', sans-serif;
   background: radial-gradient(circle at top, rgba(126,231,255,0.08), transparent 30%),
@@ -449,7 +449,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   position: absolute; bottom: calc(100% + 8px); right: 0;
   background: var(--panel-2); border: 1px solid var(--accent-2);
   border-radius: 12px; padding: 18px; z-index: 1000;
-  min-width: 340px; max-width: 480px;
+  width: min(340px, 88vw); max-width: 480px;
   max-height: 0; opacity: 0; overflow: hidden;
   transition: max-height 0.35s ease, opacity 0.35s ease;
   box-shadow: 0 6px 24px rgba(0,0,0,0.4);
@@ -462,7 +462,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   scrollbar-color: var(--accent) var(--panel);
 }
 .footer-trust .footer-dropdown:first-child .footer-dropdown-content {
-  min-width: 400px;
+  width: min(400px, 88vw);
   max-width: 520px;
 }
 .footer-dropdown:hover .footer-dropdown-content::-webkit-scrollbar { width: 6px; }
@@ -471,7 +471,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .footer-dropdown-content p, .footer-dropdown-content li { color: var(--text); font-size: 13px; line-height: 1.6; }
 .footer-dropdown-content h3, .footer-dropdown-content h4 { font-size: 14px; margin-bottom: 8px; color: var(--accent); }
 .footer-dropdown-content ul { padding-left: 16px; margin: 6px 0; }
-.terms-box { min-width: 320px; max-width: 500px; }
+.terms-box { width: min(320px, 88vw); max-width: 500px; }
 
 .footer-legal--glow {
   margin: 24px 16px 8px; padding: 16px 20px;
