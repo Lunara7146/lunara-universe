@@ -208,6 +208,14 @@
   <section class="panel">
     <h2>🧮 Order Profit Calculator (SA / OTC orders)</h2>
     <div id="calc-items" style="padding:16px 20px;"></div>
+    <div style="padding:0 20px 16px;">
+      <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px;">Discount code applied to this order</label>
+      <select id="calc-discount" onchange="calculateCalc()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--text);">
+        <option value="none">None</option>
+        <option value="0.05">LUNA5 / Ambassador code (5%)</option>
+      </select>
+      <p style="font-size:11px;color:var(--muted);margin-top:6px;">Note: at 3+ items the bundle discount (7%/10%) automatically overrides any code, same as on your live site.</p>
+    </div>
     <div style="padding:16px 20px;border-top:1px solid var(--border);">
       <div class="cost-row"><label>Customer pays</label><strong id="calc-total" style="color:var(--accent-2)">R0.00</strong></div>
       <div class="cost-row" style="margin-top:8px;"><label>Goes to OTC (cost + R100 shipping, once)</label><strong id="calc-otc" style="color:var(--muted)">R0.00</strong></div>
@@ -631,6 +639,8 @@
 
   function resetCalc() {
     CALC_PRODUCTS.forEach(p => calcQty[p.key] = 0);
+    const discountSelect = document.getElementById("calc-discount");
+    if (discountSelect) discountSelect.value = "none";
     renderCalcItems();
     calculateCalc();
   }
@@ -647,15 +657,27 @@
     if (itemCount >= 5) bundlePercent = 0.10;
     else if (itemCount >= 3) bundlePercent = 0.07;
 
-    const total = subtotal * (1 - bundlePercent);
+    // A discount code only applies below the 3-item bundle threshold — same rule as the live site
+    const codeValue = parseFloat(document.getElementById("calc-discount")?.value) || 0;
+    const discountPercent = bundlePercent > 0 ? bundlePercent : codeValue;
+
+    const total = subtotal * (1 - discountPercent);
     const otcTotal = itemCount > 0 ? otcCost + CALC_SHIPPING : 0;
     const profit = total - otcTotal;
 
     document.getElementById("calc-total").innerText = `R${total.toFixed(2)}`;
     document.getElementById("calc-otc").innerText = `R${otcTotal.toFixed(2)}`;
     document.getElementById("calc-profit").innerText = `R${profit.toFixed(2)}`;
-    document.getElementById("calc-discount-note").innerText =
-      bundlePercent > 0 ? `Bundle discount applied: ${bundlePercent * 100}% off (${itemCount} items)` : "";
+
+    let note = "";
+    if (bundlePercent > 0 && codeValue > 0) {
+      note = `Bundle discount (${bundlePercent * 100}%) overrides the code — same as your live site.`;
+    } else if (bundlePercent > 0) {
+      note = `Bundle discount applied: ${bundlePercent * 100}% off (${itemCount} items)`;
+    } else if (codeValue > 0) {
+      note = `Discount code applied: ${codeValue * 100}% off`;
+    }
+    document.getElementById("calc-discount-note").innerText = note;
   }
 
   renderCalcItems();

@@ -1101,7 +1101,8 @@ function updateCart() {
     }
   }
   const totalPercentOff = OWNER_TEST_ACTIVE_DISPLAY ? 0 : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
-  const total = subtotal * (1 - totalPercentOff);
+  const ownerShippingDisplay = OWNER_TEST_ACTIVE_DISPLAY && cart.some(i => OTC_COST_LOOKUP_DISPLAY[String(i.type||"").toLowerCase()]) ? 100 : 0;
+  const total = subtotal * (1 - totalPercentOff) + ownerShippingDisplay;
 
   // Show bundle messaging in the promo area
   const msg = document.getElementById("promo-msg");
@@ -1377,7 +1378,10 @@ async function checkout() {
     }
   }
   const totalPercentOff = OWNER_TEST_ACTIVE ? 0 : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
-  const total = subtotal * (1 - totalPercentOff);
+  // Owner test mode: add the real R100 OTC shipping once per order, matching what
+  // it actually costs to fulfill — not just the raw production cost with no shipping.
+  const ownerShipping = OWNER_TEST_ACTIVE && cart.some(i => OTC_COST_LOOKUP[String(i.type||"").toLowerCase()]) ? 100 : 0;
+  const total = subtotal * (1 - totalPercentOff) + ownerShipping;
   const orderId = "LUNARA-" + Date.now();
   localStorage.setItem("lunara_order_id", orderId);
 
