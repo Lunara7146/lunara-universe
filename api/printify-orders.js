@@ -39,18 +39,23 @@ export default async function handler(req, res) {
       });
     }
 
-    // ✅ STRICT VALIDATION
+    // ✅ VALIDATION — accepts either a plain SKU, or product_id + variant_id
     const safeLineItems = line_items.map(item => {
-      if (!item.product_id || !item.variant_id) {
-        console.error("❌ BAD LINE ITEM:", item);
-        throw new Error("Invalid line item");
+      if (item.sku) {
+        return {
+          sku: clean(item.sku),
+          quantity: Number(item.quantity || 1)
+        };
       }
-
-      return {
-        product_id: clean(item.product_id),
-        variant_id: Number(item.variant_id),
-        quantity: Number(item.quantity || 1)
-      };
+      if (item.product_id && item.variant_id) {
+        return {
+          product_id: clean(item.product_id),
+          variant_id: Number(item.variant_id),
+          quantity: Number(item.quantity || 1)
+        };
+      }
+      console.error("❌ BAD LINE ITEM:", item);
+      throw new Error("Invalid line item — needs either sku, or product_id + variant_id");
     });
 
     const payload = {
