@@ -872,20 +872,21 @@ function addToCart(index, event) {
 // ==========================
 // 🎟️ PROMO CODES
 // ==========================
-// LUNA5      = 5% off cart total, reusable, type: "general" — shareable as a link
-// AMBASSADOR codes = 5% off cart total, reusable, type: "ambassador" — unique per ambassador, trackable
+// AMBASSADOR codes = 5% off cart total — for your marketing ambassadors, private,
+// shared via personal link, follows normal bundle-override rules (3+/5+ items).
+// LUNA15 = YOUR personal buddy code, 15% off, ALWAYS overrides the bundle discount
+// regardless of item count. Private — never displayed publicly on the storefront.
 // WELCOME10  = 10% off cart total, ONE-TIME USE per customer, type: "welcome" — currently DISABLED (set live: false)
 //
-// STACKING RULE: one "general" code (LUNA5) + one "ambassador" code can combine for 10% off together.
-// Two ambassador codes cannot stack with each other. Only you control this list — customers cannot
-// add, edit, or create their own codes; they can only type in ones you've published.
+// STACKING RULE: no code stacks with another code. Only you control this list —
+// customers cannot add, edit, or create their own codes; they can only receive
+// ones you've shared with them.
 const PROMO_CODES = {
-  "LUNA5":      { percent: 0.05, oneTimeUse: false, type: "general",    live: true  },
   "WELCOME10":  { percent: 0.10, oneTimeUse: true,  type: "welcome",    live: false }, // flip live:true to launch later
 
-  // ⭐ AMBASSADOR CODE POOL — 15 pre-made star-themed codes, ready to hand out.
-  // Give each new ambassador the next unused code below (just flip "assigned" to their name as a note).
-  // No code changes needed when someone new joins — just hand out the next one and share their link:
+  // ⭐ AMBASSADOR CODE POOL ("buddy discount") — 15 pre-made star-themed codes, 15% each.
+  // Give each ambassador/family/friend the next unused code below (flip "assigned" to their name as a note).
+  // Never post these publicly — share only via their personal link:
   // https://lunara-universe-tau.vercel.app/?promo=CODE
   "NOVA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
   "STAR5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
@@ -897,6 +898,12 @@ const PROMO_CODES = {
   // 🔒 OWNER-ONLY — for personal test purchases. Charges exact OTC cost price, no profit margin.
   // NEVER share this code publicly. Change it to something else if you're worried it leaked.
   "LUNARAOWNERTEST": { percent: 0, oneTimeUse: false, type: "owner", live: true },
+
+  // 🌟 LUNA15 — YOUR personal buddy code, 15% off, ALWAYS overrides the bundle
+  // discount regardless of item count. Distinct from the regular ambassador pool
+  // above, which stays at 5% and follows normal bundle-override rules.
+  // NEVER post this publicly — share only via your personal QR code/link.
+  "LUNA15": { percent: 0.15, oneTimeUse: false, type: "buddy", live: true },
   "VEGA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
   "RISE5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
   "AURA5": { percent: 0.05, oneTimeUse: false, type: "ambassador", live: true }, // unassigned
@@ -954,11 +961,10 @@ function tryApplyPromoCode(code, msg) {
   }
 
   // Stacking rules:
-  // - "general" (LUNA5) and "ambassador" codes are mutually exclusive — using
-  //   an ambassador code blocks LUNA5, and vice versa. Neither stacks with the
-  //   other anymore.
-  // - two "ambassador" codes cannot stack together
+  // - no code stacks with any other code
+  // - two "ambassador" (buddy discount) codes cannot stack together
   // - "welcome" codes don't stack with anything (used alone)
+  // - "owner" test code doesn't stack with anything
   if (promo.type === "welcome" && activePromos.length > 0) {
     if (msg) { msg.innerText = "This code can't be combined with other codes."; msg.style.color = "#f87171"; }
     return false;
@@ -968,19 +974,7 @@ function tryApplyPromoCode(code, msg) {
     return false;
   }
   if (promo.type === "ambassador" && activePromos.some(p => p.type === "ambassador")) {
-    if (msg) { msg.innerText = "Only one ambassador code can be used per order."; msg.style.color = "#f87171"; }
-    return false;
-  }
-  if (promo.type === "general" && activePromos.some(p => p.type === "general")) {
-    if (msg) { msg.innerText = "This code is already applied."; msg.style.color = "var(--muted)"; }
-    return false;
-  }
-  if (promo.type === "ambassador" && activePromos.some(p => p.type === "general")) {
-    if (msg) { msg.innerText = "This code can't be combined with LUNA5."; msg.style.color = "#f87171"; }
-    return false;
-  }
-  if (promo.type === "general" && activePromos.some(p => p.type === "ambassador")) {
-    if (msg) { msg.innerText = "This code can't be combined with an ambassador code."; msg.style.color = "#f87171"; }
+    if (msg) { msg.innerText = "Only one code can be used per order."; msg.style.color = "#f87171"; }
     return false;
   }
   // Owner test code doesn't stack with anything, and nothing stacks with it
@@ -989,6 +983,15 @@ function tryApplyPromoCode(code, msg) {
     return false;
   }
   if (activePromos.some(p => p.type === "owner")) {
+    if (msg) { msg.innerText = "This code can't be combined with other codes."; msg.style.color = "#f87171"; }
+    return false;
+  }
+  // Buddy code (LUNA15) doesn't stack with anything, and nothing stacks with it
+  if (promo.type === "buddy" && activePromos.length > 0) {
+    if (msg) { msg.innerText = "Remove your current code first to use this one."; msg.style.color = "#f87171"; }
+    return false;
+  }
+  if (activePromos.some(p => p.type === "buddy")) {
     if (msg) { msg.innerText = "This code can't be combined with other codes."; msg.style.color = "#f87171"; }
     return false;
   }
@@ -1016,8 +1019,7 @@ window.applyPromo = function() {
   updateCart();
 };
 
-// Auto-apply promo codes from a shareable link, e.g. ?promo=LUNA5 or ?promo=AMBKARLA5
-let arrivedViaAmbassadorLink = false; // used to hide the LUNA5 hint for ambassador-referred visitors
+// Auto-apply promo codes from a shareable link/QR scan, e.g. ?promo=NOVA5
 function autoApplyPromoFromURL() {
   const params = new URLSearchParams(window.location.search);
   const promoParam = params.get("promo");
@@ -1026,11 +1028,6 @@ function autoApplyPromoFromURL() {
   const input = document.getElementById("promo-input");
   const applied = tryApplyPromoCode(promoParam, msg);
   if (applied && input) input.value = promoParam.toUpperCase();
-  if (applied && PROMO_CODES[promoParam.trim().toUpperCase()]?.type === "ambassador") {
-    arrivedViaAmbassadorLink = true;
-    const luna5Hint = document.getElementById("luna5-hint");
-    if (luna5Hint) luna5Hint.style.display = "none";
-  }
   updateCart();
 }
 
@@ -1087,7 +1084,7 @@ function updateCart() {
   const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
   // 🎁 BUNDLE DEAL: Tiered discounts when buying 3+ items.
-  // 3-4 items = 7% off | 5+ items = 10% off
+  // 3-4 items = 8% off | 5+ items = 10% off
   // Bundle discount takes priority over ALL promo codes (incl. ambassador codes) — they don't stack.
   let bundleActive = false;
   let bundlePercent = 0;
@@ -1097,10 +1094,19 @@ function updateCart() {
       bundlePercent = 0.10;
     } else if (itemCount >= 3) {
       bundleActive = true;
-      bundlePercent = 0.07;
+      bundlePercent = 0.08;
     }
   }
-  const totalPercentOff = OWNER_TEST_ACTIVE_DISPLAY ? 0 : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
+  // 🌟 BUDDY DISCOUNT PRIORITY: LUNA15 always wins at 15%, no matter how many items
+  // are in the cart — overrides the bundle discount entirely. Regular ambassador
+  // codes (5%) still get overridden BY the bundle at 3+/5+ items, as before.
+  // Applies to every customer, South African or international.
+  const buddyCodeActive = activePromos.some(p => p.type === "buddy");
+  const totalPercentOff = OWNER_TEST_ACTIVE_DISPLAY
+    ? 0
+    : buddyCodeActive
+      ? 0.15
+      : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
   const ownerShippingDisplay = OWNER_TEST_ACTIVE_DISPLAY && cart.some(i => OTC_COST_LOOKUP_DISPLAY[String(i.type||"").toLowerCase()]) ? 100 : 0;
   const total = subtotal * (1 - totalPercentOff) + ownerShippingDisplay;
 
@@ -1112,6 +1118,10 @@ function updateCart() {
     if (msg) { msg.innerText = `🔒 Owner test mode — charging exact OTC cost, no profit margin.`; msg.style.color = "var(--success, #4ade80)"; }
     if (promoRow) promoRow.style.display = "none";
     if (promoHint) promoHint.style.display = "none";
+  } else if (buddyCodeActive) {
+    if (msg) { msg.innerText = `✨ Buddy discount active — 15% off your order!`; msg.style.color = "var(--success, #4ade80)"; }
+    if (promoRow) promoRow.style.display = "none";
+    if (promoHint) promoHint.style.display = "none";
   } else if (bundleActive) {
     const discountPercent = Math.round(bundlePercent * 100);
     if (msg) { msg.innerText = `🎁 Bundle deal active — ${discountPercent}% off your order!`; msg.style.color = "var(--success, #4ade80)"; }
@@ -1119,7 +1129,6 @@ function updateCart() {
     if (promoHint) promoHint.style.display = "none";
   } else {
     if (promoRow) promoRow.style.display = "";
-    if (promoHint) promoHint.style.display = arrivedViaAmbassadorLink ? "none" : "";
     if (msg && !activePromos.length) msg.innerText = "";
     else if (msg && activePromos.length) msg.innerText = getActivePromoMessage();
   }
@@ -1374,10 +1383,17 @@ async function checkout() {
       bundlePercent = 0.10;
     } else if (itemCount >= 3) {
       bundleActive = true;
-      bundlePercent = 0.07;
+      bundlePercent = 0.08;
     }
   }
-  const totalPercentOff = OWNER_TEST_ACTIVE ? 0 : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
+  // 🌟 BUDDY DISCOUNT PRIORITY: always wins at 15%, overriding the bundle discount —
+  // same rule as the cart display, applies to every customer regardless of region.
+  const buddyCodeActiveCheckout = activePromos.some(p => p.type === "buddy");
+  const totalPercentOff = OWNER_TEST_ACTIVE
+    ? 0
+    : buddyCodeActiveCheckout
+      ? 0.15
+      : (bundleActive ? bundlePercent : (activeDiscount ? activeDiscount.percent / 100 : activePromos.reduce((sum, p) => sum + p.percent, 0)));
   // Owner test mode: add the real R100 OTC shipping once per order, matching what
   // it actually costs to fulfill — not just the raw production cost with no shipping.
   const ownerShipping = OWNER_TEST_ACTIVE && cart.some(i => OTC_COST_LOOKUP[String(i.type||"").toLowerCase()]) ? 100 : 0;
