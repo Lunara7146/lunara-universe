@@ -37,7 +37,8 @@ export default async function handler(req, res) {
       amount, cart,
       address1, city, region, zip, country, phone,
       orderId,
-      userRegion   // "ZA" or "INTL" — passed from the frontend
+      userRegion,  // "ZA" or "INTL" — passed from the frontend
+      promoCode    // which discount code was used, if any — for tracking card/QR performance
     } = req.body;
 
     // ── Validation ───────────────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export default async function handler(req, res) {
       status:   "pending",
       region:   userRegion || "ZA",
       cart,
+      promo_code: promoCode || null,
       customer: {
         firstName, lastName, email,
         address1, city, region, zip, country, phone
