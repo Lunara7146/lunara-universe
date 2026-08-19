@@ -1786,3 +1786,22 @@ document.addEventListener("click", function(e) {
     if (overlay) overlay.classList.remove("active");
   }
 });
+
+// ── Footer dropdowns (Details / Terms / Shipping Times) — click to open, ──
+// stays open until tapped again or tapped outside. Replaces old hover
+// behavior, which closed the moment the mouse moved even slightly.
+function toggleFooterDropdown(button) {
+  const dropdown = button.closest(".footer-dropdown");
+  const isOpen = dropdown.classList.contains("active");
+
+  // Close any other open dropdown first, so only one is open at a time
+  document.querySelectorAll(".footer-dropdown.active").forEach(d => d.classList.remove("active"));
+
+  if (!isOpen) dropdown.classList.add("active");
+}
+
+document.addEventListener("click", function (e) {
+  if (!e.target.closest(".footer-dropdown")) {
+    document.querySelectorAll(".footer-dropdown.active").forEach(d => d.classList.remove("active"));
+  }
+});
