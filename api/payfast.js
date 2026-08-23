@@ -48,10 +48,17 @@ export default async function handler(req, res) {
       console.warn("⚠️ Supabase logging warning:", dbErr.message);
     }
 
-    const merchant_id  = String(process.env.PAYFAST_MERCHANT_ID || "10000100").trim();
-    const merchant_key = String(process.env.PAYFAST_MERCHANT_KEY || "46f0cd694581a").trim();
-    const passphrase   = String(process.env.PAYFAST_PASSPHRASE || "").trim();
+    // Sanitize environment variables (strips rogue quotes/whitespace)
+    const merchant_id  = String(process.env.PAYFAST_MERCHANT_ID || "10000100").replace(/['"]/g, "").trim();
+    const merchant_key = String(process.env.PAYFAST_MERCHANT_KEY || "46f0cd694581a").replace(/['"]/g, "").trim();
+    const passphrase   = String(process.env.PAYFAST_PASSPHRASE || "").replace(/['"]/g, "").trim();
     const baseUrl      = (process.env.BASE_URL || "http://localhost:3000").replace(/\/$/, "");
+
+    // Dynamically switch endpoint between Sandbox and Live
+    const isSandbox = process.env.PAYFAST_SANDBOX === "true";
+    const actionUrl = isSandbox
+      ? "https://sandbox.payfast.co.za/eng/process"
+      : "https://www.payfast.co.za/eng/process";
 
     // PayFast parameters in required sequence
     const payfastFields = {
@@ -74,8 +81,6 @@ export default async function handler(req, res) {
       .map(key => `${key}=${pfUrlEncode(payfastFields[key])}`)
       .join("&");
 
-    // The sandbox test merchant uses this passphrase. It is part of the
-    // hash input only; it must never be submitted as a form field.
     if (passphrase) {
       signatureString += `&passphrase=${pfUrlEncode(passphrase)}`;
     }
@@ -83,11 +88,12 @@ export default async function handler(req, res) {
     if (process.env.NODE_ENV !== "production") {
       console.log("PayFast signature input:", signatureString);
     }
+
     payfastFields.signature = crypto.createHash("md5").update(signatureString, "utf8").digest("hex");
 
     return res.status(200).json({
       success: true,
-      action: "https://sandbox.payfast.co.za/eng/process",
+      action: actionUrl,
       fields: payfastFields
     });
 
