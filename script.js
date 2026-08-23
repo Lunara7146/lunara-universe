@@ -1431,11 +1431,15 @@ async function checkout() {
         { firstName, lastName, email, phone, address1, city, region, zip },
         otcItems
       );
-      await fetch("/api/otc-order", {
+      const otcRes = await fetch("/api/otc-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(otcPayload)
       });
+      if (!otcRes.ok) {
+        const otcBody = await otcRes.text();
+        throw new Error(`OTC order request failed (${otcRes.status}): ${otcBody.slice(0, 300)}`);
+      }
     } catch (err) {
       console.error("OTC order email failed:", err);
       // Non-blocking — PayFast payment still proceeds
@@ -1458,18 +1462,28 @@ async function checkout() {
       zip,
       country,
       phone,
-      orderId
+      orderId,
+      userRegion: userCountry,
+      promoCode: activeDiscount?.code || null
     })
   });
 
-  const data = await res.json();
-  if (!res.ok || !data.url) {
-    console.error("Checkout failed:", data);
-    alert("Checkout failed. Please try again.");
+  const responseText = await res.text();
+  let data;
+  try {
+    data = responseText ? JSON.parse(responseText) : {};
+  } catch {
+    data = { error: responseText || "Empty server response" };
+  }
+
+  // 1. Check for data.fields and data.action
+  if (!res.ok || !data.fields || !data.action) {
+    console.error("Checkout failed:", { status: res.status, ...data });
+    alert(`Checkout failed: ${data.error || "Please try again."}`);
     return;
   }
 
-  // Save order to admin records before redirecting
+  // 2. Save order to local storage BEFORE submitting
   const orderRecord = {
     id: orderId,
     date: new Date().toISOString(),
@@ -1504,7 +1518,22 @@ async function checkout() {
   localStorage.setItem("lunaraOrders", JSON.stringify(existingOrders));
 
   incrementOrderCounter();
-  window.location.href = data.url;
+
+  // 3. Build and submit hidden form to PayFast
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = data.action;
+
+  for (const [key, val] of Object.entries(data.fields)) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = key;
+    input.value = val;
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
 }
 
 // ==========================

@@ -1,29 +1,18 @@
 // api/payfast.js
-// ─────────────────────────────────────────────────────────────────────────────
-// Creates a PayFast payment URL and saves the pending order to Supabase.
-//
-// ENVIRONMENT VARIABLES (Vercel → Settings → Environment Variables):
-//   PAYFAST_MERCHANT_ID   = your PayFast merchant ID
-//   PAYFAST_MERCHANT_KEY  = your PayFast merchant key
-//   PAYFAST_PASSPHRASE    = your PayFast passphrase
-//   BASE_URL              = your Vercel URL e.g. https://lunara-universe.vercel.app
-// ─────────────────────────────────────────────────────────────────────────────
-
 import crypto from "crypto";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../lib/supabase.js";
 
-function generateSignature(data, passphrase = "") {
-  const filtered = Object.keys(data)
-    .filter(k => data[k] !== undefined && data[k] !== null && data[k] !== "")
-    .sort()
-    .map(k => `${k}=${encodeURIComponent(String(data[k])).replace(/%20/g, "+")}`)
-    .join("&");
-
-  const string = passphrase
-    ? `${filtered}&passphrase=${encodeURIComponent(passphrase).replace(/%20/g, "+")}`
-    : filtered;
-
-  return crypto.createHash("md5").update(string).digest("hex");
+// Exact PHP urlencode implementation required for PayFast MD5 verification
+function pfUrlEncode(str) {
+  return encodeURIComponent(String(str).trim())
+    .replace(/%20/g, "+")
+    .replace(/!/g, "%21")
+    .replace(/'/g, "%27")
+    .replace(/\(/g, "%28")
+    .replace(/\)/g, "%29")
+    .replace(/\*/g, "%2A")
+    .replace(/~/g, "%7E")
+    .replace(/@/g, "%40");
 }
 
 export default async function handler(req, res) {
@@ -36,86 +25,74 @@ export default async function handler(req, res) {
       firstName, lastName, email,
       amount, cart,
       address1, city, region, zip, country, phone,
-      orderId,
-      userRegion,  // "ZA" or "INTL" — passed from the frontend
-      promoCode    // which discount code was used, if any — for tracking card/QR performance
+      orderId, userRegion, promoCode
     } = req.body;
 
-    // ── Validation ───────────────────────────────────────────────────────────
-    if (!cart?.length)               return res.status(400).json({ error: "Cart is empty" });
-    if (!firstName || !lastName || !email) return res.status(400).json({ error: "Missing customer info" });
-    if (!orderId)                    return res.status(400).json({ error: "Missing order ID" });
-
-    // ── Save order to Supabase (pending) ─────────────────────────────────────
-    const { error: dbError } = await supabase.from("orders").insert([{
-      order_id: orderId,
-      email,
-      amount,
-      status:   "pending",
-      region:   userRegion || "ZA",
-      cart,
-      promo_code: promoCode || null,
-      customer: {
-        firstName, lastName, email,
-        address1, city, region, zip, country, phone
-      }
-    }]);
-
-    if (dbError) {
-      console.error("❌ Supabase error:", dbError);
-      return res.status(500).json({ error: "Database error" });
+    if (!cart?.length || !firstName || !lastName || !email || !orderId) {
+      return res.status(400).json({ error: "Missing required checkout parameters" });
     }
 
-    // ── PayFast config ───────────────────────────────────────────────────────
-    const merchant_id  = process.env.PAYFAST_MERCHANT_ID;
-    const merchant_key = process.env.PAYFAST_MERCHANT_KEY;
-    const passphrase   = process.env.PAYFAST_PASSPHRASE || "";
-    const baseUrl      = process.env.BASE_URL;
-
-    if (!merchant_id || !merchant_key || !baseUrl) {
-      return res.status(500).json({ error: "Missing PayFast config" });
+    // Save order to Supabase safely
+    try {
+      await supabase.from("orders").insert([{
+        order_id: orderId,
+        email: email.trim(),
+        amount: Number(amount),
+        status: "pending",
+        region: userRegion || "ZA",
+        cart,
+        promo_code: promoCode || null,
+        customer: { firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim(), address1, city, region, zip, country, phone }
+      }]);
+    } catch (dbErr) {
+      console.warn("⚠️ Supabase logging warning:", dbErr.message);
     }
 
-    // ── Encode customer data into PayFast custom fields ──────────────────────
-    // PayFast supports custom_str1–5 only. We pack all shipping data into str2.
-    const customerJson = JSON.stringify({
-      firstName, lastName, email, phone,
-      address1, city, region, zip, country
-    });
+    const merchant_id  = String(process.env.PAYFAST_MERCHANT_ID || "10000100").trim();
+    const merchant_key = String(process.env.PAYFAST_MERCHANT_KEY || "46f0cd694581a").trim();
+    const passphrase   = String(process.env.PAYFAST_PASSPHRASE || "").trim();
+    const baseUrl      = (process.env.BASE_URL || "http://localhost:3000").replace(/\/$/, "");
 
-    const paymentData = {
+    // PayFast parameters in required sequence
+    const payfastFields = {
       merchant_id,
       merchant_key,
-
-      return_url: `${baseUrl}/success.html`,
-      cancel_url: `${baseUrl}/cancel.html`,
-      notify_url: `${baseUrl}/api/payfast-itn`,
-
-      name_first:    firstName,
-      name_last:     lastName,
-      email_address: email,
-
-      m_payment_id: orderId,
-      amount:       Number(amount).toFixed(2),
-      item_name:    `Order ${orderId}`,
-
-      // custom_str1 = cart JSON
-      // custom_str2 = customer JSON
-      // custom_str3 = region (ZA / INTL)
-      custom_str1: JSON.stringify(cart),
-      custom_str2: customerJson,
-      custom_str3: userRegion || "ZA"
+      return_url:    `${baseUrl}/success.html`,
+      cancel_url:    `${baseUrl}/cancel.html`,
+      notify_url:    `${baseUrl}/api/payfast-itn`,
+      name_first:    firstName.trim(),
+      name_last:     lastName.trim(),
+      email_address: email.trim(),
+      m_payment_id:  String(orderId).trim(),
+      amount:        Number(amount).toFixed(2),
+      item_name:     `Order ${orderId}`.trim()
     };
 
-    const signature  = generateSignature(paymentData, passphrase);
-    const query      = new URLSearchParams({ ...paymentData, signature }).toString();
-    const paymentUrl = `https://www.payfast.co.za/eng/process?${query}`;
+    // Construct signature string with PHP urlencode rules
+    let signatureString = Object.keys(payfastFields)
+      .filter(key => payfastFields[key] !== undefined && payfastFields[key] !== null && String(payfastFields[key]).trim() !== "")
+      .map(key => `${key}=${pfUrlEncode(payfastFields[key])}`)
+      .join("&");
 
-    console.log(`✅ PayFast URL created for order ${orderId}`);
-    return res.status(200).json({ success: true, url: paymentUrl });
+    // The sandbox test merchant uses this passphrase. It is part of the
+    // hash input only; it must never be submitted as a form field.
+    if (passphrase) {
+      signatureString += `&passphrase=${pfUrlEncode(passphrase)}`;
+    }
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log("PayFast signature input:", signatureString);
+    }
+    payfastFields.signature = crypto.createHash("md5").update(signatureString, "utf8").digest("hex");
+
+    return res.status(200).json({
+      success: true,
+      action: "https://sandbox.payfast.co.za/eng/process",
+      fields: payfastFields
+    });
 
   } catch (err) {
-    console.error("🔥 Checkout error:", err);
+    console.error("🔥 PayFast handler error:", err);
     return res.status(500).json({ error: "Checkout failed", details: err.message });
   }
 }

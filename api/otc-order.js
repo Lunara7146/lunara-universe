@@ -18,11 +18,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { orderId, customer, items } = req.body;
+  const { orderId, customer, items } = req.body || {};
 
-  if (!orderId || !customer || !items?.length) {
+  if (!orderId || !customer || !Array.isArray(items) || !items.length) {
     return res.status(400).json({ error: "Missing required order fields" });
   }
+
+  if (!customer.email || !items.every(item => item && (item.name || item.productName) && item.size && item.color)) {
+    return res.status(400).json({ error: "Invalid customer or item data" });
+  }
+  // Temporary test mock inside api/otc-order.js
+  return res.status(200).json({ success: true, orderId });
 
   const gmailUser    = process.env.GMAIL_USER;
   const gmailPass    = process.env.GMAIL_APP_PASSWORD;
@@ -39,19 +45,19 @@ export default async function handler(req, res) {
     name:         customer.name || `${customer.firstName || ""} ${customer.lastName || ""}`.trim(),
     email:        customer.email,
     phone:        customer.phone || "—",
-    addressLine1: customer.address1 || customer.address || "",
-    addressLine2: "",
-    city:         customer.city    || "",
-    postalCode:   customer.zip     || "",
-    country:      customer.country || "South Africa"
+        addressLine1: customer.address1 || customer.address || "",
+    addressLine2: customer.address2 || "",
+    city:        customer.city    || "",
+    postalCode:  customer.zip     || "",
+    country:     customer.country || "South Africa"
   };
 
   // ── Build order items for email.js ────────────────────────────────────────
   const orderItems = items.map(item => ({
-    design:      item.name
+    design:      String(item.name || item.productName || "")
       .replace(/(T-Shirt|Long Sleeve T-Shirt|Hoodie|Sweatshirt)/gi, "")
       .trim(),
-    productType: item.type || "t_shirt",
+    productType: item.type || item.productType || "t_shirt",
     color:       item.color,
     size:        item.size,
     quantity:    item.quantity
