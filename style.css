@@ -18,7 +18,7 @@
   --accent-2: #7ee7ff;
   --success:  #83ffbf;
   --danger:   #ff8da1;
-  --gradient-vivid: linear-gradient(120deg, #ff6ec7 0%, #b98cff 50%, #7ee7ff 100%);
+  --gradient-vivid: linear-gradient(120deg, #ffb3e6 0%, #d9c2ff 50%, #a8ecff 100%);
 }
 
 /* ==============================================
@@ -183,7 +183,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   transition: 0.3s; font-weight: 500; display: inline-block;
 }
 .btn-primary {
-  background: var(--gradient-vivid); background-size: 200% 200%;
+  background: var(--gradient-vivid); background-size: 200% 200%; background-position: center;
   color: black; border: none; cursor: pointer;
   box-shadow: 0 0 18px rgba(185,140,255,0.55), 0 0 30px rgba(255,110,199,0.25);
 }
@@ -194,7 +194,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .btn-why-lunara {
   padding: 14px 28px; border-radius: 999px; border: none; cursor: pointer;
   font-weight: 500; font-size: 1rem; text-decoration: none; display: inline-block;
-  background: var(--gradient-vivid); background-size: 200% 200%;
+  background: var(--gradient-vivid); background-size: 200% 200%; background-position: center;
   color: black !important;
   transition: transform 0.3s, box-shadow 0.3s;
   font-family: inherit;
