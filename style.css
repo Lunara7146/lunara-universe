@@ -18,6 +18,7 @@
   --accent-2: #7ee7ff;
   --success:  #83ffbf;
   --danger:   #ff8da1;
+  --gradient-vivid: linear-gradient(120deg, #ff6ec7 0%, #b98cff 50%, #7ee7ff 100%);
 }
 
 /* ==============================================
@@ -160,27 +161,46 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .hero-content { max-width: 700px; margin: auto; }
 .hero-eyebrow { color: var(--accent); font-size: 13px; letter-spacing: 2px; margin-bottom: 10px; }
 .hero-premium h1 { font-size: clamp(38px,5vw,60px); line-height: 1.1; margin-bottom: 20px; }
-.hero-sub { color: var(--muted); margin-bottom: 30px; }
+.hero-sub {
+  margin-bottom: 30px;
+  background: var(--gradient-vivid);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  filter: drop-shadow(0 0 10px rgba(185,140,255,0.35));
+}
 .hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-.hero-proof { margin-top: 15px; color: var(--muted); font-size: 14px; }
+.hero-proof {
+  margin-top: 15px; font-size: 14px; font-weight: 600;
+  background: var(--gradient-vivid);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(185,140,255,0.35));
+}
 
 .btn-primary, .btn-secondary {
   padding: 14px 28px; border-radius: 999px; text-decoration: none;
   transition: 0.3s; font-weight: 500; display: inline-block;
 }
-.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: black; border: none; cursor: pointer; }
+.btn-primary {
+  background: var(--gradient-vivid); background-size: 200% 200%;
+  color: black; border: none; cursor: pointer;
+  box-shadow: 0 0 18px rgba(185,140,255,0.55), 0 0 30px rgba(255,110,199,0.25);
+}
 .btn-secondary { border: 1px solid var(--line); color: var(--text); }
 .btn-primary:hover, .btn-secondary:hover, .btn-why-lunara:hover { transform: translateY(-2px); }
+.btn-primary:hover { box-shadow: 0 0 26px rgba(185,140,255,0.75), 0 0 40px rgba(255,110,199,0.4); }
 
 .btn-why-lunara {
   padding: 14px 28px; border-radius: 999px; border: none; cursor: pointer;
   font-weight: 500; font-size: 1rem; text-decoration: none; display: inline-block;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: var(--gradient-vivid); background-size: 200% 200%;
   color: black !important;
   transition: transform 0.3s, box-shadow 0.3s;
   font-family: inherit;
+  box-shadow: 0 0 18px rgba(126,231,255,0.5), 0 0 30px rgba(255,110,199,0.25);
 }
-.btn-why-lunara:hover { box-shadow: 0 0 20px rgba(126,231,255,0.4); }
+.btn-why-lunara:hover { box-shadow: 0 0 26px rgba(126,231,255,0.75), 0 0 40px rgba(255,110,199,0.4); }
 
 /* ==============================================
    TRUST BAR
@@ -443,7 +463,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   border: none; cursor: pointer; padding: 6px 10px;
   transition: color 0.3s; font-family: inherit;
 }
-.footer-dropdown:hover .footer-dropbtn, .footer-dropdown.active .footer-dropbtn { color: var(--accent); }
+.footer-dropdown.active .footer-dropbtn { color: var(--accent); }
 
 .footer-dropdown-content {
   position: absolute; bottom: calc(100% + 8px); right: 0;
@@ -454,7 +474,6 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   transition: max-height 0.35s ease, opacity 0.35s ease;
   box-shadow: 0 6px 24px rgba(0,0,0,0.4);
 }
-.footer-dropdown:hover .footer-dropdown-content,
 .footer-dropdown.active .footer-dropdown-content {
   max-height: 520px;
   opacity: 1;
