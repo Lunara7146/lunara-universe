@@ -186,11 +186,9 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .btn-primary {
   background: var(--gradient-vivid); background-size: 200% 200%; background-position: center;
   color: black; border: none; cursor: pointer;
-  box-shadow: 0 0 18px rgba(185,140,255,0.55), 0 0 30px rgba(255,110,199,0.25);
 }
 .btn-secondary { border: 1px solid var(--line); color: var(--text); }
 .btn-primary:hover, .btn-secondary:hover, .btn-why-lunara:hover { transform: translateY(-2px); }
-.btn-primary:hover { box-shadow: 0 0 26px rgba(185,140,255,0.75), 0 0 40px rgba(255,110,199,0.4); }
 
 .btn-why-lunara {
   padding: 14px 28px; border-radius: 999px; border: none; cursor: pointer;
@@ -199,9 +197,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
   color: black !important;
   transition: transform 0.3s, box-shadow 0.3s;
   font-family: inherit;
-  box-shadow: 0 0 18px rgba(126,231,255,0.5), 0 0 30px rgba(255,110,199,0.25);
 }
-.btn-why-lunara:hover { box-shadow: 0 0 26px rgba(126,231,255,0.75), 0 0 40px rgba(255,110,199,0.4); }
 
 /* ==============================================
    TRUST BAR
@@ -390,9 +386,10 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 
 .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
 .form-input {
-  flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line);
+  flex: 1; min-width: 0; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line);
   background: var(--panel-2); color: var(--text); font-size: 14px; outline: none;
   transition: border-color 0.2s; font-family: inherit; margin-bottom: 10px;
+  text-overflow: ellipsis;
 }
 .form-input:focus { border-color: var(--accent); }
 .form-input.full { width: 100%; display: block; }
