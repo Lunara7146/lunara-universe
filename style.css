@@ -164,19 +164,13 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; letter-spacing: 0.5px; }
 .hero-premium h1 { font-size: clamp(38px,5vw,60px); line-height: 1.1; margin-bottom: 20px; }
 .hero-sub {
   margin-bottom: 30px;
-  background: var(--gradient-vivid);
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent; -webkit-text-fill-color: transparent;
+  color: #dcb8ff;
   font-weight: 600;
-  filter: drop-shadow(0 0 10px rgba(185,140,255,0.35));
 }
 .hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
 .hero-proof {
   margin-top: 15px; font-size: 14px; font-weight: 600;
-  background: var(--gradient-vivid);
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent; -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 10px rgba(185,140,255,0.35));
+  color: #dcb8ff;
 }
 
 .btn-primary, .btn-secondary {
