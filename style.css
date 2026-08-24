@@ -8,6 +8,7 @@
    CSS VARIABLES
    ============================================== */
 :root {
+  color-scheme: only light;
   --bg:       #07070b;
   --panel:    #111119;
   --panel-2:  #171722;
