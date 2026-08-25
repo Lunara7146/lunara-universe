@@ -1830,7 +1830,10 @@ function toggleFooterDropdown(button) {
 }
 
 document.addEventListener("click", function (e) {
-  if (!e.target.closest(".footer-dropdown")) {
-    document.querySelectorAll(".footer-dropdown.active").forEach(d => d.classList.remove("active"));
-  }
+  const openDropdown = document.querySelector(".footer-dropdown.active");
+  if (!openDropdown) return;
+  const content = openDropdown.querySelector(".footer-dropdown-content");
+  const button = openDropdown.querySelector(".footer-dropbtn");
+  if ((content && content.contains(e.target)) || (button && button.contains(e.target))) return;
+  openDropdown.classList.remove("active");
 });
