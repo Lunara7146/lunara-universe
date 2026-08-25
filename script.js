@@ -4,16 +4,23 @@
 window.toggleWhyLunara = function(e) {
   e.stopPropagation();
   const popup = document.getElementById("why-lunara-popup");
+  const backdrop = document.getElementById("why-lunara-backdrop");
   if (!popup) return;
   popup.classList.toggle("hidden");
+  if (backdrop) backdrop.classList.toggle("hidden", popup.classList.contains("hidden"));
 };
 
-// Close Why Lunara popup when clicking anywhere else
+// Close Why Lunara popup when clicking anywhere else (including the backdrop)
 document.addEventListener("click", function(e) {
   const popup = document.getElementById("why-lunara-popup");
+  const backdrop = document.getElementById("why-lunara-backdrop");
   const dropdown = e.target.closest(".why-lunara-dropdown");
-  if (!dropdown && popup && !popup.classList.contains("hidden")) {
-    popup.classList.add("hidden");
+  const clickedInsidePopup = popup && popup.contains(e.target);
+  if (!clickedInsidePopup && popup && !popup.classList.contains("hidden")) {
+    if (!dropdown || e.target === backdrop) {
+      popup.classList.add("hidden");
+      if (backdrop) backdrop.classList.add("hidden");
+    }
   }
 });
 
