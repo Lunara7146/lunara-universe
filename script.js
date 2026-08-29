@@ -172,7 +172,16 @@ function getCalculatedRegionalPrice(product, size, color) {
     return product.pricing?.[size] || product.price || 0;
   }
 
-  // International: use Printify's published price
+  // International: use Printify's published price.
+  // Some products (e.g. compass t-shirt) price black/white differently, stored as
+  // { white: {size: price}, black: {size: price} }. Others still use a flat
+  // { size: price } shape — that's supported too as a fallback.
+  const intlColor = String(color || "black").toLowerCase();
+  const byColor = product.pricing?.[intlColor];
+  if (byColor && typeof byColor === "object") {
+    const p = byColor[size];
+    if (p !== undefined) return p;
+  }
   return product.pricing?.[size] || product.price || 0;
 }
 
@@ -196,7 +205,9 @@ function getAnchorPrice(type, color, size) {
   if (userCountry !== "ZA") {
     const product = storeProducts.find(p => String(p.type||"").toLowerCase() === t);
     if (!product) return null;
-    const salePrice = product.pricing?.[size];
+    const intlColor = String(color || "black").toLowerCase();
+    const byColor = product.pricing?.[intlColor];
+    const salePrice = (byColor && typeof byColor === "object") ? byColor[size] : product.pricing?.[size];
     if (!salePrice) return null;
     const anchor = Math.round(salePrice * 1.20 * 100) / 100;
     return "$" + anchor.toFixed(2);

@@ -123,7 +123,7 @@ const NOVA_COLLECTION = {
   },
 
   // ── Products with front design only (no swipe/back image) ─
-  noBackIds: ["nova-plain-hoodie"],
+  noBackIds: ["nova-plain-hoodie", "lunara-plain-sweatshirt"],
 
   // ── All Nova products ─────────────────────────────────────
   products: [
@@ -691,8 +691,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/drip-smile-black.png"
     },
     pricing: {
-      "S": 25.50, "M": 25.50, "L": 25.50, "XL": 25.50,
-      "2XL": 29.50, "3XL": 29.50, "4XL": 29.50
+      white: { "S": 26.27, "M": 26.27, "L": 26.27, "XL": 26.27, "2XL": 26.27, "3XL": 28.67, "4XL": 28.67 },
+      black: { "S": 27.83, "M": 27.83, "L": 27.83, "XL": 27.83, "2XL": 27.83, "3XL": 30.88, "4XL": 30.88 }
     },
     variants: {
       "S-white": { sku: "29719655575795381164" },
@@ -722,8 +722,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/energy-bloom-black.png"
     },
     pricing: {
-      "S": 25.50, "M": 25.50, "L": 25.50, "XL": 25.50,
-      "2XL": 29.50, "3XL": 29.50, "4XL": 29.50
+      white: { "S": 26.27, "M": 26.27, "L": 26.27, "XL": 26.27, "2XL": 26.27, "3XL": 28.67, "4XL": 28.67 },
+      black: { "S": 27.83, "M": 27.83, "L": 27.83, "XL": 27.83, "2XL": 27.83, "3XL": 30.88, "4XL": 30.88 }
     },
     variants: {
       "S-white": { sku: "22223449383717038040" },
@@ -753,8 +753,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/cosmic-eye-black.png"
     },
     pricing: {
-      "S": 25.50, "M": 25.50, "L": 25.50, "XL": 25.50,
-      "2XL": 29.50, "3XL": 29.50, "4XL": 29.50
+      white: { "S": 26.27, "M": 26.27, "L": 26.27, "XL": 26.27, "2XL": 26.27, "3XL": 28.67, "4XL": 28.67 },
+      black: { "S": 27.83, "M": 27.83, "L": 27.83, "XL": 27.83, "2XL": 27.83, "3XL": 30.88, "4XL": 30.88 }
     },
     variants: {
       "S-white": { sku: "11284324430853904842" },
@@ -784,8 +784,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/butterfly-black.png"
     },
     pricing: {
-      "S": 25.50, "M": 25.50, "L": 25.50, "XL": 25.50,
-      "2XL": 29.50, "3XL": 29.50, "4XL": 29.50
+      white: { "S": 26.27, "M": 26.27, "L": 26.27, "XL": 26.27, "2XL": 26.27, "3XL": 28.67, "4XL": 28.67 },
+      black: { "S": 27.83, "M": 27.83, "L": 27.83, "XL": 27.83, "2XL": 27.83, "3XL": 30.88, "4XL": 30.88 }
     },
     variants: {
       "S-white": { sku: "51785286841295804704" },
@@ -815,8 +815,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/compass-black.png"
     },
     pricing: {
-      "S": 25.50, "M": 25.50, "L": 25.50, "XL": 25.50,
-      "2XL": 29.50, "3XL": 29.50, "4XL": 29.50
+      white: { "S": 26.27, "M": 26.27, "L": 26.27, "XL": 26.27, "2XL": 26.27, "3XL": 28.67, "4XL": 28.67 },
+      black: { "S": 27.83, "M": 27.83, "L": 27.83, "XL": 27.83, "2XL": 27.83, "3XL": 30.88, "4XL": 30.88 }
     },
     variants: {
       "S-white": { sku: "19886627746431602842" },
@@ -846,8 +846,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/jellyfish-black.png"
     },
     pricing: {
-      "S": 25.50, "M": 25.50, "L": 25.50, "XL": 25.50,
-      "2XL": 29.50, "3XL": 29.50, "4XL": 29.50
+      white: { "S": 26.27, "M": 26.27, "L": 26.27, "XL": 26.27, "2XL": 26.27, "3XL": 28.67, "4XL": 28.67 },
+      black: { "S": 27.83, "M": 27.83, "L": 27.83, "XL": 27.83, "2XL": 27.83, "3XL": 30.88, "4XL": 30.88 }
     },
     variants: {
       "S-white": { sku: "26950914780223382864" },
@@ -877,8 +877,8 @@ const NOVA_COLLECTION = {
       black: "images/tshirts/mushrooms-black.png"
     },
     pricing: {
-      "S": 25.50, "M": 25.50, "L": 25.50, "XL": 25.50,
-      "2XL": 29.50, "3XL": 29.50, "4XL": 29.50
+      white: { "S": 26.27, "M": 26.27, "L": 26.27, "XL": 26.27, "2XL": 26.27, "3XL": 28.67, "4XL": 28.67 },
+      black: { "S": 27.83, "M": 27.83, "L": 27.83, "XL": 27.83, "2XL": 27.83, "3XL": 30.88, "4XL": 30.88 }
     },
     variants: {
       "S-white": { sku: "80684890803304168302" },
