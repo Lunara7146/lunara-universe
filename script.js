@@ -374,15 +374,21 @@ function displayProducts(products) {
     card.className = "product-card";
 
     const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants") && !NO_BACK_IDS.includes(product.id);
+    // "Plain" items (id contains "plain") get a back image too, e.g. plain t-shirts —
+    // shown front-first, unlike hoodies/sweatshirts which show back-first.
+    const isPlain = /plain/i.test(product.id || "");
+    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants" || (type === "tshirt" && isPlain)) && !NO_BACK_IDS.includes(product.id);
     const backColor = type === "sweatpants" ? "white" : defaultColor;
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${backColor}.png` : null;
     const frontSrc = imageSrc;
-    // Sweatpants: front first, swipe → back
-    // All others (hoodie, sweatshirt, longsleeve): back first, swipe → front
-    const showBackFirst = hasBack && type !== "sweatpants" && type !== "longsleeve";
+    // Sweatpants & plain t-shirts: front first, swipe → back
+    // Hoodie, sweatshirt, longsleeve: back first, swipe → front
+    const showBackFirst = hasBack && type !== "sweatpants" && type !== "longsleeve" && type !== "tshirt";
     const displaySrc = showBackFirst ? backSrc : frontSrc;
     const initialShowing = showBackFirst ? "back" : "front";
+    // Preload both sides now so the swipe never has to wait on a network
+    // fetch/decode mid-gesture — that stall is what was causing the lag.
+    if (hasBack) { new Image().src = frontSrc; new Image().src = backSrc; }
 
     card.innerHTML = `
       <div class="product-image-wrap${hasBack ? " swipeable" : ""}"
@@ -656,6 +662,9 @@ function changeColor(index) {
     // Show whichever side is currently showing
     const showing = wrap.dataset.showing || "front";
     img.src = (showing === "back" && newBack) ? newBack : newFront;
+    // Preload the side not currently shown, so the swipe stays lag-free
+    new Image().src = newFront;
+    if (newBack) new Image().src = newBack;
   } else {
     img.src = newFront;
   }
@@ -732,12 +741,14 @@ function renderFavorites() {
     }
 
     const type = String(product.type || "").toLowerCase();
-    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants") && !NO_BACK_IDS.includes(product.id);
+    const isPlain = /plain/i.test(product.id || "");
+    const hasBack = (type === "hoodie" || type === "sweatshirt" || type === "longsleeve" || type === "sweatpants" || (type === "tshirt" && isPlain)) && !NO_BACK_IDS.includes(product.id);
     const backColor = type === "sweatpants" ? "white" : defaultColor;
     const backSrc = hasBack ? `images/${IMAGE_FOLDER_MAP[product.id]}/back-${backColor}.png` : null;
-    const showBackFirst = hasBack && type !== "sweatpants" && type !== "longsleeve";
+    const showBackFirst = hasBack && type !== "sweatpants" && type !== "longsleeve" && type !== "tshirt";
     const displaySrc = showBackFirst ? backSrc : imageSrc;
     const initialShowing = showBackFirst ? "back" : "front";
+    if (hasBack) { new Image().src = imageSrc; new Image().src = backSrc; }
 
     const card = document.createElement("div");
     card.className = "product-card";
