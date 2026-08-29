@@ -1756,38 +1756,12 @@ window.setRegion = function(region) {
 };
 
 // ==========================
-// 👆 IMAGE SWIPE (back/front toggle)
+// 👆 IMAGE SWIPE (back/front toggle) + 🔍 TAP-TO-ZOOM
 // ==========================
 let _lastSwipeTime = 0;
 
-document.addEventListener("touchstart", function(e) {
-  const wrap = e.target.closest(".swipeable");
-  if (!wrap) return;
-  wrap._touchStartX = e.touches[0].clientX;
-}, { passive: true });
-
-document.addEventListener("touchend", function(e) {
-  const wrap = e.target.closest(".swipeable");
-  if (!wrap || wrap._touchStartX === undefined) return;
-  const dx = e.changedTouches[0].clientX - wrap._touchStartX;
-  if (Math.abs(dx) > 30) {
-    _lastSwipeTime = Date.now();
-    swapImage(wrap);
-  }
-}, { passive: true });
-
-// Desktop click — skip if a touch swipe just fired (prevents double-fire on mobile)
-document.addEventListener("click", function(e) {
-  if (Date.now() - _lastSwipeTime < 500) return;
-  const wrap = e.target.closest(".swipeable");
-  if (!wrap) return;
-  // Don't trigger swap if they clicked a button/select inside the card
-  if (e.target.closest("button, select, a")) return;
-  swapImage(wrap);
-});
-
 function swapImage(wrap) {
-  const img = wrap.querySelector("img");
+  const img = wrap.querySelector("img.product-image");
   if (!img) return;
   const showing = wrap.dataset.showing;
   const hint = wrap.querySelector(".swipe-hint");
@@ -1800,7 +1774,234 @@ function swapImage(wrap) {
     wrap.dataset.showing = "back";
     if (hint) hint.textContent = "swipe →";
   }
+  _syncZoomIfOpen(wrap);
 }
+
+// Desktop click — skip if a touch swipe/tap just fired (prevents double-fire on mobile)
+document.addEventListener("click", function(e) {
+  if (Date.now() - _lastSwipeTime < 500) return;
+  const wrap = e.target.closest(".swipeable");
+  if (!wrap) return;
+  if (e.target.closest("button, select, a")) return;
+  swapImage(wrap);
+});
+
+// ---- Shared drag-follow logic, used for both the product card and the lightbox ----
+function _attachSwipeDrag(root, { onCommit, getImg, getOtherSrc, getHint, allowZoomTap }) {
+  let drag = null; // { startX, startY, axis, img, clone, width, wrap }
+
+  root.addEventListener("touchstart", function(e) {
+    const wrap = e.target.closest(".product-image-wrap");
+    if (!wrap) return;
+    const img = getImg(wrap);
+    if (!img) return;
+    drag = {
+      wrap, img,
+      startX: e.touches[0].clientX,
+      startY: e.touches[0].clientY,
+      axis: null,
+      width: wrap.clientWidth,
+      clone: null,
+      dx: 0
+    };
+  }, { passive: true });
+
+  root.addEventListener("touchmove", function(e) {
+    if (!drag) return;
+    const dx = e.touches[0].clientX - drag.startX;
+    const dy = e.touches[0].clientY - drag.startY;
+
+    if (drag.axis === null) {
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+        drag.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      } else {
+        return;
+      }
+    }
+    if (drag.axis !== "x" || !drag.wrap.classList.contains("swipeable")) return;
+
+    e.preventDefault(); // lock out vertical scroll while dragging horizontally
+    drag.dx = dx;
+
+    if (!drag.clone) {
+      const otherSrc = getOtherSrc(drag.wrap);
+      if (!otherSrc) return;
+      const clone = document.createElement("img");
+      clone.src = otherSrc;
+      clone.className = "swipe-clone";
+      drag.wrap.appendChild(clone);
+      drag.clone = clone;
+      drag.img.style.transition = "none";
+      clone.style.transition = "none";
+    }
+    const sign = dx < 0 ? -1 : 1;
+    drag.img.style.transform = `translateX(${dx}px)`;
+    drag.clone.style.transform = `translateX(${dx - sign * drag.width}px)`;
+  }, { passive: false });
+
+  root.addEventListener("touchend", function(e) {
+    if (!drag) return;
+    const d = drag; drag = null;
+
+    if (d.axis === "x" && d.clone) {
+      const threshold = d.width * 0.18;
+      const committed = Math.abs(d.dx) > threshold;
+      const sign = d.dx < 0 ? -1 : 1;
+      d.img.style.transition = "transform 0.25s ease";
+      d.clone.style.transition = "transform 0.25s ease";
+
+      if (committed) {
+        d.img.style.transform = `translateX(${sign * d.width}px)`;
+        d.clone.style.transform = "translateX(0px)";
+      } else {
+        d.img.style.transform = "translateX(0px)";
+        d.clone.style.transform = `translateX(${-sign * d.width}px)`;
+      }
+
+      setTimeout(() => {
+        if (committed) {
+          d.img.src = d.clone.src;
+          onCommit(d.wrap);
+        }
+        d.img.style.transition = "";
+        d.img.style.transform = "";
+        d.clone.remove();
+      }, 260);
+
+      _lastSwipeTime = Date.now();
+      e.preventDefault();
+    } else if (d.axis === null && allowZoomTap) {
+      // Small movement, no axis committed — treat as a tap.
+      allowZoomTap(d.wrap);
+      _lastSwipeTime = Date.now();
+    }
+  }, { passive: false });
+}
+
+function _flipHint(wrap) {
+  wrap.dataset.showing = wrap.dataset.showing === "back" ? "front" : "back";
+  const hint = wrap.querySelector(".swipe-hint");
+  if (hint) hint.textContent = wrap.dataset.showing === "back" ? "swipe →" : "← swipe";
+  _syncZoomIfOpen(wrap);
+}
+
+_attachSwipeDrag(document, {
+  getImg: (wrap) => wrap.querySelector("img.product-image"),
+  getOtherSrc: (wrap) => wrap.dataset.showing === "back" ? wrap.dataset.front : wrap.dataset.back,
+  onCommit: _flipHint,
+  allowZoomTap: (wrap) => openZoom(wrap)
+});
+
+// ==========================
+// 🔍 TAP-TO-ZOOM LIGHTBOX
+// ==========================
+let _zoomWrap = null;
+
+window.openZoom = function(wrap) {
+  if (!wrap) return;
+  _zoomWrap = wrap;
+  const img = wrap.querySelector("img.product-image");
+  const zoomImg = document.getElementById("zoom-img");
+  const zoomHint = document.getElementById("zoom-hint");
+  if (!img || !zoomImg) return;
+  zoomImg.src = img.src;
+  zoomImg.alt = img.alt || "";
+  if (zoomHint) {
+    if (wrap.classList.contains("swipeable")) {
+      zoomHint.textContent = wrap.dataset.showing === "back" ? "swipe →" : "← swipe";
+      zoomHint.classList.remove("hidden");
+    } else {
+      zoomHint.classList.add("hidden");
+    }
+  }
+  document.getElementById("zoom-overlay").classList.add("active");
+};
+
+window.closeZoom = function() {
+  document.getElementById("zoom-overlay").classList.remove("active");
+  _zoomWrap = null;
+};
+
+function _syncZoomIfOpen(wrap) {
+  if (_zoomWrap !== wrap) return;
+  const img = wrap.querySelector("img.product-image");
+  const zoomImg = document.getElementById("zoom-img");
+  const zoomHint = document.getElementById("zoom-hint");
+  if (img && zoomImg) zoomImg.src = img.src;
+  if (zoomHint && wrap.classList.contains("swipeable")) {
+    zoomHint.textContent = wrap.dataset.showing === "back" ? "swipe →" : "← swipe";
+  }
+}
+
+// Swipe inside the lightbox itself, synced back to the underlying card
+(function() {
+  const box = document.querySelector("#zoom-overlay .zoom-box");
+  if (!box) return;
+  let zdrag = null;
+
+  box.addEventListener("touchstart", function(e) {
+    if (!_zoomWrap || !_zoomWrap.classList.contains("swipeable")) return;
+    zdrag = { startX: e.touches[0].clientX, startY: e.touches[0].clientY, axis: null, width: box.clientWidth, clone: null, dx: 0 };
+  }, { passive: true });
+
+  box.addEventListener("touchmove", function(e) {
+    if (!zdrag) return;
+    const img = document.getElementById("zoom-img");
+    const dx = e.touches[0].clientX - zdrag.startX;
+    const dy = e.touches[0].clientY - zdrag.startY;
+    if (zdrag.axis === null) {
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) zdrag.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      else return;
+    }
+    if (zdrag.axis !== "x") return;
+    e.preventDefault();
+    zdrag.dx = dx;
+    if (!zdrag.clone) {
+      const otherSrc = _zoomWrap.dataset.showing === "back" ? _zoomWrap.dataset.front : _zoomWrap.dataset.back;
+      if (!otherSrc) return;
+      const clone = document.createElement("img");
+      clone.src = otherSrc;
+      clone.className = "swipe-clone";
+      box.appendChild(clone);
+      zdrag.clone = clone;
+      img.style.transition = "none";
+      clone.style.transition = "none";
+    }
+    const sign = dx < 0 ? -1 : 1;
+    img.style.transform = `translateX(${dx}px)`;
+    zdrag.clone.style.transform = `translateX(${dx - sign * zdrag.width}px)`;
+  }, { passive: false });
+
+  box.addEventListener("touchend", function(e) {
+    if (!zdrag) return;
+    const d = zdrag; zdrag = null;
+    if (d.axis !== "x" || !d.clone) return;
+    const img = document.getElementById("zoom-img");
+    const threshold = d.width * 0.18;
+    const committed = Math.abs(d.dx) > threshold;
+    const sign = d.dx < 0 ? -1 : 1;
+    img.style.transition = "transform 0.25s ease";
+    d.clone.style.transition = "transform 0.25s ease";
+    if (committed) {
+      img.style.transform = `translateX(${sign * d.width}px)`;
+      d.clone.style.transform = "translateX(0px)";
+    } else {
+      img.style.transform = "translateX(0px)";
+      d.clone.style.transform = `translateX(${-sign * d.width}px)`;
+    }
+    setTimeout(() => {
+      if (committed && _zoomWrap) swapImage(_zoomWrap); // updates card + re-syncs this lightbox image
+      img.style.transition = "";
+      img.style.transform = "";
+      d.clone.remove();
+    }, 260);
+    e.preventDefault();
+  }, { passive: false });
+})();
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeZoom();
+});
 
 // ==========================
 // 🌍 CUSTOMS MODAL

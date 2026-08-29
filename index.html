@@ -375,6 +375,15 @@
     </div>
   </div>
 
+  <!-- IMAGE ZOOM LIGHTBOX -->
+  <div id="zoom-overlay" class="zoom-overlay" onclick="if(event.target===this)closeZoom()">
+    <div class="zoom-box">
+      <img id="zoom-img" src="" alt="">
+      <div id="zoom-hint" class="zoom-hint hidden">swipe →</div>
+      <button class="zoom-close" onclick="closeZoom()">✕</button>
+    </div>
+  </div>
+
   <script src="collections.js"></script>
   <script src="script.js"></script>
 
